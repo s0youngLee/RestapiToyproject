@@ -10,6 +10,19 @@
   list-style: none;
 }
 
+#liNone {
+  border: 1px solid #282c34;
+  list-style: none;
+}
+
+#btn-detail{
+  height: auto;
+  width: auto;
+  background-color: purple;
+  color: aliceblue;
+  font-weight: bolder;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
