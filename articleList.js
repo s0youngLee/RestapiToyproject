@@ -3,48 +3,39 @@ import './App.css'
 
 function ArticleLists(props){
     const [articleList, setArticleList] = useState({
-        data : 
-            {
-                id: 'DEFAULT',
-                title: 'DEFAULT',
-                created_id: 'DEFAULT',
-                created_at: 'DEFAULT',
-                category_name: 'DEFAULT',
-                visit_cnt: 'DEFAULT',
-                comment_cnt: 'DEFAULT'
-            }
+        data : {}
     });
 
     
     useEffect(()=> {
         setArticleList(props.ArticleLists);
-        console.log(articleList);
-        console.log(articleList.data[2]);
     },[props.ArticleLists, articleList])
 
-    
+    const articleListArr = Array.from(articleList.data);
+
     return (
         <div>
-            Board Data(Text → JSON) :
-            <Article list={articleList.data}/>
+            Every Article List :
+            <div>
+                {articleListArr.map((article, index) => (
+                   <Article data={article} index={index} />
+                ))}
+            </div>
         </div>
     )
 }
 
-function Article({data}) {
+function Article({data, index}) {
     return (
-      <ul id="ulNone" key={data}>
-        {/* article만 불러오면 출력이 안됨, .data 또는 .id 등 붙이면 못읽음
-            articleList에 값이 아직 없는 상태에서 출력하려고 하는 것 같음 */}
-        {/* <li><b>ID : </b> <span key={data[0].id}>{data[0].id}</span> <br/></li> */}
-        <li><b>ID : </b> <span key={data}>{data}</span> <br/></li>
-        <li><b>Title : </b> <span>{data}</span> <br/></li>
-        <li><b>Category : </b> <span>{data}</span> <br/></li>
-        <li><b>Created By : </b> <span>{data}</span> <br/></li>
-        <li><b>Created At : </b> <span>{data}</span> <br/></li>
-        <li><b>Visit : </b> <span>{data}</span> <br/></li>
-        <li><b>Comment : </b> <span>{data}</span> <br/></li>
-      </ul>
+        <li id="liNone" key={index}>
+            <b>ID : </b> <span>{data.id}</span> <br/>
+            <b>Title : </b> <span>{data.title}</span> <br/>
+            <b>Category : </b> <span>{data.category_name}</span> <br/>
+            <b>Created By : </b> <span>{data.created_id}</span> <br/>
+            <b>Created At : </b> <span>{data.created_at}</span> <br/>
+            <b>Visit : </b> <span>{data.visit_cnt}</span> <br/>
+            <b>Comment : </b> <span>{data.comment_cnt}</span> <br/>
+        </li>
     );
 }
 
