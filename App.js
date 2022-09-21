@@ -7,15 +7,6 @@ class App extends Component{
         super(props);
         this.state = {
                 data:  {}
-                // {
-                //     id: '',
-                //     title: '',
-                //     created_id: '',
-                //     created_at: '',
-                //     category_name: '',
-                //     visit_cnt: '',
-                //     comment_cnt: ''
-                // },
             }
     }
 
@@ -27,16 +18,12 @@ class App extends Component{
     callApi = async () => {
         const RES = await fetch('/board')
                         .then((res) => res.json())
-
-        // this.setState(this.state=RES);
-        // console.log(this.state);
         return this.setState(this.state=RES);
     }
 
     render(){
         return(
             <div className="App">
-                {/* <p>{this.state}</p> */}
                 <ArticleLists ArticleLists={this.state} />
             </div>
         );
