@@ -6,35 +6,38 @@ class App extends Component{
     constructor(props){
         super(props);
         this.state = {
-                data: [
-                {
-                    id: '',
-                    title: '',
-                    created_id: '',
-                    created_at: '',
-                    category_name: '',
-                    visit_cnt: '',
-                    comment_cnt: ''
-                },
-            ]
-        }
+                data:  {}
+                // {
+                //     id: '',
+                //     title: '',
+                //     created_id: '',
+                //     created_at: '',
+                //     category_name: '',
+                //     visit_cnt: '',
+                //     comment_cnt: ''
+                // },
+            }
     }
 
     componentDidMount() {
         this.callApi();
     }
 
+
     callApi = async () => {
         const RES = await fetch('/board')
                         .then((res) => res.json())
-                        .then((result) => console.log(result))
-        this.setState({data: RES});
+
+        // this.setState(this.state=RES);
+        // console.log(this.state);
+        return this.setState(this.state=RES);
     }
 
     render(){
         return(
             <div className="App">
-                <ArticleLists ArticleLists={this.state.data}/>
+                {/* <p>{this.state}</p> */}
+                <ArticleLists ArticleLists={this.state} />
             </div>
         );
     }
