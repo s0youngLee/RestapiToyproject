@@ -24,7 +24,7 @@ class App extends Component{
     render(){
         return(
             <div className="App">
-                <ArticleLists ArticleLists={this.state} />
+               <ul id="ulNone"><ArticleLists ArticleLists={this.state} /></ul>
             </div>
         );
     }
