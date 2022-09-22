@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import './App.css'
+import {Link} from 'react-router-dom';
 
 function ArticleLists(props){
     const [articleList, setArticleList] = useState({
         data : {}
     });
 
-    
     useEffect(()=> {
         setArticleList(props.ArticleLists);
     },[props.ArticleLists, articleList])
@@ -15,17 +15,16 @@ function ArticleLists(props){
 
     return (
         <div>
-            Every Article List :
-            <div>
-                {articleListArr.map((article, index) => (
-                   <Article data={article} index={index} />
-                ))}
-            </div>
+            {articleListArr.map((article, index) => (
+                <Article data={article} index={index} />
+            ))}
         </div>
     )
 }
 
+
 function Article({data, index}) {
+
     return (
         <li id="liNone" key={index}>
             <b>ID : </b> <span>{data.id}</span> <br/>
@@ -35,8 +34,16 @@ function Article({data, index}) {
             <b>Created At : </b> <span>{data.created_at}</span> <br/>
             <b>Visit : </b> <span>{data.visit_cnt}</span> <br/>
             <b>Comment : </b> <span>{data.comment_cnt}</span> <br/>
+            <nav>
+                <Link to={`/`}>
+                    <button id="btn-detail"> Home </button></Link>
+                <Link to={`/board/${data.id}`}>
+                    <button id="btn-detail"> Detail </button></Link>
+            </nav>
         </li>
     );
 }
 
 export default ArticleLists;
+
+
