@@ -1,6 +1,9 @@
 import React, {Component} from "react";
 import ArticleLists from "./articleList";
+import ArticleDetail from "./ArticleDetail";
+import Home from "./Home";
 import './App.css';
+import { Route, Routes } from "react-router-dom";
 
 class App extends Component{
     constructor(props){
@@ -11,22 +14,24 @@ class App extends Component{
     }
 
     componentDidMount() {
-        this.callApi();
+        this.callBoard();
     }
 
 
-    callApi = async () => {
+    callBoard = async () => {
         const RES = await fetch('/board')
-                        .then((res) => res.json())
+                        .then((res) => res.json());
         return this.setState(this.state=RES);
     }
 
     render(){
-        return(
-            <div className="App">
-               <ul id="ulNone"><ArticleLists ArticleLists={this.state} /></ul>
-            </div>
-        );
+        return (
+            <div><Routes>
+                <Route path="/" exact element={<Home/>} />
+                <Route path="/board" element={<ArticleLists ArticleLists={this.state} />} />
+                <Route path="/board/:articleId" element={<ArticleDetail />} />
+            </Routes></div>
+        )
     }
 }
 
