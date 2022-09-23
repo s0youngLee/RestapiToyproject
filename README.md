@@ -1,2 +1,0 @@
-# Anymobi.Intern
-Daily Progress
