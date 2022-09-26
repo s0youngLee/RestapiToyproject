@@ -8,6 +8,7 @@ const Home = () => {
             <p> App_Board Front Tutorial </p>
 
             <Link to="/board"><button id="btn-default"> Board </button></Link>
+            <Link to="/category"><button id="btn-default"> Category </button></Link>
         </div>
     );
 };
