@@ -7,4 +7,16 @@ module.exports = function (app) {
       changeOrigin: true,
     })
   );
+
+  app.post("/insert", (req, res) => {
+    var userId = req.body.userId;
+    var content = req.body.content;
+  
+    const sqlQuery =
+      "INSERT INTO comment (user_id, content) FROM (?,?);";
+    db.query(sqlQuery, [userId, content], (err, result) => {
+      res.send(result);
+    });
+  });
+
 };

@@ -14,7 +14,7 @@ function ArticleDeatil(){
                     .then(res =>  res.json())
                     .then(result => setArticleDetail(result));
     },[]);
-    
+
     return (
         <div>
             <ArticleDetailData key={articleId} data={articleDetail.data} />
@@ -24,55 +24,72 @@ function ArticleDeatil(){
 
 function ArticleDetailData({articleId, data}) {
     const commentDataArr = data.comment;
+    const urlList = ((window.location.href).split('/'));
+    const article = urlList[(urlList.length)-1]
 
     return (
-        <div id="liNone" key={articleId}>
+        <div style={{marginLeft: "10px"}} key={articleId}>
             <h1>Article Detail</h1> <br/>
-            <div>
+            <div style={{borderBottom: "2.5px solid black", padding: "10px"}}>
                 <b> ID : </b> <span> {data?.id} </span> <br/>
                 <b> Title : </b> <span> {data?.title} </span> <br/>
                 <b> Category : </b> <span> {data?.category_name} </span> <br/>
                 <b> Content : </b> <span> {data?.content} </span> <br/>
                 <b> Created By : </b> <span> {data?.created_id} </span> <br/>
                 <b> Created At : </b> <span> {data?.created_at} </span> <br/>
-                <b> Visit : </b> <span> {data?.visit_cnt} </span> <br/>
-                <nav>
-                    <Link to={`/`}>
-                        <button id="btn-detail"> Home </button></Link>
+                <b> Visit : </b> <span> {data?.visit_cnt} </span> 
+                <div style={{float: "right"}}>
+                    <Link to={`/`} >
+                            <button id="btn-default"> Home </button></Link>
                     <Link to={`/board`}>
-                        <button id="btn-detail"> List </button></Link>
-                </nav>
+                            <button id="btn-default"> List </button></Link>
+                </div>
             </div>
-            <div id="liNone">
-                <ul id="ulNone"> 
-                    <b> Add Comment</b>
-                    <div id="div-align">
-                        <textarea id="add" placeholder="Add a comment"></textarea> <button id="btn-detail"> Add </button> <br/>
-                    </div>
-                    <div>
-                        <b>&lt;Comment List&gt;</b>
-                        <div>{commentDataArr?.map((comment, index)=>{
-                            return <CommentData data={comment} index={index} />;
-                        })}</div>
-                    </div>
-                </ul>    
+            <div>
+                <div id="div-align">
+                    <b> Add Comment</b> <br/>
+                    <input id="id-box" placeholder="User Id"></input> <br/>
+                    <textarea id="text-box" placeholder="Add a comment"></textarea> 
+                    <button id="btn-add"> Add </button>
+                </div>
+                <div>
+                    <b>&lt;Comment List&gt;</b>
+                    <div>{commentDataArr?.map((comment, index)=>{
+                        return <CommentData data={comment} index={index} articleId={article}/>;
+                    })}</div>
+                </div>
             </div>
         </div>
     );
 }
 
-function CommentData({index, data}){
 
-    removeComment = (id) => {
-        return setComments(comments.filter((comment) => comment.id !== id));
+function CommentData({index, data, articleId}){
+
+    const axios = require('axios');
+    console.log(data);
+    
+    function deleteComment(articleId, commentId) { {
+        axios.delete(`/board/${articleId}/${commentId}`)
+            .then( console.log("DELETED" + data));
+        };
+        // return <CommentData data={data} index={index} articleId={articleId} />
     }
 
+    // const [comment, setComment] = useState(data);
+    // console.log(comment);
+
     return(
-        <><li id="liNone" key={index}>
+        <><li  key={index}>
             <b> User ID : </b> <span> {data.user_id} </span> <br/>
             <b> Content : </b> <span> {data.content} </span> <br/>
-            <b> Created At : </b> <span> {data.created_at} </span> <br/>
-            <button id="btn-remove" onClick={removeComment(data.id)}>Delete</button>
+            <b> Created At : </b> <span> {data.created_at} </span>
+            <br/>
+            <b> Id : </b> <span> {data.id} </span>
+            <b> Article Id : </b> <span> {data.article_id} </span>
+            
+            <button id="btn-remove" onClick={() => deleteComment(articleId, data.id)}>Delete</button>
+            {console.log(data.id)}
         </li>
         <br/></>
     );

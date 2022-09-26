@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/src/main/reactfront" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/front-end/app_board" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/app_board" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/front-end/app_board" vcs="Git" />
+  </component>
+</project>

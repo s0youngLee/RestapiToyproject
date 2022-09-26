@@ -4,6 +4,7 @@ import ArticleDetail from "./ArticleDetail";
 import Home from "./Home";
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {axios} from "axios";
 
 class App extends Component{
     constructor(props){
@@ -23,6 +24,7 @@ class App extends Component{
                         .then((res) => res.json());
         return this.setState(this.state=RES);
     }
+
 
     render(){
         return (

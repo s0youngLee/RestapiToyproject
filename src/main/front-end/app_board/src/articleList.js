@@ -17,9 +17,26 @@ function ArticleLists(props){
 
     return (
         <div>
-            {articleListArr.map((article, index) => (
-                <Article data={article} index={index} />
-            ))}
+            <table id="list">
+                <thead>
+                    <tr>
+                        <th id="item"> ID </th>
+                        <th id="item"> Title </th>
+                        <th id="item"> Category </th>
+                        <th id="item"> Created By </th>
+                        <th id="item"> Created At </th>
+                        <th id="item"> Visit </th>
+                        <th id="item"> Comment </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {articleListArr.map((article, index) => (
+                        <tr><Article data={article} index={index} /></tr>
+                        ))}
+                </tbody>
+            </table>
+            <br/>
+            <div style={{width: "100%", textAlign: "center"}}><Link to={`/`} > <button id="btn-default"> Home </button></Link></div>
         </div>
     )
 }
@@ -28,21 +45,33 @@ function ArticleLists(props){
 function Article({data, index}) {
 
     return (
-        <li id="liNone" key={index}>
-            <b>ID : </b> <span>{data.id}</span> <br/>
-            <b>Title : </b> <span>{data.title}</span> <br/>
-            <b>Category : </b> <span>{data.category_name}</span> <br/>
-            <b>Created By : </b> <span>{data.created_id}</span> <br/>
-            <b>Created At : </b> <span>{data.created_at}</span> <br/>
-            <b>Visit : </b> <span>{data.visit_cnt}</span> <br/>
-            <b>Comment : </b> <span>{data.comment_cnt}</span> <br/>
-            <nav>
-                <Link to={`/`}>
-                    <button id="btn-detail"> Home </button></Link>
-                <Link to={`/board/${data.id}`}>
-                    <button id="btn-detail"> Detail </button></Link>
-            </nav>
-        </li>
+        <>
+            <td id="item"> {data.id} </td>
+            <td id="item"> {data.title} </td>
+            <td id="item"> {data.category_name} </td>
+            <td id="item"> {data.created_id} </td>
+            <td id="item"> {data.created_at} </td>
+            <td id="item"> {data.visit_cnt} </td>
+            <td id="item"> {data.comment_cnt} </td>
+            <td id="item-detail"><Link to={`/board/${data.id}`}> <button id="btn-default"> Detail </button></Link></td>
+        </>
+
+
+        // <li id="liNone" key={index}>
+        //     <b>ID : </b> <span>{data.id}</span> <br/>
+        //     <b>Title : </b> <span>{data.title}</span> <br/>
+        //     <b>Category : </b> <span>{data.category_name}</span> <br/>
+        //     <b>Created By : </b> <span>{data.created_id}</span> <br/>
+        //     <b>Created At : </b> <span>{data.created_at}</span> <br/>
+        //     <b>Visit : </b> <span>{data.visit_cnt}</span> <br/>
+        //     <b>Comment : </b> <span>{data.comment_cnt}</span> <br/>
+        //     <nav>
+        //         <Link to={`/`}>
+        //             <button id="btn-default"> Home </button></Link>
+        //         <Link to={`/board/${data.id}`}>
+        //             <button id="btn-default"> Detail </button></Link>
+        //     </nav>
+        // </li>
     );
 }
 

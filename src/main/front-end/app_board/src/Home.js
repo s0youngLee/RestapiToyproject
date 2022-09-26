@@ -7,7 +7,7 @@ const Home = () => {
             <h1> Home Page </h1>
             <p> App_Board Front Tutorial </p>
 
-            <Link to="/board"><button id="btn-detail"> Board </button></Link>
+            <Link to="/board"><button id="btn-default"> Board </button></Link>
         </div>
     );
 };
