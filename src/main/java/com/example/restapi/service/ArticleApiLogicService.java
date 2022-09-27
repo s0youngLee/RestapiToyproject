@@ -69,14 +69,14 @@ public class ArticleApiLogicService implements CrudInterface<ArticleApiRequest, 
 
         return articleRepository.findById(id)
                 .map(article -> {
-                    article.setTitle(body.getTitle())
-                            .setContent(body.getContent())
-                            .setCreatedId(body.getCreatedId())
-                            .setCreatedAt(LocalDateTime.now())
-                            .setCategory(Category.builder()
-                                    .id(body.getCategoryId())
-                                    .name(categoryRepository.findById(body.getCategoryId()).get().getName())
-                                    .build());
+                    article.setTitle(body.getTitle());
+                    article.setContent(body.getContent());
+                    article.setCreatedId(body.getCreatedId());
+                    article.setCreatedAt(LocalDateTime.now());
+                    article.setCategory(Category.builder()
+                                   .id(body.getCategoryId())
+                                   .name(categoryRepository.findById(body.getCategoryId()).get().getName())
+                                   .build());
                     return article;
                 })
                 .map(articleRepository::save)
@@ -102,6 +102,7 @@ public class ArticleApiLogicService implements CrudInterface<ArticleApiRequest, 
                 .createdId(article.getCreatedId())
                 .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
                 .categoryName(article.getCategory().getName())
+                .categoryId(article.getCategory().getId())
                 .visitCnt(article.getVisitCnt())
                 .commentCnt(article.getComment().size())
                 .comment(commentApiLogicService.findAllByArticleId(article.getId()))
@@ -111,10 +112,9 @@ public class ArticleApiLogicService implements CrudInterface<ArticleApiRequest, 
     }
 
     public List<ArticleListApiResponse> getEveryArticleList(){
-        List<Article> findList = articleRepository.findAll();
         List<ArticleListApiResponse> newList = new ArrayList<>();
 
-        for(Article article: findList){
+        for(Article article: articleRepository.findAll()){
             ArticleListApiResponse addBody = ArticleListApiResponse.builder()
                             .id(article.getId())
                             .title(article.getTitle())
@@ -124,10 +124,8 @@ public class ArticleApiLogicService implements CrudInterface<ArticleApiRequest, 
                             .visitCnt(article.getVisitCnt())
                             .commentCnt(article.getComment().size())
                             .build();
-
             newList.add(addBody);
         }
-
         return newList;
     }
 

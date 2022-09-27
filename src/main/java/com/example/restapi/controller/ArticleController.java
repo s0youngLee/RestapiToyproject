@@ -7,7 +7,6 @@ import com.example.restapi.model.network.response.ArticleListApiResponse;
 import com.example.restapi.service.ArticleApiLogicService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,14 +33,6 @@ public class ArticleController extends CrudController<ArticleApiRequest, Article
     @GetMapping("")
     public Header<List<ArticleListApiResponse>> getArticleList() {
         return Header.OK(articleApiLogicService.getEveryArticleList());
-    }
-
-    //게시글 조회 (조회수)
-    @Override
-    @GetMapping("{id}")
-    public Header<ArticleApiResponse> read(@PathVariable int id) {
-//        articleApiLogicService.updateCnt(id);
-        return articleApiLogicService.read(id);
     }
 
 }

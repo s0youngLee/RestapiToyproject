@@ -1,10 +1,7 @@
 package com.example.restapi.model.entity;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.OnDelete;
@@ -13,27 +10,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-//4. 댓글 (게시글 하나에 여러개 (댓글 N : 1 게시글))
-//        > Create, Delete 구성
-//
-//        Article 1  :  N  Comment
-//        ( Article 안에 Comment. Article Delete 시 Comment 모두 Delete )
-//
-
-//
-//        Create  ( /board/{article_id} POST )
-//        id - Auto Increase
-//        "content" : "comment content",
-//        created_at - LocalDateTime.now()
-//
-//        Delete ( /board/{article_id}/{comment_id} DELETE )
-////      check id == created id (later)
 
 
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Builder
 @EntityListeners(AuditingEntityListener.class)
@@ -58,4 +36,60 @@ public class Comment {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Article article;
 
+    public Comment() {
+    }
+
+    public Comment(Integer id, String userId, String content, LocalDateTime createdAt, Integer articleId, Article article) {
+        this.id = id;
+        this.userId = userId;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.articleId = articleId;
+        this.article = article;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Integer getArticleId() {
+        return articleId;
+    }
+
+    public void setArticleId(Integer articleId) {
+        this.articleId = articleId;
+    }
+
+    public Article getArticle() {
+        return article;
+    }
+
+    public void setArticle(Article article) {
+        this.article = article;
+    }
 }

@@ -1,19 +1,16 @@
 package com.example.restapi.model.entity;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.Id;
 
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+
 @Builder
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -25,4 +22,28 @@ public class Category {
 
     private String name;
 
+    public Category() {
+
+    }
+
+    public Category(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

@@ -15,7 +15,6 @@
 }
 
 #item {
-  border-bottom: 1px solid #282c34;
   border: 1px solid #282c34;
   padding: 10px;
 }
@@ -45,6 +44,7 @@ li {
   padding: 20px;
   list-style: none;
   margin-top: 10px;
+  margin-right: 10px;
 }
 
 
