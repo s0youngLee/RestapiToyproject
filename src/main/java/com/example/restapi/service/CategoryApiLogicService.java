@@ -49,11 +49,24 @@ public class CategoryApiLogicService implements CrudInterface<CategoryApiRequest
                 .orElseGet(()-> Header.ERROR("No DATA"));
     }
 
-    public List<ArticleListApiResponse> getArticleByCategoryId(int categoryId) {
-        List<Article> articleList = articleRepository.findAll();
+    // category 목록
+    public List<CategoryApiResponse> getList() {
+        List<CategoryApiResponse> newList = new ArrayList<CategoryApiResponse>();
+        for(Category category: categoryRepository.findAll()){
+            CategoryApiResponse addBody = CategoryApiResponse.builder()
+                    .id(category.getId())
+                    .name(category.getName())
+                    .build();
 
-        List<ArticleListApiResponse> findByCategory = new ArrayList<ArticleListApiResponse>();
-        for(Article article : articleList){
+            newList.add(addBody);
+        }
+        return newList;
+    }
+
+    public List<ArticleListApiResponse> getArticleListByCategory(int categoryId) {
+        List<ArticleListApiResponse> findByCategory = new ArrayList<>();
+
+        for(Article article : articleRepository.findAll()){
             if(article.getCategory().getId() == categoryId){
                 ArticleListApiResponse addBody = ArticleListApiResponse.builder()
                         .id(article.getId())
@@ -112,18 +125,5 @@ public class CategoryApiLogicService implements CrudInterface<CategoryApiRequest
         return Header.OK(body);
     }
 
-    public List<CategoryApiResponse> getEveryCategoryList() {
-        List<Category> findList = categoryRepository.findAll();
 
-        List<CategoryApiResponse> newList = new ArrayList<CategoryApiResponse>();
-        for(Category category: findList){
-            CategoryApiResponse addBody = CategoryApiResponse.builder()
-                    .id(category.getId())
-                    .name(category.getName())
-                    .build();
-
-            newList.add(addBody);
-        }
-        return newList;
-    }
 }

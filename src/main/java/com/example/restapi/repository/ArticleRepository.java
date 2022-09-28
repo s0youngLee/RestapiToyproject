@@ -8,7 +8,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Integer> {
+
     @Modifying
     @Query("update Article a set a.visitCnt = a.visitCnt + 1 where a.id = :articleId")
     int updateVisitCnt(int articleId);
+
 }

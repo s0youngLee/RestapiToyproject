@@ -30,13 +30,13 @@ public class CategoryController extends CrudController<CategoryApiRequest, Categ
 //   카테고리별 목록 ( /category/board/{category_id} ) GET
     @GetMapping("/board/{categoryId}")
     public Header<List<ArticleListApiResponse>> getCategoryArticle(@PathVariable int categoryId){
-        return Header.OK(categoryApiLogicService.getArticleByCategoryId(categoryId));
+        return Header.OK(categoryApiLogicService.getArticleListByCategory(categoryId));
     }
 
 //    카테고리 목록 ( /category ) GET
     @GetMapping("")
     public Header<List<CategoryApiResponse>> getCategoryList(){
-        return Header.OK(categoryApiLogicService.getEveryCategoryList());
+        return Header.OK(categoryApiLogicService.getList());
     }
 
 }

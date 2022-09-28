@@ -93,6 +93,24 @@ public class ArticleApiLogicService implements CrudInterface<ArticleApiRequest, 
                 })
                 .orElseGet(()->Header.ERROR("No DATA"));
     }
+//
+    public List<ArticleListApiResponse> getList(){
+        List<ArticleListApiResponse> newList = new ArrayList<>();
+
+        for(Article article: articleRepository.findAll()){
+            ArticleListApiResponse addBody = ArticleListApiResponse.builder()
+                    .id(article.getId())
+                    .title(article.getTitle())
+                    .createdId(article.getCreatedId())
+                    .categoryName(article.getCategory().getName())
+                    .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+                    .visitCnt(article.getVisitCnt())
+                    .commentCnt(article.getComment().size())
+                    .build();
+            newList.add(addBody);
+        }
+        return newList;
+    }
 
     private Header<ArticleApiResponse> response(Article article){
         ArticleApiResponse body = ArticleApiResponse.builder()
@@ -111,23 +129,7 @@ public class ArticleApiLogicService implements CrudInterface<ArticleApiRequest, 
         return Header.OK(body);
     }
 
-    public List<ArticleListApiResponse> getEveryArticleList(){
-        List<ArticleListApiResponse> newList = new ArrayList<>();
 
-        for(Article article: articleRepository.findAll()){
-            ArticleListApiResponse addBody = ArticleListApiResponse.builder()
-                            .id(article.getId())
-                            .title(article.getTitle())
-                            .createdId(article.getCreatedId())
-                            .categoryName(article.getCategory().getName())
-                            .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-                            .visitCnt(article.getVisitCnt())
-                            .commentCnt(article.getComment().size())
-                            .build();
-            newList.add(addBody);
-        }
-        return newList;
-    }
 
     public void updateVisitCnt(int articleId) {
         articleRepository.updateVisitCnt(articleId);

@@ -19,6 +19,7 @@ public class ArticleController extends CrudController<ArticleApiRequest, Article
 
     private final ArticleApiLogicService articleApiLogicService;
 
+
     public ArticleController(@Lazy ArticleApiLogicService articleApiLogicService) {
         this.articleApiLogicService = articleApiLogicService;
     }
@@ -32,7 +33,7 @@ public class ArticleController extends CrudController<ArticleApiRequest, Article
 //    게시글 목록
     @GetMapping("")
     public Header<List<ArticleListApiResponse>> getArticleList() {
-        return Header.OK(articleApiLogicService.getEveryArticleList());
+        return Header.OK(articleApiLogicService.getList());
     }
 
 }

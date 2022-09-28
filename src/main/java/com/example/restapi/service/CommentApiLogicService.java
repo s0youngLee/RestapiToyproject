@@ -26,8 +26,9 @@ public class CommentApiLogicService implements CrudInterface<CommentApiRequest, 
         this.articleRepository = articleRepository;
     }
 
-    // /board/{article_id} POST
-    public Header<CommentApiResponse> create(Header<CommentApiRequest> request, int articleId) {
+    @Override
+    // /comment/{id} POST
+    public Header<CommentApiResponse> create(Header<CommentApiRequest> request) {
         CommentApiRequest body = request.getData();
         if(body.getUserId()==null){
             body.setUserId("unknown");
@@ -37,7 +38,7 @@ public class CommentApiLogicService implements CrudInterface<CommentApiRequest, 
                 .userId(body.getUserId())
                 .content(body.getContent())
                 .createdAt(LocalDateTime.now())
-                .article(articleRepository.getReferenceById(articleId))
+                .article(articleRepository.getReferenceById(body.getArticleId()))
                 .build();
 
         Comment newComment = commentRepository.save(comment);
@@ -45,8 +46,9 @@ public class CommentApiLogicService implements CrudInterface<CommentApiRequest, 
         return response(newComment);
     }
 
-    // /board/{article_id}/{id} DELETE
-    public Header delete(int articleId, int id) {
+    @Override
+    // /comment/{id} DELETE
+    public Header delete(int id) {
         return commentRepository.findById((id))
                 .map(comment -> {
                     commentRepository.delete(comment);
@@ -54,6 +56,7 @@ public class CommentApiLogicService implements CrudInterface<CommentApiRequest, 
                 })
                 .orElseGet(()->Header.ERROR("No DATA"));
     }
+
 
     private Header<CommentApiResponse> response(Comment comment) {
         CommentApiResponse body = CommentApiResponse.builder()
@@ -88,11 +91,6 @@ public class CommentApiLogicService implements CrudInterface<CommentApiRequest, 
     }
 
     @Override
-    public Header<CommentApiResponse> create(Header<CommentApiRequest> request) {
-        return null;
-    }
-
-    @Override
     public Header<CommentApiResponse> read(int id) {
         return null;
     }
@@ -101,11 +99,5 @@ public class CommentApiLogicService implements CrudInterface<CommentApiRequest, 
     public Header<CommentApiResponse> update(Header<CommentApiRequest> request, int id) {
         return null;
     }
-
-    @Override
-    public Header delete(int id) {
-        return null;
-    }
-
 
 }

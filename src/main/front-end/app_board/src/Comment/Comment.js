@@ -1,4 +1,5 @@
-import React, {useState, useEffect, useCallback} from "react";
+import React, {useState, useEffect} from "react";
+import CommentRegister from "./CommentRegister";
 
 function Comment(){
     const urlList = ((window.location.href).split('/'));
@@ -16,7 +17,7 @@ function Comment(){
             setArticleDetail(result);
             setLoading(false);
         });
-    },[]);
+    },[articleId]);
     
     
     const commentDataArr = articleDetail.data.comment;
@@ -26,7 +27,7 @@ function Comment(){
             <CommentRegister />
             <div>
                 <b>&lt;Comment List&gt;</b>
-                <div>{commentDataArr?.map((comment, index)=>{
+                <div>{commentDataArr.map((comment, index)=>{
                     return <CommentData key={index} data={comment}/>;
                 })}</div>
             </div>
@@ -41,7 +42,7 @@ function CommentData({index, data}){
     
     function deleteComment(articleId, commentId) {
         alert("Comment Deleted");
-        axios.delete(`/board/${articleId}/${commentId}`);
+        axios.delete(`/comment/${commentId}`);
         window.location.href = `/board/${articleId}`;
     }
 
@@ -55,64 +56,6 @@ function CommentData({index, data}){
                     onClick={() => { deleteComment(data.article_id, data.id) }}>Delete</button>
         </li> <br/></>
     );
-}
-
-
-
-function CommentRegister(){
-    const urlList = ((window.location.href).split('/'));
-    const articleId = urlList[(urlList.length)-1]
-    
-    const [userId, setUserId] = useState("unknown");
-    const [content, setContent] = useState("");
-
-    const axios = require('axios');
-
-    const addUserId = useCallback(e => {
-        setUserId(e.target.value);
-    }, [])
-    
-    const addContent = useCallback(e => {
-        setContent(e.target.value);
-    }, [])
-    
-    const isEmpty = function(value){
-        if(value === "" || value === null || value === undefined || ( value !== null && typeof value === "object" && !Object.keys(value).length)){
-            return true;
-        }else { return false; }
-    }
-
-    const addComment = (e) => {
-        if(isEmpty(userId)){ setUserId("unknown"); }
-        
-        if(isEmpty(content)){
-            alert("You must input content!!!");
-            return Error;
-        }else{setContent(content);}
-
-        axios.post(`/board/${articleId}`, {
-            data: {
-                user_id: userId,
-                content: content
-            }
-        });
-        
-        alert("comment registerd");
-    }
-
-    return(
-        <form onSubmit={addComment}>
-            <div id="div-align">
-                <b> Add Comment</b> <br/>
-                <input id="id-box" placeholder="User Id"
-                       onChange={addUserId}></input> <br/>
-                <textarea id="text-box" placeholder="Add a comment"
-                          onChange={addContent}></textarea> 
-                <button type="submit" id="btn-post"> Add </button>
-            </div>
-            <br/>
-        </form>
-    )
 }
 
 export default Comment;

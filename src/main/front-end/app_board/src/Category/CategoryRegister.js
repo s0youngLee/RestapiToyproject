@@ -15,13 +15,19 @@ function CategoryRegister(){
     }, [])
     
     
+    const isEmpty = function(value){
+        if(value === "" || value === null || value === undefined || ( value !== null && typeof value === "object" && !Object.keys(value).length)){
+            return true;
+        }else { return false; }
+    }
+
     const addCategory = (e) => {
-        if(id === (null || "")){
+        if(isEmpty(id)){
             alert("You must input your ID!!!");
             return Error;
         }else{setId(id);}
 
-        if(name === (null || "")){
+        if(isEmpty(name)){
             alert("You must input Name!!!");
             return Error;
         }else{setName(name);}
@@ -45,7 +51,10 @@ function CategoryRegister(){
                     <input id="id-box" placeholder="Category ID" onChange={addId}></input> <br/>
                     <input id="id-box" placeholder="Category Name" onChange={addName}></input> <br/>
                     <button type="submit" id="btn-post" style={{textAlign: "right"}}
-                            onClick={() => {window.location.href=`/category/board/${id}`}}> Add </button>
+                            onClick={() => {
+                                if((!isEmpty(id))&&(!isEmpty(name))){
+                                    window.location.href=`/category/board/${id}`
+                                } }}> Add </button>
                 </div>
             </form>
         </>
