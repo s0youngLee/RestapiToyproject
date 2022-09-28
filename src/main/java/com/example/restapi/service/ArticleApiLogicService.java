@@ -105,7 +105,7 @@ public class ArticleApiLogicService implements CrudInterface<ArticleApiRequest, 
                 .categoryId(article.getCategory().getId())
                 .visitCnt(article.getVisitCnt())
                 .commentCnt(article.getComment().size())
-                .comment(commentApiLogicService.findAllByArticleId(article.getId()))
+                .comment(commentApiLogicService.findByArticleId(article.getId()))
                 .build();
 
         return Header.OK(body);

@@ -1,12 +1,15 @@
 import React, {Component} from "react";
-import ArticleLists from "./ArticleLists";
-import ArticleDetail from "./ArticleDetail";
-import CategoryLists from "./CategoryLists";
-// import CategoryDetail from "./CategoryDetail";
-import Home from "./Home";
-import './App.css';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import ArticlesByCategory from "./ArticlesByCategory";
+import Home from "./Home";
+import ArticleLists from "./Article/ArticleLists";
+import ArticleDetail from "./Article/ArticleDetail";
+import ArticleEdit from "./Article/ArticleEdit";
+import ArticleRegister from "./Article/ArticleRegister";
+import CategoryLists from "./Category/CategoryLists";
+import CategoryRegister from "./Category/CategoryRegister";
+import CategoryEdit from "./Category/CategoryEdit";
+import ArticlesByCategory from "./Category/ArticlesByCategory";
+import './App.css';
 
 class App extends Component{
 
@@ -18,7 +21,10 @@ class App extends Component{
                 <Route path="/category" element={<CategoryLists />} />
                 <Route path="/board/:articleId" element={<ArticleDetail />} />
                 <Route path="/category/board/:categoryId" element={<ArticlesByCategory />} />
-                {/* <Route path="/category/:categoryId" element={<CategoryDetail />} /> */}
+                <Route path="/board/add/:categoryId" element={<ArticleRegister />} />
+                <Route path="/board/:articleId/edit" element={<ArticleEdit />} />
+                <Route path="/category/add/" element={<CategoryRegister />} />
+                <Route path="/category/:categoryId/edit" element={<CategoryEdit />} />
             </Routes></Router></div>
         )
     }

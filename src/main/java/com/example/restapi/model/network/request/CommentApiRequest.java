@@ -22,6 +22,10 @@ public class CommentApiRequest {
         this.id = id;
     }
 
+    public void setUserId(String userId){
+        this.userId = userId;
+    }
+
     public String getUserId() {
         return userId;
     }

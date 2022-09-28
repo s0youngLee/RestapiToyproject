@@ -1,4 +1,3 @@
-
 #article {
   height: 50px;
 }
@@ -47,14 +46,14 @@ li {
   margin-right: 10px;
 }
 
-
 #btn-default {
   border-radius: 5px;
   background-color: white;
   border: 1px solid slateblue;
   color: slateblue;
   font-weight: bolder;
-  margin-left: 10px;
+  margin: 5px;
+  vertical-align: middle;
 }
 #btn-default:hover{
   background-color: slateblue;
@@ -71,24 +70,23 @@ li {
   font-weight: bolder;
   font-size: larger;
   vertical-align: middle;
-  margin:auto;
+  margin: 5px;
 }
 #btn-category:hover{
   background-color: slateblue;
   color: aliceblue;
 }
 
-#btn-add{
+#btn-post{
   border-radius: 5px;
   background-color: white;
   color: mediumturquoise;
   border: 1px solid mediumturquoise;
   font-weight: bolder;
-  margin-left: 10px;
+  margin: 5px;
   vertical-align: middle;
-  margin-top: 5px;
 }
-#btn-add:hover{
+#btn-post:hover{
   background-color: mediumturquoise;
   color: aliceblue;
 }
@@ -99,7 +97,7 @@ li {
   color: lightcoral;
   border: 1px solid lightcoral;
   font-weight: bolder;
-  float: right;
+  margin: 5px;
 }
 #btn-remove:hover{
   background-color: lightcoral;

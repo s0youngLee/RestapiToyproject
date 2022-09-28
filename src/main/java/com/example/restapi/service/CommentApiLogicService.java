@@ -29,6 +29,9 @@ public class CommentApiLogicService implements CrudInterface<CommentApiRequest, 
     // /board/{article_id} POST
     public Header<CommentApiResponse> create(Header<CommentApiRequest> request, int articleId) {
         CommentApiRequest body = request.getData();
+        if(body.getUserId()==null){
+            body.setUserId("unknown");
+        }
 
         Comment comment = Comment.builder()
                 .userId(body.getUserId())
@@ -43,7 +46,7 @@ public class CommentApiLogicService implements CrudInterface<CommentApiRequest, 
     }
 
     // /board/{article_id}/{id} DELETE
-    public Header delete(int articleId,int id) {
+    public Header delete(int articleId, int id) {
         return commentRepository.findById((id))
                 .map(comment -> {
                     commentRepository.delete(comment);
@@ -58,13 +61,13 @@ public class CommentApiLogicService implements CrudInterface<CommentApiRequest, 
                 .userId(comment.getUserId())
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                .articleId(comment.getArticleId())
+                .articleId(comment.getArticle().getId())
                 .build();
 
         return Header.OK(body);
     }
 
-    public List<CommentApiResponse> findAllByArticleId(int articleId){
+    public List<CommentApiResponse> findByArticleId(int articleId){
         List<Comment> commentList = commentRepository.findAll();
 
         List<CommentApiResponse> findByArticleId = new ArrayList<CommentApiResponse>();
