@@ -7,6 +7,7 @@ import com.example.restapi.model.network.response.ArticleListApiResponse;
 import com.example.restapi.service.ArticleApiLogicService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +19,6 @@ import java.util.List;
 public class ArticleController extends CrudController<ArticleApiRequest, ArticleApiResponse> {
 
     private final ArticleApiLogicService articleApiLogicService;
-
 
     public ArticleController(@Lazy ArticleApiLogicService articleApiLogicService) {
         this.articleApiLogicService = articleApiLogicService;
@@ -34,6 +34,12 @@ public class ArticleController extends CrudController<ArticleApiRequest, Article
     @GetMapping("")
     public Header<List<ArticleListApiResponse>> getArticleList() {
         return Header.OK(articleApiLogicService.getList());
+    }
+
+//   카테고리별 게시글 목록 ( /board/category/{category_id} ) GET
+    @GetMapping("/category/{categoryId}")
+    public Header<List<ArticleListApiResponse>> getArticlesByCategory(@PathVariable int categoryId){
+        return Header.OK(articleApiLogicService.getArticleListByCategory(categoryId));
     }
 
 }

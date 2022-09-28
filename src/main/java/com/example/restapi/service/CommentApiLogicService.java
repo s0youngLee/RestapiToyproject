@@ -27,7 +27,6 @@ public class CommentApiLogicService implements CrudInterface<CommentApiRequest, 
     }
 
     @Override
-    // /comment/{id} POST
     public Header<CommentApiResponse> create(Header<CommentApiRequest> request) {
         CommentApiRequest body = request.getData();
         if(body.getUserId()==null){
@@ -47,7 +46,6 @@ public class CommentApiLogicService implements CrudInterface<CommentApiRequest, 
     }
 
     @Override
-    // /comment/{id} DELETE
     public Header delete(int id) {
         return commentRepository.findById((id))
                 .map(comment -> {

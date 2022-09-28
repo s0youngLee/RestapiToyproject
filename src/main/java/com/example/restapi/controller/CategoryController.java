@@ -2,11 +2,13 @@ package com.example.restapi.controller;
 
 import com.example.restapi.model.network.Header;
 import com.example.restapi.model.network.request.CategoryApiRequest;
-import com.example.restapi.model.network.response.ArticleListApiResponse;
 import com.example.restapi.model.network.response.CategoryApiResponse;
 import com.example.restapi.service.CategoryApiLogicService;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -25,12 +27,6 @@ public class CategoryController extends CrudController<CategoryApiRequest, Categ
     @PostConstruct
     public void init(){
         this.baseService = categoryApiLogicService;
-    }
-
-//   카테고리별 목록 ( /category/board/{category_id} ) GET
-    @GetMapping("/board/{categoryId}")
-    public Header<List<ArticleListApiResponse>> getCategoryArticle(@PathVariable int categoryId){
-        return Header.OK(categoryApiLogicService.getArticleListByCategory(categoryId));
     }
 
 //    카테고리 목록 ( /category ) GET

@@ -16,6 +16,8 @@ function CategoryLists(){
 
     const categoryListArr = Array.from(cateogoryList.data);
 
+
+
     return (
         <>
             <h1 style={{color: "#373737", textAlign:"center"}}> Category List </h1> 

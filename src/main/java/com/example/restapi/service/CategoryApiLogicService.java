@@ -5,14 +5,12 @@ import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.Category;
 import com.example.restapi.model.network.Header;
 import com.example.restapi.model.network.request.CategoryApiRequest;
-import com.example.restapi.model.network.response.ArticleListApiResponse;
 import com.example.restapi.model.network.response.CategoryApiResponse;
 import com.example.restapi.repository.ArticleRepository;
 import com.example.restapi.repository.CategoryRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,27 +59,6 @@ public class CategoryApiLogicService implements CrudInterface<CategoryApiRequest
             newList.add(addBody);
         }
         return newList;
-    }
-
-    public List<ArticleListApiResponse> getArticleListByCategory(int categoryId) {
-        List<ArticleListApiResponse> findByCategory = new ArrayList<>();
-
-        for(Article article : articleRepository.findAll()){
-            if(article.getCategory().getId() == categoryId){
-                ArticleListApiResponse addBody = ArticleListApiResponse.builder()
-                        .id(article.getId())
-                        .title(article.getTitle())
-                        .createdId(article.getCreatedId())
-                        .categoryName(article.getCategory().getName())
-                        .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-                        .visitCnt(article.getVisitCnt())
-                        .commentCnt(article.getComment().size())
-                        .build();
-
-                findByCategory.add(addBody);
-            }
-        }
-        return findByCategory;
     }
 
     @Override

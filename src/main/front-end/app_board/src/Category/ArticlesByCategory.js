@@ -12,7 +12,7 @@ function ArticlesByCategory(){
     const [loading, setLoading] = useState(true);
 
     useEffect(()=> {
-        const RES = fetch(`/category/board/${categoryId}`)
+        const RES = fetch(`/board/category/${categoryId}`)
                     .then(res =>  res.json())
                     .then(result => {
                         setArticleByCategory(result);
