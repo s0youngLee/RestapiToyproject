@@ -20,7 +20,7 @@ class App extends Component{
                 <Route path="/board" element={<ArticleLists />} />
                 <Route path="/category" element={<CategoryLists />} />
                 <Route path="/board/:articleId" element={<ArticleDetail />} />
-                <Route path="/category/board/:categoryId" element={<ArticlesByCategory />} />
+                <Route path="/category/:categoryId" element={<ArticlesByCategory />} />
                 <Route path="/board/add/:categoryId" element={<ArticleRegister />} />
                 <Route path="/board/:articleId/edit" element={<ArticleEdit />} />
                 <Route path="/category/add/" element={<CategoryRegister />} />

@@ -62,7 +62,7 @@ function ArticleDetailData({data}) {
                                 <button id="btn-default"> Home </button></Link>
                         <Link to={`/board`} id="none">
                                 <button id="btn-default"> Article List </button></Link>
-                        <Link to={`/category/board/${data?.category_id}`} id="none">
+                        <Link to={`/category/${data?.category_id}`} id="none">
                             <button id="btn-default"> {data?.category_name} List </button></Link>
                     </div>
                 </div>

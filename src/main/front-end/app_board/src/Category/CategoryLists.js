@@ -23,7 +23,7 @@ function CategoryLists(){
             <h1 style={{color: "#373737", textAlign:"center"}}> Category List </h1> 
             <div style={{margin: "10px"}}>
                 {categoryListArr.map((category, index) => (
-                    <Link to={`/category/board/${category.id}`} id="none" key={index}> 
+                    <Link to={`/category/${category.id}`} id="none" key={index}> 
                         <button id="btn-category"> {category.name} </button>
                     </Link>
                 ))}

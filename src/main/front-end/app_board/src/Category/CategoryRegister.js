@@ -53,7 +53,7 @@ function CategoryRegister(){
                     <button type="submit" id="btn-post" style={{textAlign: "right"}}
                             onClick={() => {
                                 if((!isEmpty(id))&&(!isEmpty(name))){
-                                    window.location.href=`/category/board/${id}`
+                                    window.location.href=`/category/${id}`
                                 } }}> Add </button>
                 </div>
             </form>

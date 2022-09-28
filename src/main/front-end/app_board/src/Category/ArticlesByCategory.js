@@ -47,7 +47,7 @@ function ArticlesByCategory(){
         }else{
             alert("Deleted Category " + categoryName + ", the articles are moved to DEFAULT category.");
             axios.delete(`/category/${categoryId}`);
-            window.location.href="/category/board/0";
+            window.location.href="/category/0";
         }
     }
     

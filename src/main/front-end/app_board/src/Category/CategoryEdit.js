@@ -60,7 +60,7 @@ function CategoryEditForm({categoryId, nameOrigin}){
                 <input id="id-box" placeholder={categoryId} readOnly></input> <br/>
                 <input id="id-box" placeholder={nameOrigin} onChange={editName}></input> <br/>
                 <button type="submit" id="btn-post" style={{textAlign: "right"}}
-                     onClick={() => {window.location.href=`/category/board/${categoryId}`}}> Save </button>
+                     onClick={() => {window.location.href=`/category/${categoryId}`}}> Save </button>
             </div>
         </form></>
     )
