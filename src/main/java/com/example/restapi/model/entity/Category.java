@@ -8,7 +8,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.Id;
-
+import javax.persistence.OneToMany;
+import java.util.List;
 
 
 @Builder
@@ -19,17 +20,22 @@ public class Category {
 
     @Id
     private Integer id;
-
     private String name;
+
+    @OneToMany(mappedBy = "category")
+    private List<Article> articleList;
+
 
     public Category() {
 
     }
 
-    public Category(Integer id, String name) {
+    public Category(Integer id, String name, List<Article> articleList) {
         this.id = id;
         this.name = name;
+        this.articleList = articleList;
     }
+
 
     public Integer getId() {
         return id;
@@ -46,4 +52,8 @@ public class Category {
     public void setName(String name) {
         this.name = name;
     }
+
+    public List<Article> getArticleList() { return articleList;}
+    public void setArticleList(List<Article> articleList) {this.articleList = articleList;}
+
 }

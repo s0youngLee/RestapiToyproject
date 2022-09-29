@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {Link} from 'react-router-dom';
 import Article from "../Article/Article";
+import CategoryBar from "../Category/CategoryBar";
 import '../App.css'
 
-function ArticleLists(){
+function ArticleLists({category}){
     const [articleList, setArticleList] = useState({
         data : {}
     });
@@ -24,6 +25,7 @@ function ArticleLists(){
     else {
         return (
         <div>
+            <CategoryBar category={category}/>
             <h1 style={{color: "#373737", textAlign:"center"}}> Aritcle List </h1> 
             <table id="list">
                 <thead>
@@ -46,7 +48,7 @@ function ArticleLists(){
             <br/>
             <div style={{width: "100%", textAlign: "center"}}>
                 <Link to={`/`} id="none"> <button id="btn-default"> Home </button></Link>
-                <Link to={`/board/add/0`} id="none"> <button id="btn-default"> Write </button></Link>
+                <Link to={`/board/add/0`} id="none"> <button id="btn-post"> Write </button></Link>
             </div>
         </div>
     )}

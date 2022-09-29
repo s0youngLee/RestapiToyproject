@@ -40,9 +40,7 @@ public class CommentApiLogicService implements CrudInterface<CommentApiRequest, 
                 .article(articleRepository.getReferenceById(body.getArticleId()))
                 .build();
 
-        Comment newComment = commentRepository.save(comment);
-
-        return response(newComment);
+        return response(commentRepository.save(comment));
     }
 
     @Override

@@ -21,11 +21,11 @@ function ArticleEdit(){
     if(loading) {return <div> Loading ... </div>}
     else { 
         return (
-        <ArticleEditForm titleOrigin={articleDetail.data?.title}
-                         contentOrigin={articleDetail.data?.content}
-                         categoryOrigin={articleDetail.data?.category_id} 
-                         idOrigin={articleDetail.data?.created_id} 
-                         articleId={articleDetail.data?.id}/>
+        <ArticleEditForm titleOrigin={articleDetail?.data?.title}
+                         contentOrigin={articleDetail?.data?.content}
+                         categoryOrigin={articleDetail?.data?.category_id} 
+                         idOrigin={articleDetail?.data?.created_id} 
+                         articleId={articleDetail?.data?.id}/>
     )}
 }
 

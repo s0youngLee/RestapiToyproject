@@ -3,7 +3,6 @@ package com.example.restapi.service;
 import com.example.restapi.ifs.CrudInterface;
 import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.Category;
-import com.example.restapi.model.entity.Comment;
 import com.example.restapi.model.network.Header;
 import com.example.restapi.model.network.request.ArticleApiRequest;
 import com.example.restapi.model.network.response.ArticleApiResponse;
@@ -47,11 +46,10 @@ public class ArticleApiLogicService implements CrudInterface<ArticleApiRequest, 
                 .createdAt(LocalDateTime.now())
                 .category(categoryRepository.getReferenceById(body.getCategoryId()))
                 .visitCnt(0)
-                .comment(new ArrayList<Comment>())
+                .comment(new ArrayList<>())
                 .build();
 
-        Article newArticle = articleRepository.save(article);
-        return response(newArticle);
+        return response(articleRepository.save(article));
     }
 
     @Override
@@ -118,7 +116,6 @@ public class ArticleApiLogicService implements CrudInterface<ArticleApiRequest, 
                 .categoryName(article.getCategory().getName())
                 .categoryId(article.getCategory().getId())
                 .visitCnt(article.getVisitCnt())
-                .commentCnt(article.getComment().size())
                 .comment(commentApiLogicService.findByArticleId(article.getId()))
                 .build();
 
@@ -134,6 +131,7 @@ public class ArticleApiLogicService implements CrudInterface<ArticleApiRequest, 
                     .title(article.getTitle())
                     .createdId(article.getCreatedId())
                     .categoryName(article.getCategory().getName())
+                    .category(article.getCategory())
                     .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
                     .visitCnt(article.getVisitCnt())
                     .commentCnt(article.getComment().size())

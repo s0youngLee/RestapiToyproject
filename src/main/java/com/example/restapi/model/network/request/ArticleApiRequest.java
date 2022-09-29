@@ -18,9 +18,6 @@ public class ArticleApiRequest {
 
     private Integer categoryId;
 
-    private Integer visitCnt;
-
-
     public Integer getId() {
         return id;
     }
@@ -69,11 +66,4 @@ public class ArticleApiRequest {
         this.categoryId = categoryId;
     }
 
-    public Integer getVisitCnt() {
-        return visitCnt;
-    }
-
-    public void setVisitCnt(Integer visitCnt) {
-        this.visitCnt = visitCnt;
-    }
 }

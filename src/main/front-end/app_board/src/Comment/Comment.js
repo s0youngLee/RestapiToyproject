@@ -1,38 +1,20 @@
-import React, {useState, useEffect} from "react";
+// import React from "react";
 import CommentRegister from "./CommentRegister";
 
-function Comment(){
-    const urlList = ((window.location.href).split('/'));
-    const articleId = urlList[(urlList.length)-1];
-    
-    const [articleDetail, setArticleDetail] = useState({
-        data : {}
-    });
-    const [loading, setLoading] = useState(true);
-    
-    useEffect(()=> {
-        const RES = fetch(`/board/${articleId}`)
-        .then(res =>  res.json())
-        .then(result => {
-            setArticleDetail(result);
-            setLoading(false);
-        });
-    },[articleId]);
-    
-    
-    const commentDataArr = articleDetail.data.comment;
-    if(loading){ return <div> Loading ... </div> }
-    else { return (
+function Comment({article}){
+    const articleDetail = article;
+
+    return (
         <div>
             <CommentRegister />
             <div>
-                <b>&lt;Comment List&gt;</b>
-                <div>{commentDataArr.map((comment, index)=>{
+                <b>&lt;Comment List&gt; : {articleDetail.comment.length} ea</b>
+                <div>{articleDetail?.comment?.map((comment, index)=>{
                     return <CommentData key={index} data={comment}/>;
                 })}</div>
             </div>
         </div>
-    ) }
+    ) 
 }
 
 

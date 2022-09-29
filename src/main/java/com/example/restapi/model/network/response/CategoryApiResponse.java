@@ -9,6 +9,16 @@ public class CategoryApiResponse {
 
     private String name;
 
+    private Integer articleCnt;
+
+    public Integer getArticleCnt() {
+        return articleCnt;
+    }
+
+    public void setArticleCnt(Integer articleCnt) {
+        this.articleCnt = articleCnt;
+    }
+
     public Integer getId() {
         return id;
     }

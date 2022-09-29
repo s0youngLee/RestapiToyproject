@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect} from "react";
+import {useState, useCallback, useEffect} from "react";
 
 
 function CategoryEdit(){
@@ -21,7 +21,13 @@ function CategoryEdit(){
 
     if(loading) {return <div> Loading ... </div>}
     else { 
-        return  <CategoryEditForm categoryId={categoryId} nameOrigin={category.data.name}/>
+        return (
+            <div>
+                <CategoryEditForm categoryId={categoryId} nameOrigin={category.data.name}/>
+                <button id="btn-remove"
+                        onClick={() => {window.location.href=`/category`}}> Back </button>
+            </div>
+        )
     }
 }
 
@@ -47,7 +53,6 @@ function CategoryEditForm({categoryId, nameOrigin}){
                 name: categoryName
             }
         })
-
         alert("category: " + nameOrigin + " id: " + categoryId + " edited. \n After : " + categoryName);
     }
 
@@ -60,7 +65,7 @@ function CategoryEditForm({categoryId, nameOrigin}){
                 <input id="id-box" placeholder={categoryId} readOnly></input> <br/>
                 <input id="id-box" placeholder={nameOrigin} onChange={editName}></input> <br/>
                 <button type="submit" id="btn-post" style={{textAlign: "right"}}
-                     onClick={() => {window.location.href=`/category/${categoryId}`}}> Save </button>
+                     onClick={() => {window.location.href=`/category`}}> Save </button>
             </div>
         </form></>
     )

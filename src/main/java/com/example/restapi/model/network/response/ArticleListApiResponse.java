@@ -1,22 +1,26 @@
 package com.example.restapi.model.network.response;
 
+import com.example.restapi.model.entity.Category;
 import lombok.Builder;
+
+import javax.persistence.ManyToOne;
 
 @Builder
 public class ArticleListApiResponse {
     private Integer id;
-
     private String title;
-
     private String categoryName;
-
     private String createdId;
-
     private String createdAt;
-
     private Integer visitCnt;
-
     private Integer commentCnt;
+
+    @ManyToOne
+    private Category category;
+
+
+
+
 
     public Integer getId() {
         return id;

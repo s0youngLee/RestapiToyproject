@@ -26,13 +26,15 @@ public class Article {
 
     private LocalDateTime createdAt;
 
-    private Integer visitCnt = 0;
+    private Integer visitCnt;
 
     @ManyToOne
+    @JoinColumn(name = "category_id")
     private Category category;
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
     private List<Comment> comment;
+
 
     public Article() {
 

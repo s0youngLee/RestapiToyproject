@@ -1,5 +1,6 @@
 package com.example.restapi.model.network.response;
 
+import com.example.restapi.model.entity.Category;
 import lombok.Builder;
 
 import java.util.List;
@@ -7,24 +8,18 @@ import java.util.List;
 @Builder
 public class ArticleApiResponse {
     private Integer id;
-
     private String title;
-
     private String content;
-
     private String createdId;
-
     private String createdAt;
-
     private String categoryName;
-
     private Integer categoryId;
-
     private Integer visitCnt;
-
-    private Integer commentCnt;
-
     private List<CommentApiResponse> comment;
+
+    private Category category;
+
+
 
 
     public Integer getId() {
@@ -81,14 +76,6 @@ public class ArticleApiResponse {
 
     public void setVisitCnt(Integer visitCnt) {
         this.visitCnt = visitCnt;
-    }
-
-    public Integer getCommentCnt() {
-        return commentCnt;
-    }
-
-    public void setCommentCnt(Integer commentCnt) {
-        this.commentCnt = commentCnt;
     }
 
     public List<CommentApiResponse> getComment() {

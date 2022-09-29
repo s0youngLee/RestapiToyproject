@@ -36,8 +36,7 @@ public class CategoryApiLogicService implements CrudInterface<CategoryApiRequest
                 .name(body.getName())
                 .build();
 
-        Category newCategory = categoryRepository.save(category);
-        return response(newCategory);
+        return response(categoryRepository.save(category));
     }
 
     @Override
@@ -54,6 +53,7 @@ public class CategoryApiLogicService implements CrudInterface<CategoryApiRequest
             CategoryApiResponse addBody = CategoryApiResponse.builder()
                     .id(category.getId())
                     .name(category.getName())
+                    .articleCnt(category.getArticleList().size())
                     .build();
 
             newList.add(addBody);
@@ -94,9 +94,14 @@ public class CategoryApiLogicService implements CrudInterface<CategoryApiRequest
     }
 
     private Header<CategoryApiResponse> response(Category category) {
+        List<Integer> id = new ArrayList<>();
+        for(int i=0;i<category.getArticleList().size();i++){
+            id.add(category.getId());
+        }
         CategoryApiResponse body = CategoryApiResponse.builder()
                 .id(category.getId())
                 .name(category.getName())
+                .articleCnt(category.getArticleList().size())
                 .build();
 
         return Header.OK(body);
