@@ -5,8 +5,9 @@
 #list {
   margin-top: 20px;
   width: 100%;
-  border-top: 3px solid black;
+  border: 3px solid #000000;
   border-collapse: collapse;
+  border-radius: 5px;
   text-align: center;
 
   margin-left: auto;
@@ -61,7 +62,8 @@ li {
 }
 
 #btn-category{
-  width: 100px;
+  min-width: 100px;
+  max-width: 150px;
   height: 50px;
   border-radius: 5px;
   background-color: white;
@@ -70,6 +72,8 @@ li {
   font-weight: bolder;
   font-size: larger;
   vertical-align: middle;
+  overflow: hidden;
+  text-overflow: "ellipsis";
   
   margin: 5px;
 }

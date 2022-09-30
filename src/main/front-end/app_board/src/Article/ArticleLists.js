@@ -24,11 +24,11 @@ function ArticleLists({category}){
     if(loading) { return <div> Loading ... </div> }
     else {
         return (
-        <div>
+        <>
             <CategoryBar category={category}/>
             <h1 style={{color: "#373737", textAlign:"center"}}> Aritcle List </h1> 
             <table id="list">
-                <thead>
+                <thead style={{borderBottom: "2px solid #000000", backgroundColor: "#aa9dff"}}>
                     <tr>
                         <th id="item"> ID </th>
                         <th id="item"> Title </th>
@@ -50,7 +50,7 @@ function ArticleLists({category}){
                 <Link to={`/`} id="none"> <button id="btn-default"> Home </button></Link>
                 <Link to={`/board/add/0`} id="none"> <button id="btn-post"> Write </button></Link>
             </div>
-        </div>
+        </>
     )}
 }
 

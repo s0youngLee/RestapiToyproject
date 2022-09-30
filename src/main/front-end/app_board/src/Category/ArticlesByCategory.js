@@ -6,7 +6,6 @@ import _ from 'lodash';
 function ArticlesByCategory({category}){
     const urlList = ((window.location.href).split('/'));
     const categoryId = urlList[(urlList.length)-1]
-    // console.log(category);
 
     const [articleByCategory, setArticleByCategory] = useState({  data : {}  });
     const [categoryName, setCategoryName] = useState();
@@ -18,13 +17,11 @@ function ArticlesByCategory({category}){
                     .then(result => {
                         setArticleByCategory(result);
                         for(let i = 0; i<category.length; i++){
-                            // console.log(category[i].id);
                             if(_.isEqual(categoryId,(String)(category[i]?.id))){
                                 setCategoryName(category[i].name);
                                 break;
                             }
                         }
-                        // console.log(categoryName);
                         setLoading(false);
                     });
     }, []);
