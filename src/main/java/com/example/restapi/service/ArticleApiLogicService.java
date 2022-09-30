@@ -1,42 +1,48 @@
 package com.example.restapi.service;
 
-import com.example.restapi.ifs.CrudInterface;
-import com.example.restapi.model.entity.Article;
-import com.example.restapi.model.entity.Category;
-import com.example.restapi.model.network.Header;
-import com.example.restapi.model.network.request.ArticleApiRequest;
-import com.example.restapi.model.network.response.ArticleApiResponse;
-import com.example.restapi.model.network.response.ArticleListApiResponse;
-import com.example.restapi.repository.ArticleRepository;
-import com.example.restapi.repository.CategoryRepository;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-public class ArticleApiLogicService implements CrudInterface<ArticleApiRequest, ArticleApiResponse> {
+import javax.transaction.Transactional;
 
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+
+import com.example.restapi.controller.AbstractCrudMethod;
+import com.example.restapi.model.entity.Article;
+import com.example.restapi.model.entity.Category;
+import com.example.restapi.model.network.Header;
+import com.example.restapi.model.network.request.ArticleRequest;
+import com.example.restapi.model.network.response.ArticleListResponseDto;
+import com.example.restapi.model.network.response.ArticleResponseDto;
+import com.example.restapi.repository.ArticleRepository;
+import com.example.restapi.repository.CategoryRepository;
+import com.example.restapi.repository.CommentRepository;
+
+@Service
+public class ArticleApiLogicService extends AbstractCrudMethod<ArticleRequest, ArticleResponseDto> {
     private final CategoryRepository categoryRepository;
     private final ArticleRepository articleRepository;
-    private final CommentApiLogicService commentApiLogicService;
+    private final CommentRepository commentRepository;
     private final ArticleApiLogicService articleApiLogicService;
+    private final CommentApiLogicService commentApiLogicService;
 
-    public ArticleApiLogicService(@Lazy CategoryRepository categoryRepository, @Lazy ArticleRepository articleRepository, @Lazy CommentApiLogicService commentApiLogicService, @Lazy ArticleApiLogicService articleApiLogicService) {
+    public ArticleApiLogicService(@Lazy CategoryRepository categoryRepository, @Lazy ArticleRepository articleRepository,
+        @Lazy CommentRepository commentRepository, @Lazy ArticleApiLogicService articleApiLogicService,
+        CommentApiLogicService commentApiLogicService) {
         this.categoryRepository = categoryRepository;
         this.articleRepository = articleRepository;
-        this.commentApiLogicService = commentApiLogicService;
+        this.commentRepository = commentRepository;
         this.articleApiLogicService = articleApiLogicService;
+        this.commentApiLogicService = commentApiLogicService;
     }
 
     @Override
-    public Header<ArticleApiResponse> create(Header<ArticleApiRequest> request) {
+    public Header<ArticleResponseDto> create(Header<ArticleRequest> request) {
 
-        ArticleApiRequest body = request.getData();
+        ArticleRequest body = request.getData();
 
         Article article = Article.builder()
                 .id(body.getId())
@@ -54,16 +60,17 @@ public class ArticleApiLogicService implements CrudInterface<ArticleApiRequest, 
 
     @Override
     @Transactional
-    public Header<ArticleApiResponse> read(int id) {
+    public Header<ArticleResponseDto> read(int id) {
         articleApiLogicService.updateVisitCnt(id);
         return articleRepository.findById(id)
-                .map(article -> response(article))
+                .map(this::response)
                 .orElseGet(()-> Header.ERROR("No DATA"));
     }
 
+
     @Override
-    public Header<ArticleApiResponse> update(Header<ArticleApiRequest> request, int id) {
-        ArticleApiRequest body = request.getData();
+    public Header<ArticleResponseDto> update(Header<ArticleRequest> request, int id) {
+        ArticleRequest body = request.getData();
 
         return articleRepository.findById(id)
                 .map(article -> {
@@ -92,22 +99,16 @@ public class ArticleApiLogicService implements CrudInterface<ArticleApiRequest, 
                 .orElseGet(()->Header.ERROR("No DATA"));
     }
     
-    public List<ArticleListApiResponse> getList(){
+    public List<ArticleListResponseDto> getList(){
         return listResponse(articleRepository.findAll());
     }
  
-    public List<ArticleListApiResponse> getArticleListByCategory(int categoryId) {
-        List<Article> articleList = new ArrayList<>();
-        for(Article article : articleRepository.findAll()){
-            if(article.getCategory().getId() == categoryId){
-                articleList.add(article);
-            }
-        }
-        return listResponse(articleList);
+    public List<ArticleListResponseDto> getArticleListByCategory(int categoryId) {
+        return listResponse(articleRepository.findAllByCategoryId(categoryId));
     }
 
-    private Header<ArticleApiResponse> response(Article article){
-        ArticleApiResponse body = ArticleApiResponse.builder()
+    private Header<ArticleResponseDto> response(Article article){
+        ArticleResponseDto body = ArticleResponseDto.builder()
                 .id(article.getId())
                 .title(article.getTitle())
                 .content(article.getContent())
@@ -116,22 +117,21 @@ public class ArticleApiLogicService implements CrudInterface<ArticleApiRequest, 
                 .categoryName(article.getCategory().getName())
                 .categoryId(article.getCategory().getId())
                 .visitCnt(article.getVisitCnt())
-                .comment(commentApiLogicService.findByArticleId(article.getId()))
+                .comment(commentApiLogicService.getList(article))
                 .build();
 
         return Header.OK(body);
     }
 
-    private List<ArticleListApiResponse> listResponse(List<Article> articleList){
-        List<ArticleListApiResponse> newList = new ArrayList<>();
+    private List<ArticleListResponseDto> listResponse(List<Article> articleList){
+        List<ArticleListResponseDto> newList = new ArrayList<>();
 
         for(Article article: articleList){
-            ArticleListApiResponse addBody = ArticleListApiResponse.builder()
+            ArticleListResponseDto addBody = ArticleListResponseDto.builder()
                     .id(article.getId())
                     .title(article.getTitle())
                     .createdId(article.getCreatedId())
                     .categoryName(article.getCategory().getName())
-                    .category(article.getCategory())
                     .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
                     .visitCnt(article.getVisitCnt())
                     .commentCnt(article.getComment().size())

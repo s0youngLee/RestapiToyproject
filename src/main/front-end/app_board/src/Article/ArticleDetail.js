@@ -46,7 +46,7 @@ function ArticleDetailData({data}) {
                     <b> Created At : </b> <span> {data?.created_at} </span> <br/>
                     <b> Visit : </b> <span> {data?.visit_cnt} </span> 
                     <div style={{float: "right"}}>
-                        <Link to={`/board/${data.id}/edit`} id="none" >
+                        <Link to={`/board/${data?.id}/edit`} id="none" >
                             <button style={{float: "right"}} id="btn-post"> Edit </button></Link>
                         <button id="btn-remove" 
                                 onClick={() => { deleteArticle(data.id) }}>Delete</button>

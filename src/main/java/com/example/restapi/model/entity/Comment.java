@@ -1,16 +1,23 @@
 package com.example.restapi.model.entity;
 
+import java.time.LocalDateTime;
 
-import lombok.Builder;
-import lombok.experimental.Accessors;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
-
+import lombok.Builder;
+import lombok.experimental.Accessors;
 
 @Entity
 @Builder
@@ -21,11 +28,8 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private String userId;
-
     private String content;
-
     private LocalDateTime createdAt;
 
     @Column(name = "article_id", insertable = false, updatable = false)
@@ -60,6 +64,9 @@ public class Comment {
         return userId;
     }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getContent() {
         return content;

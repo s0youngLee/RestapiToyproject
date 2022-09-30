@@ -1,23 +1,28 @@
 package com.example.restapi.service;
 
-import com.example.restapi.ifs.CrudInterface;
-import com.example.restapi.model.entity.Comment;
-import com.example.restapi.model.network.Header;
-import com.example.restapi.model.network.request.CommentApiRequest;
-import com.example.restapi.model.network.response.CommentApiResponse;
-import com.example.restapi.repository.ArticleRepository;
-import com.example.restapi.repository.CommentRepository;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-public class CommentApiLogicService implements CrudInterface<CommentApiRequest, CommentApiResponse> {
+import javax.transaction.Transactional;
 
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+
+import com.example.restapi.controller.AbstractCrudMethod;
+import com.example.restapi.model.entity.Article;
+import com.example.restapi.model.entity.Comment;
+import com.example.restapi.model.network.Header;
+import com.example.restapi.model.network.request.CommentRequest;
+import com.example.restapi.model.network.response.CommentResponseDto;
+import com.example.restapi.repository.ArticleRepository;
+import com.example.restapi.repository.CommentRepository;
+
+
+
+@Service
+public class CommentApiLogicService extends AbstractCrudMethod<CommentRequest, CommentResponseDto> {
     private final CommentRepository commentRepository;
     private final ArticleRepository articleRepository;
 
@@ -27,8 +32,8 @@ public class CommentApiLogicService implements CrudInterface<CommentApiRequest, 
     }
 
     @Override
-    public Header<CommentApiResponse> create(Header<CommentApiRequest> request) {
-        CommentApiRequest body = request.getData();
+    public Header<CommentResponseDto> create(Header<CommentRequest> request) {
+        CommentRequest body = request.getData();
         if(body.getUserId()==null){
             body.setUserId("unknown");
         }
@@ -40,7 +45,32 @@ public class CommentApiLogicService implements CrudInterface<CommentApiRequest, 
                 .article(articleRepository.getReferenceById(body.getArticleId()))
                 .build();
 
-        return response(commentRepository.save(comment));
+        return Header.OK(buildComment(commentRepository.save(comment)));
+    }
+
+    @Override
+    @Transactional
+    public Header<CommentResponseDto> read(int id) {
+        return commentRepository.findById(id)
+            .map(comment -> Header.OK(buildComment(comment)))
+            .orElseGet(()-> Header.ERROR("No DATA"));
+    }
+
+    @Override
+    @Transactional
+    public Header<CommentResponseDto> update(Header<CommentRequest> request, int id) {
+        CommentRequest body = request.getData();
+        return commentRepository.findById(id)
+            .map(comment -> {
+                comment.setUserId(body.getUserId() == null ? comment.getUserId() : body.getUserId());
+                comment.setContent(body.getContent());
+                comment.setCreatedAt(LocalDateTime.now());
+                comment.setArticleId(body.getArticleId());
+                return comment;
+            })
+            .map(commentRepository::save)
+            .map(comment -> Header.OK(buildComment(comment)))
+            .orElseGet(()->Header.ERROR("No DATA"));
     }
 
     @Override
@@ -53,47 +83,22 @@ public class CommentApiLogicService implements CrudInterface<CommentApiRequest, 
                 .orElseGet(()->Header.ERROR("No DATA"));
     }
 
+    public List<CommentResponseDto> getList(Article article){
+        List<CommentResponseDto> commentList = new ArrayList<>();
+        for(Comment comment : commentRepository.findAllByArticleId(article.getId())){
+            commentList.add(buildComment(comment));
+        }
+        return commentList;
+    }
 
-    private Header<CommentApiResponse> response(Comment comment) {
-        CommentApiResponse body = CommentApiResponse.builder()
+    private CommentResponseDto buildComment(Comment comment){
+        return CommentResponseDto.builder()
                 .id(comment.getId())
                 .userId(comment.getUserId())
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 .articleId(comment.getArticle().getId())
                 .build();
-
-        return Header.OK(body);
-    }
-
-    public List<CommentApiResponse> findByArticleId(int articleId){
-        List<Comment> commentList = commentRepository.findAll();
-
-        List<CommentApiResponse> findByArticleId = new ArrayList<CommentApiResponse>();
-        for(Comment comment : commentList){
-            if(comment.getArticleId() == articleId){
-                CommentApiResponse addBody =CommentApiResponse.builder()
-                        .id(comment.getId())
-                        .userId(comment.getUserId())
-                        .content(comment.getContent())
-                        .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-                        .articleId(comment.getArticleId())
-                        .build();
-
-                findByArticleId.add(addBody);
-            }
-        }
-        return findByArticleId;
-    }
-
-    @Override
-    public Header<CommentApiResponse> read(int id) {
-        return null;
-    }
-
-    @Override
-    public Header<CommentApiResponse> update(Header<CommentApiRequest> request, int id) {
-        return null;
     }
 
 }

@@ -1,25 +1,23 @@
 package com.example.restapi.service;
 
-import com.example.restapi.ifs.CrudInterface;
-import com.example.restapi.model.entity.Article;
-import com.example.restapi.model.entity.Category;
-import com.example.restapi.model.network.Header;
-import com.example.restapi.model.network.request.CategoryApiRequest;
-import com.example.restapi.model.network.response.CategoryApiResponse;
-import com.example.restapi.repository.ArticleRepository;
-import com.example.restapi.repository.CategoryRepository;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+
+import com.example.restapi.controller.AbstractCrudMethod;
+import com.example.restapi.model.entity.Article;
+import com.example.restapi.model.entity.Category;
+import com.example.restapi.model.network.Header;
+import com.example.restapi.model.network.request.CategoryRequest;
+import com.example.restapi.model.network.response.CategoryResponseDto;
+import com.example.restapi.repository.ArticleRepository;
+import com.example.restapi.repository.CategoryRepository;
+
 @Service
-public class CategoryApiLogicService implements CrudInterface<CategoryApiRequest, CategoryApiResponse> {
-
-
+public class CategoryApiLogicService extends AbstractCrudMethod<CategoryRequest, CategoryResponseDto> {
     private final CategoryRepository categoryRepository;
-
     private final ArticleRepository articleRepository;
 
     public CategoryApiLogicService(@Lazy CategoryRepository categoryRepository, @Lazy ArticleRepository articleRepository) {
@@ -28,50 +26,36 @@ public class CategoryApiLogicService implements CrudInterface<CategoryApiRequest
     }
 
     @Override
-    public Header<CategoryApiResponse> create(Header<CategoryApiRequest> request) {
-        CategoryApiRequest body = request.getData();
+    public Header<CategoryResponseDto> create(Header<CategoryRequest> request) {
+        CategoryRequest body = request.getData();
 
         Category category = Category.builder()
                 .id(body.getId())
                 .name(body.getName())
                 .build();
 
-        return response(categoryRepository.save(category));
+        return Header.OK(buildCategory(categoryRepository.save(category)));
     }
 
     @Override
-    public Header<CategoryApiResponse> read(int id) {
+    public Header<CategoryResponseDto> read(int id) {
         return categoryRepository.findById(id)
-                .map(category -> response(category))
+                .map(category -> Header.OK(buildCategory(categoryRepository.save(category))))
                 .orElseGet(()-> Header.ERROR("No DATA"));
     }
 
     // category 목록
-    public List<CategoryApiResponse> getList() {
-        List<CategoryApiResponse> newList = new ArrayList<CategoryApiResponse>();
-        for(Category category: categoryRepository.findAll()){
-            CategoryApiResponse addBody = CategoryApiResponse.builder()
-                    .id(category.getId())
-                    .name(category.getName())
-                    .articleCnt(category.getArticleList().size())
-                    .build();
-
-            newList.add(addBody);
-        }
-        return newList;
-    }
-
     @Override
-    public Header<CategoryApiResponse> update(Header<CategoryApiRequest> request, int id) {
-        CategoryApiRequest body = request.getData();
+    public Header<CategoryResponseDto> update(Header<CategoryRequest> request, int id) {
+        CategoryRequest body = request.getData();
 
         return categoryRepository.findById(id)
                 .map(category -> {
                     category.setName(body.getName());
                     return category;
                 })
-                .map(newCategory -> categoryRepository.save(newCategory))
-                .map(category -> response(category))
+                .map(categoryRepository::save)
+                .map(category -> Header.OK(buildCategory(categoryRepository.save(category))))
                 .orElseGet(()->Header.ERROR("No DATA"));
     }
 
@@ -93,19 +77,19 @@ public class CategoryApiLogicService implements CrudInterface<CategoryApiRequest
                 .orElseGet(()->Header.ERROR("NO DATA"));
     }
 
-    private Header<CategoryApiResponse> response(Category category) {
-        List<Integer> id = new ArrayList<>();
-        for(int i=0;i<category.getArticleList().size();i++){
-            id.add(category.getId());
+    public List<CategoryResponseDto> getList() {
+        List<CategoryResponseDto> newList = new ArrayList<>();
+        for(Category category: categoryRepository.findAll()){
+            newList.add(buildCategory(category));
         }
-        CategoryApiResponse body = CategoryApiResponse.builder()
+        return newList;
+    }
+
+    private CategoryResponseDto buildCategory(Category category){
+        return CategoryResponseDto.builder()
                 .id(category.getId())
                 .name(category.getName())
                 .articleCnt(category.getArticleList().size())
                 .build();
-
-        return Header.OK(body);
     }
-
-
 }

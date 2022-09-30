@@ -1,27 +1,25 @@
 package com.example.restapi.model.entity;
 
-
-import lombok.Builder;
-import lombok.experimental.Accessors;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import java.util.List;
 
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import lombok.Builder;
+import lombok.experimental.Accessors;
 
 @Builder
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Accessors(chain = true)
 public class Category {
-
     @Id
     private Integer id;
     private String name;
-
     @OneToMany(mappedBy = "category")
     private List<Article> articleList;
 

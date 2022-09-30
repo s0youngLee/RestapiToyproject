@@ -1,4 +1,4 @@
-// import React from "react";
+import CommentEdit from "./CommentEdit";
 import CommentRegister from "./CommentRegister";
 
 function Comment({article}){
@@ -34,6 +34,7 @@ function CommentData({index, data}){
             <b> Content : </b> <span> {data?.content} </span> <br/>
             <b> Created At : </b> <span> {data?.created_at} </span>
             
+            <CommentEdit data={data}/>
             <button id="btn-remove" 
                     onClick={() => { deleteComment(data.article_id, data.id) }}>Delete</button>
         </li> <br/></>

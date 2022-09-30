@@ -1,13 +1,22 @@
 package com.example.restapi.model.entity;
 
-import lombok.Builder;
-import lombok.experimental.Accessors;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import lombok.Builder;
+import lombok.experimental.Accessors;
 
 @Entity
 @Builder
@@ -17,15 +26,10 @@ public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private String title;
-
     private String content;
-
     private String createdId;
-
     private LocalDateTime createdAt;
-
     private Integer visitCnt;
 
     @ManyToOne

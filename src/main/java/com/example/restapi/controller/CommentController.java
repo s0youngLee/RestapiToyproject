@@ -1,20 +1,19 @@
 package com.example.restapi.controller;
 
-import com.example.restapi.model.network.request.CommentApiRequest;
-import com.example.restapi.model.network.response.CommentApiResponse;
-import com.example.restapi.service.CommentApiLogicService;
+import javax.annotation.PostConstruct;
+
 import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.PostConstruct;
-
+import com.example.restapi.model.network.request.CommentRequest;
+import com.example.restapi.model.network.response.CommentResponseDto;
+import com.example.restapi.service.CommentApiLogicService;
 
 @RestController
 @RequestMapping("/comment")
-public class CommentController extends CrudController<CommentApiRequest, CommentApiResponse> {
+public class CommentController extends AbstractCrudMethod<CommentRequest, CommentResponseDto> {
     private final CommentApiLogicService commentApiLogicService;
-
     public CommentController(@Lazy CommentApiLogicService commentApiLogicService) {
         super();
         this.commentApiLogicService = commentApiLogicService;
