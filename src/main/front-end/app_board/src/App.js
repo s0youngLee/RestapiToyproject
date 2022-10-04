@@ -36,8 +36,8 @@ function App() {
                     <Route path="/board" element={<ArticleLists category={categoryList.data}/>} />
                     <Route path="/board/:articleId" element={<ArticleDetail/>} /> 
                     <Route path="/board/category/:categoryId" element={<ArticlesByCategory category={categoryList.data}/>} />
-                    <Route path="/board/add/:categoryId" element={<ArticleRegister />} />
-                    <Route path="/board/edit/:articleId" element={<ArticleEdit/>} />
+                    <Route path="/board/add/:categoryId" element={<ArticleRegister categoryList={categoryList.data}/>} />
+                    <Route path="/board/edit/:articleId" element={<ArticleEdit categoryList={categoryList.data}/>} />
     
                     <Route path="/category" element={<CategoryDeatil category={categoryList.data}/>} />
                     <Route path="/category/add/" element={<CategoryRegister />} />
