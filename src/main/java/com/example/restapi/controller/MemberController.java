@@ -34,7 +34,7 @@ public class MemberController extends AbstractCrudMethod<MemberRequest,MemberRes
 	// 	return memberApiLogicService.logIn(request);
 	// }
 
-	// @GetMapping("/logout")
+	// @PostMapping("/logout")
 	// public Header<Member> logOut(){
 	// 	return memberApiLogicService.logOut();
 	// }
