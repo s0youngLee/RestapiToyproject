@@ -1,26 +1,12 @@
 import {useState, useEffect} from "react";
 import {Link} from 'react-router-dom';
 import Comment from "../Comment/Comment";
+import * as Validation from "../validation";
 
 function ArticleDeatil(){
-    const urlList = ((window.location.href).split('/'));
-    const articleId = urlList[(urlList.length)-1];
+    const articleDetail = Validation.Fetching(Validation.getUrlId());
 
-    const [articleDetail, setArticleDetail] = useState({
-        data : {}
-    });
-    const [loading, setLoading] = useState(true);
-    
-    useEffect(()=> {
-        const RES = fetch(`/board/${articleId}`)
-                    .then(res =>  res.json())
-                    .then(result => {
-                        setArticleDetail(result);
-                        setLoading(false);
-        });
-    },[]);
-
-    if(loading) { return <h1> Loading .. </h1>}
+    if(!articleDetail) { return <h1> Loading .. </h1>}
     else { return <ArticleDetailData data={articleDetail?.data}/>; }
 }
 
@@ -46,7 +32,7 @@ function ArticleDetailData({data}) {
                     <b> Created At : </b> <span> {data?.created_at} </span> <br/>
                     <b> Visit : </b> <span> {data?.visit_cnt} </span> 
                     <div style={{float: "right"}}>
-                        <Link to={`/board/${data?.id}/edit`} id="none" >
+                        <Link to={`/board/edit/${data?.id}`} id="none" >
                             <button style={{float: "right"}} id="btn-post"> Edit </button></Link>
                         <button id="btn-remove" 
                                 onClick={() => { deleteArticle(data.id) }}>Delete</button>

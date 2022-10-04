@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {Link} from 'react-router-dom';
 import Article from "../Article/Article";
 import CategoryBar from "../Category/CategoryBar";
+import Bar from "../Bar";
 import '../App.css'
 
 function ArticleLists({category}){
@@ -24,9 +25,10 @@ function ArticleLists({category}){
     if(loading) { return <div> Loading ... </div> }
     else {
         return (
-        <>
+        <>  
+            <Bar />
             <CategoryBar category={category}/>
-            <h1 style={{color: "#373737", textAlign:"center"}}> Aritcle List </h1> 
+            {/* <h1 style={{color: "#373737", textAlign:"center"}}> Aritcle List </h1>  */}
             <table id="list">
                 <thead style={{borderBottom: "2px solid #000000", backgroundColor: "#aa9dff"}}>
                     <tr>

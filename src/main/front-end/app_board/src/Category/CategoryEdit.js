@@ -1,17 +1,15 @@
 import {useState, useCallback, useEffect} from "react";
+import * as Validation from "../validation";
 
 
 function CategoryEdit(){
-    const urlList = ((window.location.href).split('/'));
-    const categoryId = urlList[(urlList.length)-2];
-    
     const [category, setCategory] = useState({
         data : {}
     });
     const [loading, setLoading] = useState(true);
     
     useEffect(()=> {
-        const RES = fetch(`/category/${categoryId}`)
+        const RES = fetch(`/category/${Validation.getUrlId()}`)
         .then(res =>  res.json())
         .then(result => {
             setCategory(result);
@@ -23,7 +21,7 @@ function CategoryEdit(){
     else { 
         return (
             <div>
-                <CategoryEditForm categoryId={categoryId} nameOrigin={category.data.name}/>
+                <CategoryEditForm categoryId={Validation.getUrlId()} nameOrigin={category.data?.name}/>
                 <button id="btn-remove"
                         onClick={() => {window.location.href=`/category`}}> Back </button>
             </div>
@@ -39,14 +37,8 @@ function CategoryEditForm({categoryId, nameOrigin}){
         setCategoryName(e.target.value);
     }, [])
 
-    const isEmpty = function(value){
-        if(value === "" || value === null || value === undefined || ( value !== null && typeof value === "object" && !Object.keys(value).length)){
-            return true;
-        }else { return false; }
-    }
-
     const editCategory = (e) => {
-        if(isEmpty(e.target.value)){ setCategoryName(nameOrigin); }
+        if(Validation.isEmpty(e.target.value)){ setCategoryName(nameOrigin); }
 
         axios.put(`/category/${categoryId}`, {
             data : {

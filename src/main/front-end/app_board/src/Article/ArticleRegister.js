@@ -1,11 +1,10 @@
 import React, {useState, useCallback} from 'react';
+import * as Validation from "../validation";
 
 function ArticleRegister(){
-    const urlList = ((window.location.href).split('/'));
-    const id = urlList[(urlList.length)-1]
-    let categoryPlaceHolder = "Current Category : " + Number(id);
-    let categoryId = Number(id);
-    if(id === "board" || id === "add" || id === "0"){ 
+    let categoryPlaceHolder = "Current Category : " + Validation.getUrlId();
+    let categoryId = Number(Validation.getUrlId());
+    if( Validation.getUrlId() === ("board" || "add" || "0")){ 
         categoryPlaceHolder = "Current Category : Default";
         categoryId = 0;
     }

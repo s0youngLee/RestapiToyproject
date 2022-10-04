@@ -10,12 +10,9 @@ import CategoryEdit from "./Category/CategoryEdit";
 import ArticlesByCategory from "./Category/ArticlesByCategory";
 import CategoryDeatil from "./Category/CategoryDetail";
 import './App.css';
+import MemberRegister from "./Member/memberRegister";
+import LoginForm from "./Member/LoginForm";
 
-// const isEmpty = function(value){
-//     if(value === "" || value === null || value === undefined || ( value !== null && typeof value === "object" && !Object.keys(value).length)){
-//         return true;
-//     }else { return false; }
-// }
 
 function App() {
     const [categoryList, setCategoryList] = useState({  data : {}  });
@@ -40,11 +37,14 @@ function App() {
                     <Route path="/board/:articleId" element={<ArticleDetail/>} /> 
                     <Route path="/board/category/:categoryId" element={<ArticlesByCategory category={categoryList.data}/>} />
                     <Route path="/board/add/:categoryId" element={<ArticleRegister />} />
-                    <Route path="/board/:articleId/edit" element={<ArticleEdit/>} />
+                    <Route path="/board/edit/:articleId" element={<ArticleEdit/>} />
     
                     <Route path="/category" element={<CategoryDeatil category={categoryList.data}/>} />
                     <Route path="/category/add/" element={<CategoryRegister />} />
-                    <Route path="/category/:categoryId/edit" element={<CategoryEdit />} />
+                    <Route path="/category/edit/:categoryId" element={<CategoryEdit />} />
+
+                    <Route path="/member" element={<LoginForm />} />
+                    <Route path="/member/signup" element={<MemberRegister />} />
             </Routes></Router></div>
         )
     }

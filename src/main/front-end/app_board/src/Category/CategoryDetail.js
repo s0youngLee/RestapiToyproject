@@ -42,7 +42,7 @@ function CategoryDeatilData({data}) {
         </div>
         <div>
             <Link to={`/board/category/${data.id}`}> <button id="btn-default"> Go to {data.name} </button></Link>
-            <Link to={`/category/${data.id}/edit`} id="none"> <button id="btn-post"> Edit</button></Link>
+            <Link to={`/category/edit/${data.id}`} id="none"> <button id="btn-post"> Edit</button></Link>
             <button id="btn-remove" onClick={() => { deleteCategory(data.id, data.name) }}> 
                         Delete </button>
         </div>

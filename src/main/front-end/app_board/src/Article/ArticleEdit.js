@@ -1,24 +1,10 @@
 import React, {useState, useEffect, useCallback} from "react";
+import * as Validation from "../validation";
 
 function ArticleEdit(){
-    const urlList = ((window.location.href).split('/'));
-    const articleId = urlList[(urlList.length)-2];
-    
-    const [articleDetail, setArticleDetail] = useState({
-        data : {}
-    });
-    const [loading, setLoading] = useState(true);
-    
-    useEffect(()=> {
-        const RES = fetch(`/board/${articleId}`)
-        .then(res =>  res.json())
-        .then(result => {
-            setArticleDetail(result);
-            setLoading(false);
-        });
-    },[]);
+    const articleDetail = Validation.Fetching(Validation.getUrlId());
 
-    if(loading) {return <div> Loading ... </div>}
+    if(!articleDetail) {return <div> Loading ... </div>}
     else { 
         return (
         <ArticleEditForm titleOrigin={articleDetail?.data?.title}
@@ -54,17 +40,12 @@ function ArticleEditForm({titleOrigin, contentOrigin, categoryOrigin, idOrigin, 
         setContent(e.target.value);
     }, [])
     
-    const isEmpty = function(value){
-        if(value === "" || value === null || value === undefined || ( value !== null && typeof value === "object" && !Object.keys(value).length)){
-            return true;
-        }else { return false; }
-    }
 
     const editArticle = (e) => {
-        if(isEmpty(e.target.value)){ setCreatedId(idOrigin); }
-        if(isEmpty(e.target.value)){ setTitle(titleOrigin); }
-        if(isEmpty(e.target.value)){ setTitle(categoryOrigin); } 
-        if(isEmpty(e.target.value)){ setContent(contentOrigin); }
+        if(Validation.isEmpty(e.target.value)){ setCreatedId(idOrigin); }
+        if(Validation.isEmpty(e.target.value)){ setTitle(titleOrigin); }
+        if(Validation.isEmpty(e.target.value)){ setTitle(categoryOrigin); } 
+        if(Validation.isEmpty(e.target.value)){ setContent(contentOrigin); }
         
         axios.put(`/board/${articleId}`, {
             data : {

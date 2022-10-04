@@ -91,7 +91,7 @@ public class ArticleApiLogicService extends AbstractCrudMethod<ArticleRequest, A
 
     @Override
     public Header delete(int id) {
-        return articleRepository.findById((id))
+        return articleRepository.findById(id)
                 .map(article -> {
                     articleRepository.delete(article);
                     return Header.OK();
