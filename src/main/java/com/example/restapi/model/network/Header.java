@@ -1,18 +1,21 @@
 package com.example.restapi.model.network;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class Header<T> {
-
-
     private T data;
+    public Header() {
+    }
+    public Header(T data) {
+        this.data = data;
+    }
+    public T getData() {
+        return data;
+    }
+    public void setData(T data) {
+        this.data = data;
+    }
 
     //OK
     public static <T> Header<T> OK(){

@@ -48,8 +48,8 @@ function CategoryRegister(){
             <form onSubmit={addCategory}>
                 <div id="div-box">
                     <b style={{textAlign: "center"}}> Add Category </b> <br/>
-                    <input id="id-box" placeholder="Category ID" onChange={addId}></input> <br/>
-                    <input id="id-box" placeholder="Category Name" onChange={addName}></input> <br/>
+                    <input  placeholder="Category ID" onChange={addId}></input> <br/>
+                    <input  placeholder="Category Name" onChange={addName}></input> <br/>
                     <button type="submit" id="btn-post" style={{textAlign: "right"}}
                             onClick={() => {
                                 if((!isEmpty(id))&&(!isEmpty(name))){

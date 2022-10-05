@@ -1,8 +1,9 @@
 import {Link} from 'react-router-dom';
+import * as Function from "../func";
 import '../App.css'
 
-function CategoryBar({category}){
-    const categoryList = category;
+function CategoryBar(){
+    const categoryList = Function.FetchingCategory();
    
     return (
         <div style={{margin: "10px", textAlign: "center", borderBottom: "1px solid #373737", whiteSpace: "nowrap"}}>

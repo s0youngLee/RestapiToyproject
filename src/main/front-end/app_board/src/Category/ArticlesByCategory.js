@@ -1,34 +1,37 @@
 import React, { useState, useEffect} from "react";
 import {Link} from 'react-router-dom';
 import Article from "../Article/Article";
+import * as Function from "../func";
 import _ from 'lodash';
+import axios from "axios";
 
-function ArticlesByCategory({category}){
-    const urlList = ((window.location.href).split('/'));
-    const categoryId = urlList[(urlList.length)-1]
+function ArticlesByCategory(){
+    const categoryId = Function.getUrlId();
+    const category = Function.FetchingCategory();
 
-    const [articleByCategory, setArticleByCategory] = useState({  data : {}  });
-    const [categoryName, setCategoryName] = useState();
+    const [articleByCategory, setArticleByCategory] = useState({ data : {} });
+    const [categoryName, setCategoryName] = useState("");
     const [loading, setLoading] = useState(true);
 
-    useEffect(()=> {
-        const RES = fetch(`/board/category/${categoryId}`)
-                    .then(res =>  res.json())
-                    .then(result => {
-                        setArticleByCategory(result);
-                        for(let i = 0; i<category.length; i++){
-                            if(_.isEqual(categoryId,(String)(category[i]?.id))){
-                                setCategoryName(category[i].name);
-                                break;
-                            }
-                        }
-                        setLoading(false);
-                    });
-    }, []);
+    useEffect(() => {
+        axios.get(`/board/category/${categoryId}`)
+        .then(res => { 
+            setArticleByCategory(res.data);
+            setLoading(false);
+        });
+        
+        for(let i = 0; i<category?.length; i++){
+            if(_.isEqual(categoryId,(String)(category[i]?.id))){
+                setCategoryName(category[i]?.name);
+                break;
+            } 
+        }
+    }, [category]);
+
     
     if(loading) { return <div> Loading ... </div> }
     else {
-        return (
+    return (
         <div>
             <div>
                 <h1 style={{color: "#373737", textAlign:"center"}}> Category : {categoryName} </h1> 

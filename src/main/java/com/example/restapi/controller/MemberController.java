@@ -3,6 +3,7 @@ package com.example.restapi.controller;
 import javax.annotation.PostConstruct;
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,6 +29,10 @@ public class MemberController extends AbstractCrudMethod<MemberRequest,MemberRes
 	// read == user info (마이페이지)
 	// update == edit user info(pw, name)(회원정보 수정)
 
+	@GetMapping("")
+	public String loginPage(){
+		return "Login Page";
+	}
 
 	// @PostMapping("/login")
 	// public Header logIn(@RequestBody Header<Member> request){

@@ -1,5 +1,5 @@
 import {useState, useCallback} from "react";
-import * as Validation from "../validation";
+import * as Function from "../func";
 
 function CommentEdit({data}){
     const [visible, setVisible] = useState(false);
@@ -21,8 +21,8 @@ function CommentEditForm({data}){
     }, [])
 
     const editComment = (e) => {
-        console.log(Validation.isEmpty(e.target.value));
-        if(Validation.isEmpty(e.target.value)){ setContent(data.content); }
+        console.log(Function.isEmpty(e.target.value));
+        if(Function.isEmpty(e.target.value)){ setContent(data.content); }
 
         axios.put(`/comment/${data.id}`, {
             data : {
@@ -37,8 +37,8 @@ function CommentEditForm({data}){
         <form onSubmit={editComment}>
             <div id="div-box" style={{textAlign: "left"}}>
                 <b style={{textAlign: "center"}}> Edit comment </b> <br/>
-                <input id="id-box" placeholder={data?.user_id} readOnly></input> <br/>
-                <input id="id-box" placeholder={data?.content} onChange={editcontent}></input> <br/>
+                <input  placeholder={data?.user_id} readOnly></input> <br/>
+                <input  placeholder={data?.content} onChange={editcontent}></input> <br/>
                 <button type="submit" id="btn-post" style={{textAlign: "right"}}
                      onClick={() => {window.location.href=`/board/${data?.article_id}`}}> Save </button>
             </div>

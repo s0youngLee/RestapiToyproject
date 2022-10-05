@@ -1,5 +1,4 @@
 import "../App.css";
-import * as Validation from "../validation";
 import axios from "axios";
 import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
@@ -9,14 +8,13 @@ function LoginForm(){
     const [id, setId] = useState("");
     const [pw, setPW] = useState("");
 
-    const [loading, setLoading] = useState(false);
     const [msg, setMsg] = useState("");
 
     useEffect(()=> {
         if(msg) {
             setTimeout(() => {
                 setMsg("");
-                setLoading(false);
+                // setLoading(false);
             }, 1500);
         }
     }, [msg])
@@ -67,7 +65,6 @@ function LoginForm(){
                         break;
                 }
             });
-        setLoading(true);
     }
 
     return (
@@ -76,8 +73,8 @@ function LoginForm(){
             <form onSubmit={login}>
                 <div id="div-box">
                     <b style={{textAlign: "center"}}> Login Page </b> <br/>
-                    <input id="id-box" placeholder="ID" onChange={inputId}></input> <br/>
-                    <input id="id-box" type="password" placeholder="Password" onChange={inputPw}></input> <br/>
+                    <input placeholder="ID" onChange={inputId}></input> <br/>
+                    <input type="password" placeholder="Password" onChange={inputPw}></input> <br/>
                     <button type="submit" id="btn-post" style={{textAlign: "right"}}
                             onClick={() => {window.location.href=`/`}}> Login </button>
                     <Link id="none" to="/"><button id="btn-default"> Home </button></Link>

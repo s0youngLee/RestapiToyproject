@@ -1,10 +1,9 @@
-import {useState, useEffect} from "react";
 import {Link} from 'react-router-dom';
 import Comment from "../Comment/Comment";
-import * as Validation from "../validation";
+import * as Function from "../func";
 
 function ArticleDeatil(){
-    const articleDetail = Validation.Fetching(Validation.getUrlId());
+    const articleDetail = Function.FetchingArticle(Function.getUrlId());
 
     if(!articleDetail) { return <h1> Loading .. </h1>}
     else { return <ArticleDetailData data={articleDetail?.data}/>; }

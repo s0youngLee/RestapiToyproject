@@ -1,9 +1,7 @@
 import React,{useState, useCallback} from "react";
+import * as Function from "../func";
 
-function CommentRegister(){
-    const urlList = ((window.location.href).split('/'));
-    const articleId = urlList[(urlList.length)-1]
-    
+function CommentRegister(){    
     const [userId, setUserId] = useState("unknown");
     const [content, setContent] = useState("");
 
@@ -31,14 +29,14 @@ function CommentRegister(){
             return Error;
         }else{setContent(content);}
 
-        console.log(userId + " " + content + " " + articleId);
+        console.log(userId + " " + content + " " + Function.getUrlId());
         axios.post(`/comment`, {
             data: {
                 user_id: userId,
                 content: content,
-                article_id: articleId
+                article_id: Function.getUrlId()
             }
-        }).then(() => {window.location.href=`/board/${articleId}`})
+        }).then(() => {window.location.href=`/board/${Function.getUrlId()}`})
         
         
         alert("comment registerd");
@@ -46,10 +44,11 @@ function CommentRegister(){
 
     return(
         <form onSubmit={addComment}>
-            <div id="div-align">
+            <div style={{height: "160px"}}>
                 <b> Add Comment</b> <br/>
-                <input id="id-box" placeholder="User Id"
-                       onChange={addUserId}></input> <br/>
+                <input placeholder="User Id"
+                       onChange={addUserId}></input>
+                <br/>
                 <textarea id="text-box" placeholder="Add a comment"
                           onChange={addContent}></textarea> 
                 <button type="submit" id="btn-post"> Add </button>

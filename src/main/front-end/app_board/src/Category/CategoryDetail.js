@@ -1,8 +1,9 @@
-// import React, { useEffect, useState } from "react";
 import {Link} from 'react-router-dom';
+import * as Function from '../func';
 
-function CategoryDeatil ({category}) {
-    const categoryList = category;
+function CategoryDeatil () {
+    const categoryList = Function.FetchingCategory();
+    // console.log(categoryList);
 
     return (
         <div>
@@ -12,10 +13,9 @@ function CategoryDeatil ({category}) {
             <div style={{width: "100%", textAlign: "center", marginTop:"10px"}}>
                 <Link to={`/`} id="none"> <button id="btn-default"> Home </button></Link>
                 <Link to={`/category/add`} id="none"> <button id="btn-post"> Add Category </button></Link>
-                
             </div>
         </div>
-    )
+    ) 
 }
 
 function CategoryDeatilData({data}) {

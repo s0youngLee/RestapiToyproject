@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 
 export function isEmpty(value){
     if(value === "" || value === null || value === undefined || ( value !== null && typeof value === "object" && !Object.keys(value).length)){
@@ -18,7 +17,7 @@ export function getUrlId(){
     return id;
 }
 
-export function Fetching(articleId){
+export function FetchingArticle(articleId){
     const [articleDetail, setArticleDetail] = useState({
         data : {}
     });
@@ -34,4 +33,20 @@ export function Fetching(articleId){
     },[]);
 
     if(!loading) {return articleDetail;}
+}
+
+export function FetchingCategory(){
+    const [categoryList, setCategoryList] = useState({  data : {}  });
+    const [loading, setLoading] = useState(true);
+    
+    useEffect(() => {
+        const res = fetch('/category')
+                    .then((res) => res.json())
+                    .then((result) => {
+                        setCategoryList(result);
+                        setLoading(false)
+                    });
+    }, [])
+
+    if(!loading) {return categoryList.data;}
 }

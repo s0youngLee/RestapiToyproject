@@ -1,12 +1,10 @@
 import React, {useState, useCallback} from 'react';
-import * as Validation from "../validation";
+import * as Function from "../func";
 import axios from "axios";
 
-function ArticleRegister({categoryList}){
-    let categoryPlaceHolder = "Current Category : " + Validation.getUrlId();
-    let categoryId = Number(Validation.getUrlId());
-    if( Validation.getUrlId() === ("board" || "add" || "0")){ 
-        categoryPlaceHolder = "Current Category : Default";
+function ArticleRegister(){
+    let categoryId = Number(Function.getUrlId());
+    if( Function.getUrlId() === ("board" || "add")){ 
         categoryId = 0;
     }
     
@@ -33,17 +31,17 @@ function ArticleRegister({categoryList}){
     };
 
     const addArticle = (e) => {
-        if(Validation.isEmpty(createdId)){
+        if(Function.isEmpty(createdId)){
             alert("You must input your ID!!!");
             return Error;
         }else{setCreatedId(createdId);}
 
-        if(Validation.isEmpty(title)){
+        if(Function.isEmpty(title)){
             alert("You must input title!!!");
             return Error;
         }else{setTitle(title);}
 
-        if(Validation.isEmpty(content)){
+        if(Function.isEmpty(content)){
             alert("You must input content!!!");
             return Error;
         }else{setContent(content);}
@@ -66,20 +64,20 @@ function ArticleRegister({categoryList}){
             <form onSubmit={addArticle}>
                 <div id="div-box">
                     <b style={{textAlign: "center"}}> Add Article </b> <br/>
-                    <input id="id-box" placeholder="User ID" onChange={addCreatedId}></input> <br/>
-                    <input id="id-box" placeholder="Title" onChange={addTitle}></input> <br/>
                     <b> Category : </b>
                     <select onChange={handleSelect} value={selected}>
-                        {categoryList.map((category, index) => {
+                        {Function.FetchingCategory()?.map((category, index) => {
                             return <option key={index} value={category.id}>{category.name}</option>;
                         })}
                     </select><br/>
+                    <input placeholder="User ID" onChange={addCreatedId}></input> <br/>
+                    <input placeholder="Title" onChange={addTitle}></input> <br/>
                     <textarea id="text-box" placeholder="Content" onChange={addContent}></textarea> <br/>
                     <button type="submit" id="btn-post" style={{textAlign: "right"}}
                             onClick={() => {window.location.href=`/board`}}> Add </button>
                 </div>
             </form>
-            <button style={{textAlign: "center"}} id='btn-default' onClick={() => {window.location.href=`/board`}}> Home </button>
+            <button style={{textAlign: "center"}} id='btn-default' > Home </button>
         </div>
     )
 }

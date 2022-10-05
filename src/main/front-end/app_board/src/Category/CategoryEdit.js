@@ -1,5 +1,5 @@
 import {useState, useCallback, useEffect} from "react";
-import * as Validation from "../validation";
+import * as Function from "../func";
 
 
 function CategoryEdit(){
@@ -9,7 +9,7 @@ function CategoryEdit(){
     const [loading, setLoading] = useState(true);
     
     useEffect(()=> {
-        const RES = fetch(`/category/${Validation.getUrlId()}`)
+        const RES = fetch(`/category/${Function.getUrlId()}`)
         .then(res =>  res.json())
         .then(result => {
             setCategory(result);
@@ -20,9 +20,9 @@ function CategoryEdit(){
     if(loading) {return <div> Loading ... </div>}
     else { 
         return (
-            <div>
-                <CategoryEditForm categoryId={Validation.getUrlId()} nameOrigin={category.data?.name}/>
-                <button id="btn-remove"
+            <div style={{textAlign: "center"}}>
+                <CategoryEditForm categoryId={Function.getUrlId()} nameOrigin={category.data?.name}/>
+                <button id="btn-remove" 
                         onClick={() => {window.location.href=`/category`}}> Back </button>
             </div>
         )
@@ -38,7 +38,7 @@ function CategoryEditForm({categoryId, nameOrigin}){
     }, [])
 
     const editCategory = (e) => {
-        if(Validation.isEmpty(e.target.value)){ setCategoryName(nameOrigin); }
+        if(Function.isEmpty(e.target.value)){ setCategoryName(nameOrigin); }
 
         axios.put(`/category/${categoryId}`, {
             data : {
@@ -54,8 +54,8 @@ function CategoryEditForm({categoryId, nameOrigin}){
         <form onSubmit={editCategory}>
             <div id="div-box">
                 <b style={{textAlign: "center"}}> Edit Category </b> <br/>
-                <input id="id-box" placeholder={categoryId} readOnly></input> <br/>
-                <input id="id-box" placeholder={nameOrigin} onChange={editName}></input> <br/>
+                <input  placeholder={categoryId} readOnly></input> <br/>
+                <input  placeholder={nameOrigin} onChange={editName}></input> <br/>
                 <button type="submit" id="btn-post" style={{textAlign: "right"}}
                      onClick={() => {window.location.href=`/category`}}> Save </button>
             </div>

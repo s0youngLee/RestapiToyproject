@@ -1,13 +1,13 @@
-import React, {useState, useEffect, useCallback} from "react";
-import * as Validation from "../validation";
+import {useState, useCallback} from "react";
+import * as Function from "../func";
 
-function ArticleEdit({categoryList}){
-    const articleDetail = Validation.Fetching(Validation.getUrlId());
+function ArticleEdit(){
+    const articleDetail = Function.FetchingArticle(Function.getUrlId());
 
     if(!articleDetail) {return <div> Loading ... </div>}
     else { 
         return (
-        <ArticleEditForm articleDetail={articleDetail} categoryList={categoryList}/>
+        <ArticleEditForm articleDetail={articleDetail} categoryList={Function.FetchingCategory()}/>
     )}
 }
 
@@ -37,9 +37,9 @@ function ArticleEditForm({articleDetail, categoryList}) {
     };
 
     const editArticle = (e) => {
-        if(Validation.isEmpty(e.target.value)){ setCreatedId(articleDetail.data.title); }
-        if(Validation.isEmpty(e.target.value)){ setTitle(articleDetail.data.content); }
-        if(Validation.isEmpty(e.target.value)){ setContent(articleDetail.data.created_id); }
+        if(Function.isEmpty(e.target.value)){ setCreatedId(articleDetail.data.title); }
+        if(Function.isEmpty(e.target.value)){ setTitle(articleDetail.data.content); }
+        if(Function.isEmpty(e.target.value)){ setContent(articleDetail.data.created_id); }
         
         axios.put(`/board/${articleDetail?.data?.id}`, {
             data : {
@@ -58,19 +58,21 @@ function ArticleEditForm({articleDetail, categoryList}) {
             <form onSubmit={editArticle}>
                 <div id="div-box">
                     <b style={{textAlign: "center"}}> Edit Article </b> <br/>
-                    <input id="id-box" placeholder={articleDetail.data.created_id} onChange={editCreatedId}></input> <br/>
-                    <input id="id-box" placeholder={articleDetail.data.title} onChange={editTitle}></input> <br/>
                     <b> Category : </b>
                     <select onChange={handleSelect} value={selected}>
                         {categoryList.map((category, index) => {
                             return <option key={index} value={category.id}>{category.name}</option>;
                         })}
                     </select><br/>
+                    <input placeholder={articleDetail.data.created_id} onChange={editCreatedId}></input> <br/>
+                    <input placeholder={articleDetail.data.title} onChange={editTitle}></input> <br/>
                     <textarea id="text-box" placeholder={articleDetail.data.content} onChange={editContent}></textarea> <br/>
                     <button type="submit" id="btn-post" style={{textAlign: "right"}}
                             onClick={() => {window.location.href=`/board/${articleDetail?.data?.id}`}}> Save </button>
                 </div>
             </form>
+            <button id="btn-remove" 
+                        onClick={() => {window.location.href=`/board/${articleDetail?.data?.id}`}}> Back </button>
         </div>
     )
 }

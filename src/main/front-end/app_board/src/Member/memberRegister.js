@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import "../App.css"
-import * as Validation from "../validation";
+import * as Function from "../func";
 
 function MemberRegister(){
     const axios = require('axios');
@@ -28,27 +28,29 @@ function MemberRegister(){
 
 
     const signUp = (e) => {
-        if(Validation.isEmpty(id)){
+        e.preventDefault();
+        
+        if(Function.isEmpty(id)){
             alert("You must input your ID");
             return Error;
         }else{setId(id);}
 
-        if(Validation.isEmpty(password)){
+        if(Function.isEmpty(password)){
             alert("You must input password");
             return Error;
         }else{setPassword(password);}
         
-        if(Validation.isEmpty(passwordCheck)){
+        if(Function.isEmpty(passwordCheck)){
             alert("You must check your password.");
             return Error;
-        }else if(password!=passwordCheck){
+        }else if(password!==passwordCheck){
             alert("Not matching password");
             return Error;
         }else {
             setPassword(password);
         }
 
-        if(Validation.isEmpty(name)){
+        if(Function.isEmpty(name)){
             alert("You must input name!!!");
             return Error;
         }else{setName(name);}
@@ -70,12 +72,12 @@ function MemberRegister(){
             <form onSubmit={signUp}>
                 <div id="div-box">
                     <b style={{textAlign: "center"}}> Sign Up </b> <br/>
-                    <input id="id-box" placeholder="ID" onChange={inputId}></input> <br/>
-                    <input id="id-box" placeholder="Password" type="password" onChange={inputPassword}></input> <br/>
-                    <input id="id-box" placeholder="Password Check" type="password" onChange={checkPassword}></input> <br/>
-                    <input id="id-box" placeholder="Name" onChange={inputName}></input> <br/>
+                    <input placeholder="ID" onChange={inputId}></input> <br/>
+                    <input placeholder="Password" type="password" onChange={inputPassword}></input> <br/>
+                    <input placeholder="Password Check" type="password" onChange={checkPassword}></input> <br/>
+                    <input placeholder="Name" onChange={inputName}></input> <br/>
                     <button type="submit" id="btn-post" style={{textAlign: "right"}}
-                            onClick={() => {window.location.href=`/`}}> register </button>
+                            > register </button>
                 </div>
             </form>
         </div>
