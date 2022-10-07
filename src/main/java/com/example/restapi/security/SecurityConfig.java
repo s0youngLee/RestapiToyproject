@@ -1,72 +1,65 @@
-// package com.example.restapi.security;
-//
-// import static org.springframework.security.config.Customizer.*;
-//
-// import org.springframework.context.annotation.Bean;
-// import org.springframework.context.annotation.Configuration;
-// import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-// import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-// import org.springframework.security.web.SecurityFilterChain;
-//
-// @Configuration
-// @EnableWebSecurity
-// public class SecurityConfig {
-//
-// 	@Bean
-// 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-// 		http
-// 			.authorizeHttpRequests((authz) -> authz
-// 				.anyRequest().authenticated()
-// 			)
-// 			// .cors().and()
-// 			.httpBasic(withDefaults());
-// 				// // .loginPage("/member")
-// 				// .defaultSuccessUrl("/")
-// 				// .failureUrl("/member")
-// 				// .usernameParameter("username")
-// 				// .passwordParameter("password")
-// 				// .loginProcessingUrl("/member/login")
-// 				// .successHandler(new AuthenticationSuccessHandler() {
-// 				// 	@Override
-// 				// 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-// 				// 		Authentication authentication) throws IOException, ServletException {
-// 				// 		System.out.println("authentication : " + authentication.getName());
-// 				// 		response.sendRedirect("/");
-// 				// 	}
-// 				// })
-// 				// .failureHandler(new AuthenticationFailureHandler() {
-// 				// 	@Override
-// 				// 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-// 				// 		AuthenticationException exception) throws IOException, ServletException {
-// 				// 		System.out.println("exception : " + exception.getMessage());
-// 				// 		response.sendRedirect("/login");
-// 				// 	}
-// 				// })
-// 				// .permitAll();
-// 		return http.build();
-// 	}
-//
-// 	// @Bean
-// 	// public CorsConfigurationSource corsConfigurationSource() {
-// 	// 	CorsConfiguration configuration = new CorsConfiguration();
-// 	//
-// 	// 	configuration.addAllowedOriginPattern("*");
-// 	// 	configuration.addAllowedHeader("*");
-// 	// 	configuration.addAllowedMethod("*");
-// 	// 	configuration.setAllowCredentials(true);
-// 	//
-// 	// 	UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-// 	// 	source.registerCorsConfiguration("/**", configuration);
-// 	// 	return source;
-// 	// }
-//
-// 	// @Override
-// 	// public void onStartup(ServletContext sc){
-// 	// 	AnnotationConfigApplicationContext root = new AnnotationConfigApplicationContext();
-// 	// 	root.register(SecurityConfig.class);
-// 	//
-// 	// 	sc.addListener(new ContextLoaderListener(root));
-// 	// 	sc.addFilter("securityFileter", new DelegatingFilterProxy("springSecurityFilterChain"))
-// 	// 		.addMappingForUrlPatterns(null, false, "/*");
-// 	// }
-// }
+package com.example.restapi.security;
+
+import java.util.Arrays;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CharacterEncodingFilter;
+
+@Configuration
+@EnableWebSecurity
+// WebSecurityConfigurerAdapter : deprecated. 실습 후 @Bean 형태로 !!꼭!! 수정할 것
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		CharacterEncodingFilter filter = new CharacterEncodingFilter();
+
+		http.csrf().disable();
+		http
+			.authorizeRequests()
+			.antMatchers("/", "/login/**").permitAll()
+			.antMatchers("/board/**", "/category/**", "/comment/**").authenticated()
+			.anyRequest().authenticated()
+
+			.and()
+
+			.httpBasic().disable()
+			.formLogin()
+				.loginPage("/login")
+				.successHandler((request, response, authentication) -> {
+						System.out.println("authentication : " + authentication.getName());
+						response.sendRedirect("http://localhost:3000/board");
+					}
+				)
+				.failureHandler((request, response, exception) -> {
+					System.out.println("exception : " + exception.getMessage());
+					response.sendRedirect("http://localhost:3000");
+				})
+
+			.and()
+
+			.logout()
+				.logoutUrl("http://localhost:3000");
+
+
+	}
+
+	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+		configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE"));
+		configuration.setAllowedHeaders(Arrays.asList("Access-Control-Allow-Origin : *"));
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
+
+}

@@ -29,7 +29,6 @@ function CommentRegister(){
             return Error;
         }else{setContent(content);}
 
-        console.log(userId + " " + content + " " + Function.getUrlId());
         axios.post(`/comment`, {
             data: {
                 user_id: userId,

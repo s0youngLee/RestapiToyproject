@@ -2,6 +2,8 @@ package com.example.restapi.model.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,14 +24,18 @@ public class Member {
 	private String memberId;
 	private String password;
 	private String userName;
+	@Enumerated(EnumType.STRING)
+	private Authority authority;
+
 	public Member() {
 	}
 
-	public Member(Integer id,String memberId, String password,String userName) {
+	public Member(Integer id,String memberId, String password,String userName, Authority authority) {
 		this.id = id;
 		this.password = password;
 		this.memberId = memberId;
 		this.userName = userName;
+		this.authority = authority;
 	}
 
 	public Integer getId() {
@@ -62,5 +68,13 @@ public class Member {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public Authority getAuthority() {
+		return authority;
+	}
+
+	public void setAuthority(Authority authority) {
+		this.authority = authority;
 	}
 }

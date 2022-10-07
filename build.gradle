@@ -25,8 +25,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'junit:junit:4.13.2'
-	implementation 'org.springframework.boot:spring-boot-starter-security:2.7.3'
 
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	runtimeOnly 'com.h2database:h2'
 
 	compileOnly group: 'mysql', name: 'mysql-connector-java', version: '8.0.30'
 	runtimeOnly "mysql:mysql-connector-java:8.0.30"
@@ -34,4 +35,9 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 }

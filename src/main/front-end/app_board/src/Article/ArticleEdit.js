@@ -3,11 +3,12 @@ import * as Function from "../func";
 
 function ArticleEdit(){
     const articleDetail = Function.FetchingArticle(Function.getUrlId());
+    const categoryList = Function.FetchingCategory();
 
     if(!articleDetail) {return <div> Loading ... </div>}
     else { 
         return (
-        <ArticleEditForm articleDetail={articleDetail} categoryList={Function.FetchingCategory()}/>
+        <ArticleEditForm articleDetail={articleDetail} categoryList={categoryList}/>
     )}
 }
 
@@ -60,7 +61,7 @@ function ArticleEditForm({articleDetail, categoryList}) {
                     <b style={{textAlign: "center"}}> Edit Article </b> <br/>
                     <b> Category : </b>
                     <select onChange={handleSelect} value={selected}>
-                        {categoryList.map((category, index) => {
+                        {categoryList?.map((category, index) => {
                             return <option key={index} value={category.id}>{category.name}</option>;
                         })}
                     </select><br/>

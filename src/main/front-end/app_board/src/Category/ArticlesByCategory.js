@@ -56,7 +56,7 @@ function ArticlesByCategory(){
             </table>
             <br/>
             <div style={{width: "100%", textAlign: "center"}}>
-                <Link to={`/`} id="none"> <button id="btn-default"> Home </button></Link>
+                <Link to={`/home`} id="none"> <button id="btn-default"> Home </button></Link>
                 <Link to={`/board`} id="none"><button id="btn-default"> Board </button></Link>
                 <Link to={`/board/add/${categoryId}`} id="none"> <button id="btn-post"> Write </button></Link> 
                 <br/>

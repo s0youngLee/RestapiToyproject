@@ -12,9 +12,11 @@ import com.example.restapi.repository.MemberRepository;
 @Service
 public class MemberApiLogicService extends AbstractCrudMethod<MemberRequest, MemberResponseDto> {
 	private final MemberRepository memberRepository;
+	// private final PasswordEncoder passwordEncoder;
 
 	public MemberApiLogicService(MemberRepository memberRepository) {
 		this.memberRepository = memberRepository;
+		// this.passwordEncoder = passwordEncoder;
 	}
 
 	//signUp (회원가입)
@@ -67,17 +69,6 @@ public class MemberApiLogicService extends AbstractCrudMethod<MemberRequest, Mem
 			.orElseGet(() -> Header.ERROR("No DATA"));
 	}
 
-
-	// public Header logIn(Header<Member> request) {
-	//
-	// 	return Header.OK();
-	// }
-	//
-	// public Header<Member> logOut() {
-	// 	return Header.OK();
-	// }
-
-
 	private Header<MemberResponseDto> response(Member member) {
 		MemberResponseDto newMember = MemberResponseDto.builder()
 			.memberId(member.getMemberId())
@@ -87,4 +78,19 @@ public class MemberApiLogicService extends AbstractCrudMethod<MemberRequest, Mem
 
 		return Header.OK(newMember);
 	}
+
+
+	// login form exercise
+	// public Header<MemberResponseDto> logIn(Header<MemberRequest> request) {
+	// 	MemberRequest body = request.getData();
+	//
+	// 	MemberResponseDto loginToken = MemberResponseDto.builder()
+	// 		.memberId(body.getMemberId())
+	// 		.userName(body.getUserName())
+	// 		.password(passwordEncoder.encode(body.getPassword()))
+	// 		.build();
+	// 	return Header.OK();
+	// }
+
 }
+

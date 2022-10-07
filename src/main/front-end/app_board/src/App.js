@@ -15,8 +15,9 @@ import LoginForm from "./Member/LoginForm";
 
 function App() {
     return(
-        <div><Router><Routes>
-                <Route path="/" exact element={<Home/>} />
+        <Router><Routes>
+                <Route path="/" exact element={<LoginForm />} />
+                <Route path="/home" element={<Home/>} />
                 <Route path="/board" element={<ArticleLists />} />
                 <Route path="/board/:articleId" element={<ArticleDetail/>} /> 
                 <Route path="/board/category/:categoryId" element={<ArticlesByCategory />} />
@@ -27,9 +28,9 @@ function App() {
                 <Route path="/category/add/" element={<CategoryRegister />} />
                 <Route path="/category/edit/:categoryId" element={<CategoryEdit />} />
 
-                <Route path="/member" element={<LoginForm />} />
-                <Route path="/member/signup" element={<MemberRegister />} />
-        </Routes></Router></div>
+                {/* <Route path="/login" element={<LoginForm />} /> */}
+                <Route path="/login/signup" element={<MemberRegister />} />
+        </Routes></Router>
     )
 }
 

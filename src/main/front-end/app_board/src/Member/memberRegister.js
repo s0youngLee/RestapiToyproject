@@ -29,7 +29,7 @@ function MemberRegister(){
 
     const signUp = (e) => {
         e.preventDefault();
-        
+
         if(Function.isEmpty(id)){
             alert("You must input your ID");
             return Error;
@@ -63,7 +63,7 @@ function MemberRegister(){
             }
         });
         
-        alert("Register Success");
+        alert("Register Success. \n Please Login.");
     }
 
     return (
@@ -77,7 +77,7 @@ function MemberRegister(){
                     <input placeholder="Password Check" type="password" onChange={checkPassword}></input> <br/>
                     <input placeholder="Name" onChange={inputName}></input> <br/>
                     <button type="submit" id="btn-post" style={{textAlign: "right"}}
-                            > register </button>
+                            onClick={() => {window.location.href=`/`}}> register </button>
                 </div>
             </form>
         </div>

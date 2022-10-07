@@ -38,7 +38,7 @@ function ArticleDetailData({data}) {
                     </div>
                     <br/> <br/>
                     <div style={{float: "right"}}>
-                        <Link to={`/`} id="none">
+                        <Link to={`/home`} id="none">
                                 <button id="btn-default"> Home </button></Link>
                         <Link to={`/board`} id="none">
                                 <button id="btn-default"> Board </button></Link>

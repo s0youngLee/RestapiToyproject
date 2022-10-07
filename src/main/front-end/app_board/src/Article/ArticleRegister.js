@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import {useState, useCallback} from 'react';
 import * as Function from "../func";
 import axios from "axios";
 
@@ -77,7 +77,8 @@ function ArticleRegister(){
                             onClick={() => {window.location.href=`/board`}}> Add </button>
                 </div>
             </form>
-            <button style={{textAlign: "center"}} id='btn-default' > Home </button>
+            <button style={{textAlign: "center"}} id='btn-default' 
+                    onClick={() => {window.location.href = `/home`}}> Home </button>
         </div>
     )
 }

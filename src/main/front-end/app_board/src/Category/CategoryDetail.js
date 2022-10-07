@@ -3,7 +3,6 @@ import * as Function from '../func';
 
 function CategoryDeatil () {
     const categoryList = Function.FetchingCategory();
-    // console.log(categoryList);
 
     return (
         <div>

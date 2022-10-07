@@ -3,7 +3,6 @@ package com.example.restapi.controller;
 import javax.annotation.PostConstruct;
 
 import org.springframework.context.annotation.Lazy;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,18 +23,18 @@ public class MemberController extends AbstractCrudMethod<MemberRequest,MemberRes
 		this.baseService = memberApiLogicService;
 	}
 	
-	// create == signup (회원가입)
-	// delete == withdraw (회원탈퇴)
-	// read == user info (마이페이지)
-	// update == edit user info(pw, name)(회원정보 수정)
+	// create == signup (member 데이터 추가)
+	// delete == withdraw (member 데이터 삭제)
+	// read == user info (member 데이터 정보)
+	// update == edit user info(pw, name)(member 데이터 수정)
 
-	@GetMapping("")
-	public String loginPage(){
-		return "Login Page";
-	}
+	// @GetMapping("")
+	// public String loginPage(){
+	// 	return "Login Page";
+	// }
 
 	// @PostMapping("/login")
-	// public Header logIn(@RequestBody Header<Member> request){
+	// public Header<MemberResponseDto> logIn(@RequestBody Header<MemberRequest> request) {
 	// 	return memberApiLogicService.logIn(request);
 	// }
 

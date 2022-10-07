@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
 
 export function isEmpty(value){
@@ -40,12 +41,10 @@ export function FetchingCategory(){
     const [loading, setLoading] = useState(true);
     
     useEffect(() => {
-        const res = fetch('/category')
-                    .then((res) => res.json())
-                    .then((result) => {
-                        setCategoryList(result);
-                        setLoading(false)
-                    });
+        axios.get('/category').then((res) => {
+            setCategoryList(res.data);
+            setLoading(false)
+        });
     }, [])
 
     if(!loading) {return categoryList.data;}

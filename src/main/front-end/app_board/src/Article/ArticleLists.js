@@ -15,11 +15,11 @@ function ArticleLists(){
     useEffect(()=> {
         axios.get('/board')
             .then((res) => {
-                setArticleList(res.data);
+                setArticleList(res?.data);
         });
     }, [])
 
-    const articleListArr = Array.from(articleList.data);
+    const articleListArr = Array.from(articleList?.data);
 
     return (
         <>  
@@ -45,7 +45,7 @@ function ArticleLists(){
             </table>
             <br/>
             <div style={{width: "100%", textAlign: "center"}}>
-                <Link to={`/`} id="none"> <button id="btn-default"> Home </button></Link>
+                <Link to={`/home`} id="none"> <button id="btn-default"> Home </button></Link>
                 <Link to={`/board/add/0`} id="none"> <button id="btn-post"> Write </button></Link>
             </div>
         </>
