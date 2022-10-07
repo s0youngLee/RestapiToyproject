@@ -16,6 +16,7 @@ function LoginForm(){
                 </p>
                     <input name="_csrf" type="hidden" value="af226a34-6934-4e3b-b60d-dfe50903a34a" />
                     <button className="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                    <button className="btn btn-lg btn-primary btn-blcok" type="submit">Logout</button>
             </form>
         </div>
     )

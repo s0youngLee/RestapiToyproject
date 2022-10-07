@@ -45,6 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 			.and()
 
+			// logout 부분 작성하기, login, logout 완료되면 member table과 연결하기
 			.logout()
 				.logoutUrl("http://localhost:3000");
 
