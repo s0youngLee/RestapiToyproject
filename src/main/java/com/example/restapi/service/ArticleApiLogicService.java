@@ -19,22 +19,18 @@ import com.example.restapi.model.network.response.ArticleListResponseDto;
 import com.example.restapi.model.network.response.ArticleResponseDto;
 import com.example.restapi.repository.ArticleRepository;
 import com.example.restapi.repository.CategoryRepository;
-import com.example.restapi.repository.CommentRepository;
 
 @Service
 public class ArticleApiLogicService extends AbstractCrudMethod<ArticleRequest, ArticleResponseDto> {
     private final CategoryRepository categoryRepository;
     private final ArticleRepository articleRepository;
-    private final CommentRepository commentRepository;
     private final ArticleApiLogicService articleApiLogicService;
     private final CommentApiLogicService commentApiLogicService;
 
     public ArticleApiLogicService(@Lazy CategoryRepository categoryRepository, @Lazy ArticleRepository articleRepository,
-        @Lazy CommentRepository commentRepository, @Lazy ArticleApiLogicService articleApiLogicService,
-        CommentApiLogicService commentApiLogicService) {
+        @Lazy ArticleApiLogicService articleApiLogicService, CommentApiLogicService commentApiLogicService) {
         this.categoryRepository = categoryRepository;
         this.articleRepository = articleRepository;
-        this.commentRepository = commentRepository;
         this.articleApiLogicService = articleApiLogicService;
         this.commentApiLogicService = commentApiLogicService;
     }

@@ -1,5 +1,6 @@
 import CommentEdit from "./CommentEdit";
 import CommentRegister from "./CommentRegister";
+import axios from "axios";
 
 function Comment({article}){
     const articleDetail = article;
@@ -8,7 +9,7 @@ function Comment({article}){
         <div>
             <CommentRegister />
             <div>
-                <b>&lt;Comment List&gt; : {articleDetail.comment.length} ea</b>
+                <b>&lt;Comment List&gt; : {articleDetail?.comment?.length} ea</b>
                 <div>{articleDetail?.comment?.map((comment, index)=>{
                     return <CommentData key={index} data={comment}/>;
                 })}</div>
@@ -19,9 +20,6 @@ function Comment({article}){
 
 
 function CommentData({index, data}){
-
-    const axios = require('axios');
-    
     function deleteComment(articleId, commentId) {
         alert("Comment Deleted");
         axios.delete(`/comment/${commentId}`);

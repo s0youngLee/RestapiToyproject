@@ -2,7 +2,7 @@ import {Link} from 'react-router-dom';
 import * as Function from '../func';
 
 function CategoryDeatil () {
-    const categoryList = Function.FetchingCategory();
+    const categoryList = Function.Fetching("category", 1);
 
     return (
         <div>
@@ -10,7 +10,7 @@ function CategoryDeatil () {
                 return <li key={index}><CategoryDeatilData data={category} /></li>
             })}
             <div style={{width: "100%", textAlign: "center", marginTop:"10px"}}>
-                <Link to={`/home`} id="none"> <button id="btn-default"> Home </button></Link>
+                <Link to={`/`} id="none"> <button id="btn-default"> Home </button></Link>
                 <Link to={`/category/add`} id="none"> <button id="btn-post"> Add Category </button></Link>
             </div>
         </div>
@@ -18,20 +18,6 @@ function CategoryDeatil () {
 }
 
 function CategoryDeatilData({data}) {
-
-    function deleteCategory(categoryId, categoryName) {
-        const axios = require('axios');
-
-        if(categoryId===0){
-            alert("You cannot Remove DEFAULT category!!");
-            return Error;
-        }else{
-            alert("Deleted Category " + categoryName + ", the articles are moved to DEFAULT category.");
-            axios.delete(`/category/${categoryId}`);
-            window.location.href="/board/category/0";
-        }
-    }
-
     return (
         <>
         <div>
@@ -42,8 +28,7 @@ function CategoryDeatilData({data}) {
         <div>
             <Link to={`/board/category/${data.id}`}> <button id="btn-default"> Go to {data.name} </button></Link>
             <Link to={`/category/edit/${data.id}`} id="none"> <button id="btn-post"> Edit</button></Link>
-            <button id="btn-remove" onClick={() => { deleteCategory(data.id, data.name) }}> 
-                        Delete </button>
+            <button id="btn-remove" onClick={() => { Function.Delete("category", data.id) }}> Delete </button>
         </div>
         </>
     )

@@ -27,6 +27,7 @@ public class CategoryApiLogicService extends AbstractCrudMethod<CategoryRequest,
 
     @Override
     public Header<CategoryResponseDto> create(Header<CategoryRequest> request) {
+        System.out.println(request);
         CategoryRequest body = request.getData();
 
         Category category = Category.builder()

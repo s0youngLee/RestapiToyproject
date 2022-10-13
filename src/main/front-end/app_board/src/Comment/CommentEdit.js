@@ -21,15 +21,22 @@ function CommentEditForm({data}){
     }, [])
 
     const editComment = (e) => {
-        console.log(Function.isEmpty(e.target.value));
         if(Function.isEmpty(e.target.value)){ setContent(data.content); }
 
         axios.put(`/comment/${data.id}`, {
             data : {
                 content : content
             }
+        }).then(() => {
+            window.location.href=`/board/${data?.article_id}`;
+        }).catch((e) => {
+            alert("Failed to edit comment.\nPlease try again.");
+            console.log(e.response);
         })
-        alert("comment edited.");
+
+        if(e) {
+            alert("comment edited.");
+        }
     }
 
     return (

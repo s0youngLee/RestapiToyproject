@@ -3,21 +3,13 @@ import Comment from "../Comment/Comment";
 import * as Function from "../func";
 
 function ArticleDeatil(){
-    const articleDetail = Function.FetchingArticle(Function.getUrlId());
+    const articleDetail = Function.Fetching("board", 1);
 
-    if(!articleDetail) { return <h1> Loading .. </h1>}
-    else { return <ArticleDetailData data={articleDetail?.data}/>; }
+    if(!articleDetail) { return <div> Loading .. </div>}
+    else { return <ArticleDetailData data={articleDetail}/>; }
 }
 
 function ArticleDetailData({data}) {
-    const axios = require('axios');
-
-    function deleteArticle(articleId) {
-        alert("Aritcle Deleted");
-        axios.delete(`/board/${articleId}`);
-        window.location.href=`/board/category/${data?.category_id}`;
-    }
-
     return (
         <div style={{marginLeft: "10px"}}>
             <div style={{borderBottom: "2.5px solid black", padding: "10px", overflow: "auto"}}>
@@ -34,11 +26,11 @@ function ArticleDetailData({data}) {
                         <Link to={`/board/edit/${data?.id}`} id="none" >
                             <button style={{float: "right"}} id="btn-post"> Edit </button></Link>
                         <button id="btn-remove" 
-                                onClick={() => { deleteArticle(data.id) }}>Delete</button>
+                                onClick={() => { Function.Delete("board", data.id) }}>Delete</button>
                     </div>
                     <br/> <br/>
                     <div style={{float: "right"}}>
-                        <Link to={`/home`} id="none">
+                        <Link to={`/`} id="none">
                                 <button id="btn-default"> Home </button></Link>
                         <Link to={`/board`} id="none">
                                 <button id="btn-default"> Board </button></Link>

@@ -3,11 +3,6 @@ import * as Function from "../func";
 import axios from "axios";
 
 function ArticleRegister(){
-    let categoryId = Number(Function.getUrlId());
-    if( Function.getUrlId() === ("board" || "add")){ 
-        categoryId = 0;
-    }
-    
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [createdId, setCreatedId] = useState("");
@@ -25,12 +20,14 @@ function ArticleRegister(){
     }, [])
 
     
-    const [selected, setSelected] = useState(categoryId);
+    const [selected, setSelected] = useState(Number(Function.getUrlId(1)));
     const handleSelect = (e) => {
         setSelected(e.target.value);
     };
 
     const addArticle = (e) => {
+        e.preventDefault();
+        
         if(Function.isEmpty(createdId)){
             alert("You must input your ID!!!");
             return Error;
@@ -53,9 +50,10 @@ function ArticleRegister(){
                 created_id : createdId,
                 category_id : selected
             }
+        }).catch((error) => {
+            alert("Cannot register an article.\nPlease Login.");
+            console.log(error);   
         });
-        
-        alert("Article registerd");
     }
 
     return(
@@ -66,7 +64,7 @@ function ArticleRegister(){
                     <b style={{textAlign: "center"}}> Add Article </b> <br/>
                     <b> Category : </b>
                     <select onChange={handleSelect} value={selected}>
-                        {Function.FetchingCategory()?.map((category, index) => {
+                        {Function.Fetching("category", NaN)?.map((category, index) => {
                             return <option key={index} value={category.id}>{category.name}</option>;
                         })}
                     </select><br/>
@@ -78,7 +76,7 @@ function ArticleRegister(){
                 </div>
             </form>
             <button style={{textAlign: "center"}} id='btn-default' 
-                    onClick={() => {window.location.href = `/home`}}> Home </button>
+                    onClick={() => {window.location.href = `/`}}> Home </button>
         </div>
     )
 }

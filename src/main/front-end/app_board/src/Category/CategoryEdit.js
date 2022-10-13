@@ -1,27 +1,15 @@
-import {useState, useCallback, useEffect} from "react";
+import axios from "axios";
+import {useState, useCallback} from "react";
 import * as Function from "../func";
 
 
 function CategoryEdit(){
-    const [category, setCategory] = useState({
-        data : {}
-    });
-    const [loading, setLoading] = useState(true);
-    
-    useEffect(()=> {
-        const RES = fetch(`/category/${Function.getUrlId()}`)
-        .then(res =>  res.json())
-        .then(result => {
-            setCategory(result);
-            setLoading(false);
-        });
-    },[]);
-
-    if(loading) {return <div> Loading ... </div>}
+    const category = Function.Fetching("category", 1);
+    if(!category) {return <div> Loading ... </div>}
     else { 
         return (
             <div style={{textAlign: "center"}}>
-                <CategoryEditForm categoryId={Function.getUrlId()} nameOrigin={category.data?.name}/>
+                <CategoryEditForm categoryId={Function.getUrlId(1)} nameOrigin={category?.name}/>
                 <button id="btn-remove" 
                         onClick={() => {window.location.href=`/category`}}> Back </button>
             </div>
@@ -30,13 +18,12 @@ function CategoryEdit(){
 }
 
 function CategoryEditForm({categoryId, nameOrigin}){
-    const axios = require('axios');
     const [categoryName, setCategoryName] = useState(nameOrigin);
     
     const editName = useCallback( e => {
         setCategoryName(e.target.value);
     }, [])
-
+    
     const editCategory = (e) => {
         if(Function.isEmpty(e.target.value)){ setCategoryName(nameOrigin); }
 
@@ -44,8 +31,13 @@ function CategoryEditForm({categoryId, nameOrigin}){
             data : {
                 name: categoryName
             }
-        })
-        alert("category: " + nameOrigin + " id: " + categoryId + " edited. \n After : " + categoryName);
+        }).then(() => {
+            alert("Category edited. Move to " + categoryName);
+            window.location.replace("/category");
+        }).catch((e) => {
+            alert("Failed to edit category.\nError : " + e.response.statusText);
+            window.location.replace("/category");
+        });
     }
 
 
@@ -56,8 +48,7 @@ function CategoryEditForm({categoryId, nameOrigin}){
                 <b style={{textAlign: "center"}}> Edit Category </b> <br/>
                 <input  placeholder={categoryId} readOnly></input> <br/>
                 <input  placeholder={nameOrigin} onChange={editName}></input> <br/>
-                <button type="submit" id="btn-post" style={{textAlign: "right"}}
-                     onClick={() => {window.location.href=`/category`}}> Save </button>
+                <button type="submit" id="btn-post" style={{textAlign: "right"}}> Save </button>
             </div>
         </form></>
     )

@@ -1,11 +1,10 @@
 import React,{useState, useCallback} from "react";
 import * as Function from "../func";
+import axios from "axios";
 
 function CommentRegister(){    
     const [userId, setUserId] = useState("unknown");
     const [content, setContent] = useState("");
-
-    const axios = require('axios');
 
     const addUserId = useCallback(e => {
         setUserId(e.target.value);
@@ -33,12 +32,18 @@ function CommentRegister(){
             data: {
                 user_id: userId,
                 content: content,
-                article_id: Function.getUrlId()
+                article_id: Function.getUrlId(1)
             }
-        }).then(() => {window.location.href=`/board/${Function.getUrlId()}`})
+        }).then(() => {
+            window.location.href=`/board/${Function.getUrlId(1)}`;
+        }).catch((e) => {
+            alert("Failed to add comment.\nPlease try again.");
+        });
         
-        
-        alert("comment registerd");
+        if(e) {
+            alert("comment registerd");
+            return window.location.href=`/board/${Function.getUrlId(1)}`;
+        }
     }
 
     return(
@@ -50,7 +55,8 @@ function CommentRegister(){
                 <br/>
                 <textarea id="text-box" placeholder="Add a comment"
                           onChange={addContent}></textarea> 
-                <button type="submit" id="btn-post"> Add </button>
+                <button type="submit" id="btn-post"
+                        onClick={() => {window.location.href=`/board/${Function.getUrlId(1)}`}}> Add </button>
             </div>
             <br/>
         </form>

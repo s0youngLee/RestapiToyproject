@@ -1,8 +1,7 @@
 import React, {useState, useCallback} from "react";
+import axios from "axios";
 
-function CategoryRegister(){
-    const axios = require('axios');
-    
+function CategoryRegister(){    
     const [id, setId] = useState("");
     const [name, setName] = useState("");
 
@@ -37,9 +36,14 @@ function CategoryRegister(){
                 id : id,
                 name : name
             }
+        }).then(() => {
+            alert("Category registerd. Move to " + name);
+            window.location.replace(`/board/category/${id}`);
+        }).catch((e) => {
+            alert("Failed to add category.\nError : " + e.response.statusText);
+            window.location.replace("/category");
         });
-        
-        alert("Category registerd");
+
     }
 
     return(
@@ -50,11 +54,7 @@ function CategoryRegister(){
                     <b style={{textAlign: "center"}}> Add Category </b> <br/>
                     <input  placeholder="Category ID" onChange={addId}></input> <br/>
                     <input  placeholder="Category Name" onChange={addName}></input> <br/>
-                    <button type="submit" id="btn-post" style={{textAlign: "right"}}
-                            onClick={() => {
-                                if((!isEmpty(id))&&(!isEmpty(name))){
-                                    window.location.href=`/board/category/${id}`
-                                } }}> Add </button>
+                    <button type="submit" id="btn-post" style={{textAlign: "right"}}> Add </button>
                 </div>
             </form>
         </>
