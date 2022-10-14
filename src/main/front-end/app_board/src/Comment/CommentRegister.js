@@ -1,28 +1,15 @@
 import React,{useState, useCallback} from "react";
-import * as Function from "../func";
+import { getUrlId, username, isEmpty } from "../func";
 import axios from "axios";
 
-function CommentRegister(){    
-    const [userId, setUserId] = useState("unknown");
+function CommentRegister(){
     const [content, setContent] = useState("");
-
-    const addUserId = useCallback(e => {
-        setUserId(e.target.value);
-    }, [])
     
     const addContent = useCallback(e => {
         setContent(e.target.value);
     }, [])
-    
-    const isEmpty = function(value){
-        if(value === "" || value === null || value === undefined || ( value !== null && typeof value === "object" && !Object.keys(value).length)){
-            return true;
-        }else { return false; }
-    }
 
-    const addComment = (e) => {
-        if(isEmpty(userId)){ setUserId("unknown"); }
-        
+    const addComment = (e) => {        
         if(isEmpty(content)){
             alert("You must input content!!!");
             return Error;
@@ -30,33 +17,27 @@ function CommentRegister(){
 
         axios.post(`/comment`, {
             data: {
-                user_id: userId,
+                user_id: username(),
                 content: content,
-                article_id: Function.getUrlId(1)
+                article_id: getUrlId(1)
             }
-        }).then(() => {
-            window.location.href=`/board/${Function.getUrlId(1)}`;
+        }).then((res) => {
+            alert("Comment Registered.");
+            window.location.href=`/board/${getUrlId(1)}`;
         }).catch((e) => {
             alert("Failed to add comment.\nPlease try again.");
+            window.location.replace(`/board/${getUrlId(1)}`);
         });
-        
-        if(e) {
-            alert("comment registerd");
-            return window.location.href=`/board/${Function.getUrlId(1)}`;
-        }
     }
 
     return(
         <form onSubmit={addComment}>
             <div style={{height: "160px"}}>
                 <b> Add Comment</b> <br/>
-                <input placeholder="User Id"
-                       onChange={addUserId}></input>
-                <br/>
+                    User ID : {username()} <br/>
                 <textarea id="text-box" placeholder="Add a comment"
                           onChange={addContent}></textarea> 
-                <button type="submit" id="btn-post"
-                        onClick={() => {window.location.href=`/board/${Function.getUrlId(1)}`}}> Add </button>
+                <button type="submit" id="btn-post" > Add </button>
             </div>
             <br/>
         </form>

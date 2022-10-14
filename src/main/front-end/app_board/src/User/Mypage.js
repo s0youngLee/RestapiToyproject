@@ -1,9 +1,9 @@
 import { split } from "lodash";
 import { Link } from "react-router-dom";
-import * as Function from "../func";
+import { Fetching, username } from "../func";
 
 function MyPage(){
-    const user = Function.Fetching("user", 1);
+    const user = Fetching("user", username());
 
     if(!user) { return <div> Loading ... </div> }
     else {

@@ -1,14 +1,14 @@
 import {useState, useCallback} from "react";
-import * as Function from "../func";
+import { isEmpty } from "../func";
 
 function CommentEdit({data}){
     const [visible, setVisible] = useState(false);
 
     return  (
-        <><button id="btn-post" onClick={() => {
-            setVisible(!visible);
-        }}> {visible ? "Cancel" : "Edit" } </button>
-        {visible && <CommentEditForm data={data} />} </>
+        <>
+            <button id="btn-post" onClick={() => setVisible(!visible)}> {visible ? "Cancel" : "Edit" } </button>
+            {visible && <CommentEditForm data={data} />} 
+        </>
     )
 }
 
@@ -21,22 +21,20 @@ function CommentEditForm({data}){
     }, [])
 
     const editComment = (e) => {
-        if(Function.isEmpty(e.target.value)){ setContent(data.content); }
+        if(isEmpty(e.target.value)){ setContent(data.content); }
 
         axios.put(`/comment/${data.id}`, {
             data : {
                 content : content
             }
         }).then(() => {
+            alert("comment edited.");
             window.location.href=`/board/${data?.article_id}`;
         }).catch((e) => {
             alert("Failed to edit comment.\nPlease try again.");
+            window.location.href=`/board/${data?.article_id}`;
             console.log(e.response);
         })
-
-        if(e) {
-            alert("comment edited.");
-        }
     }
 
     return (
@@ -46,8 +44,7 @@ function CommentEditForm({data}){
                 <b style={{textAlign: "center"}}> Edit comment </b> <br/>
                 <input  placeholder={data?.user_id} readOnly></input> <br/>
                 <input  placeholder={data?.content} onChange={editcontent}></input> <br/>
-                <button type="submit" id="btn-post" style={{textAlign: "right"}}
-                     onClick={() => {window.location.href=`/board/${data?.article_id}`}}> Save </button>
+                <button type="submit" id="btn-post" style={{textAlign: "right"}}> Save </button>
             </div>
         </form></>
     )

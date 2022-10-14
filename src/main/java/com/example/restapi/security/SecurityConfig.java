@@ -1,28 +1,18 @@
 package com.example.restapi.security;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -44,9 +34,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.csrf().disable();
 		http
+			//나중에 하드코딩방식 리팩토링하기
 			.authorizeRequests()
 			.antMatchers("/", "/user", "/userlogin/**").permitAll()
-			.antMatchers(HttpMethod.GET, "/board", "/comment/**", "/category").permitAll()
+			.antMatchers(HttpMethod.GET, "/board/**", "/comment/**", "/category").permitAll()
 
 			.antMatchers("/userlogin?logout").access("hasRole('ADMIN') or hasRole('USER')")
 			.antMatchers(HttpMethod.POST, "/board/**").access("hasRole('ADMIN') or hasRole('USER')")
@@ -67,48 +58,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.successHandler((request, response, authentication) -> {
 							HttpSession session = request.getSession();
 							System.out.println("authentication : " + authentication.getName());
-
-							session.setAttribute("username", authentication.getName());
-							System.out.println(session.getAttribute("username"));
-							session.getAttribute("username");//세션 read
-							response.addHeader("username", authentication.getName());
-							// securityLoginWithoutLoginForm(request, authentication);
 							response.sendRedirect("http://localhost:3000/board");
 						}
 					)
 				.failureHandler((request, response, exception) -> {
 						System.out.println("exception : " + exception.getMessage());
-						response.sendRedirect("http://localhost:3000/login");
+						response.sendRedirect("http://localhost:3000");
 					}
 				)
 			.and()
 			.logout()
 				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 				.addLogoutHandler(new TaskImplementingLogoutHandler()).permitAll()
+				.deleteCookies("remove")
+				.invalidateHttpSession(false)
 				.logoutSuccessUrl("/http://localhost:3000");
-
-			// .and()
-			//
-			// .logout()
-			// 	.deleteCookies("remove")
-			// 	.invalidateHttpSession(false);
 	}
 
-	private void securityLoginWithoutLoginForm(HttpServletRequest req, Authentication auth) {
-		//로그인 세션에 들어갈 권한을 설정합니다.
-		List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
-		list.add(new SimpleGrantedAuthority(auth.getAuthorities().toString()));
-
-		SecurityContext sc = SecurityContextHolder.getContext();
-		//아이디, 패스워드, 권한을 설정합니다. 아이디는 Object단위로 넣어도 무방하며
-		//패스워드는 null로 하여도 값이 생성됩니다.
-		sc.setAuthentication(new UsernamePasswordAuthenticationToken(auth, null, list));
-		HttpSession session = req.getSession(true);
-
-		//위에서 설정한 값을 Spring security에서 사용할 수 있도록 세션에 설정해줍니다.
-		session.setAttribute(HttpSessionSecurityContextRepository.
-			SPRING_SECURITY_CONTEXT_KEY, sc);
-	}
 
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -120,16 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public PasswordEncoder encoder() {
 		return new BCryptPasswordEncoder();
 	}
-	//
-	// @Bean
-	// public UserDetailsService userDetailsService() {
-	// 	PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-	// 	UserDetails user = User.withUsername("Lana")
-	// 		.password(encoder.encode("anniversary1023"))
-	// 		.roles("ADMIN")
-	// 		.build();
-	// 	return new InMemoryUserDetailsManager(user);
-	// }
+
 
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {

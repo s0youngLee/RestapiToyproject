@@ -1,11 +1,11 @@
 import {Link} from 'react-router-dom';
 import Article from "../Article/Article";
-import * as Function from "../func";
+import {Fetching, getUrlId} from "../func";
 
 
 function ArticlesByCategory(){
-    const category = Function.Fetching("category", 1);
-    const articleByCategory = Function.Fetching("board/category", 1);
+    const category = Fetching("category", 1);
+    const articleByCategory = Fetching("board/category", 1);
     
     if(!articleByCategory) { return <div> Loading ... </div> }
     else {
@@ -36,7 +36,7 @@ function ArticlesByCategory(){
             <div style={{width: "100%", textAlign: "center"}}>
                 <Link to={`/`} id="none"> <button id="btn-default"> Home </button></Link>
                 <Link to={`/board`} id="none"><button id="btn-default"> Board </button></Link>
-                <Link to={`/board/add/${Function.getUrlId(1)}`} id="none"> <button id="btn-post"> Write </button></Link> 
+                <Link to={`/board/add/${getUrlId(1)}`} id="none"> <button id="btn-post"> Write </button></Link> 
                 <br/>
             </div>
         </div>

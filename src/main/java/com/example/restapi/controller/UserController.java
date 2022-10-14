@@ -32,15 +32,16 @@ public class UserController {
 	public String login(@RequestBody Header<LoginInfo> loginInfo) {
 		LoginInfo info = loginInfo.getData();
 		UserInfo loginUser = userService.login(info.getEmail(), info.getPassword());
-		return "redirect:/userlogin";
+		return "redirect:/";
 	}
 
 	@PostMapping("/user")
-	public String signup(@RequestBody Header<UserRequest> request) { // 회원 추가
+	public String signup(@RequestBody Header<UserRequest> request) {
 		userService.register(request);
-		return "redirect:/user";
+		return "redirect:/";
 	}
 
+	// 마이페이지 - 현재 session에서 username을 front단에서 가져오는중. 백단에서 보내고 response로 받아서 해결할 수 있게 해볼 것
 	@GetMapping("/user/{email}")
 	public Header<UserInfo> loadUserInfo(@PathVariable String email){
 		return userService.loadInfo(email);

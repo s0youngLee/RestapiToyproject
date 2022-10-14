@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import * as Function from "../func";
+import { isEmpty } from "../func";
 import axios from "axios";
 import "../App.css";
 
@@ -28,31 +28,26 @@ function SignupForm(){
 
 
     const signUp = (e) => {
-        if(Function.isEmpty(email)){
+        e.preventDefault();
+        if(isEmpty(email)){
             alert("You must input your Email");
             return Error;
         }else{setEmail(email);}
 
-        if(Function.isEmpty(password)){
+        if(isEmpty(password)){
             alert("You must input password");
             return Error;
         }else{setPassword(password);}
 
-        let userData = {
+        axios.post('/user', {
             data : {
                 email : email,
                 password : password,
                 auth : auth
             }
-        }
-
-        axios.post('/user', JSON.stringify(userData), {
-            headers: {
-                "Content-Type": `application/json`
-            }
-        }).then(() => {
+        }).then((res) => {
             alert("Register Successed.\nPlease login.");
-            window.location.href("/login");
+            window.location.href="/login";
         }).catch((e) => {
             alert("Error. Please try again.\n" + e.response);
             window.location.replace("/login/signup");
@@ -71,7 +66,7 @@ function SignupForm(){
                     <input type="radio" name="auth" value="ROLE_ADMIN" style={{"width": "30px"}} onChange={setAdmin}/> ADMIN ||
                     <input type="radio" name="auth" value="ROLE_USER" defaultChecked="checked" style={{"width": "30px"}} onChange={setUser}/> USER <br/>
                 </p>
-                <button type="submit" id="btn-post" onClick={signUp}>Join</button>
+                <button type="submit" id="btn-post">Join</button>
             </form>
 
             <Link id="none" to="/login"><button id="btn-default">Go to Login →</button></Link>

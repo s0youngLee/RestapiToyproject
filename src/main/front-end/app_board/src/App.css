@@ -55,8 +55,7 @@ li {
   font-weight: bolder;
   margin: 5px;
   vertical-align: middle;
-}
-#btn-default:hover{
+}#btn-default:hover{
   background-color: slateblue;
   color: aliceblue;
 }
@@ -76,8 +75,7 @@ li {
   text-overflow: "ellipsis";
   
   margin: 5px;
-}
-#btn-category:hover{
+}#btn-category:hover{
   background-color: slateblue;
   color: aliceblue;
 }
@@ -90,8 +88,24 @@ li {
   font-weight: bolder;
   margin: 5px;
   vertical-align: middle;
+}#btn-post:hover{
+  background-color: mediumturquoise;
+  color: aliceblue;
 }
-#btn-post:hover{
+
+#btn-user{
+  width: 100px;
+  height: 50px;
+  position: absolute;
+  top: 10px;
+  margin: 5px;
+  border: 1px solid mediumturquoise;
+  border-radius: 5px;
+  color: mediumturquoise;
+  background-color: white;
+  vertical-align: middle;
+  font-weight: bolder;
+}#btn-user:hover{
   background-color: mediumturquoise;
   color: aliceblue;
 }
@@ -104,8 +118,7 @@ li {
   font-weight: bolder;
   margin: 5px;
   vertical-align: middle;
-}
-#btn-remove:hover{
+}#btn-remove:hover{
   background-color: lightcoral;
   color: aliceblue;
 }
@@ -134,7 +147,6 @@ input{
 
 #div-box{
   text-align: center;
-  margin-top: 10px;
   margin-bottom: 10px;
 }
 

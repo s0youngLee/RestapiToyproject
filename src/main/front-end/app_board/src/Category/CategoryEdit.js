@@ -1,15 +1,15 @@
 import axios from "axios";
 import {useState, useCallback} from "react";
-import * as Function from "../func";
+import { Fetching, getUrlId, isEmpty } from "../func";
 
 
 function CategoryEdit(){
-    const category = Function.Fetching("category", 1);
+    const category = Fetching("category", 1);
     if(!category) {return <div> Loading ... </div>}
     else { 
         return (
             <div style={{textAlign: "center"}}>
-                <CategoryEditForm categoryId={Function.getUrlId(1)} nameOrigin={category?.name}/>
+                <CategoryEditForm categoryId={getUrlId(1)} nameOrigin={category?.name}/>
                 <button id="btn-remove" 
                         onClick={() => {window.location.href=`/category`}}> Back </button>
             </div>
@@ -25,7 +25,7 @@ function CategoryEditForm({categoryId, nameOrigin}){
     }, [])
     
     const editCategory = (e) => {
-        if(Function.isEmpty(e.target.value)){ setCategoryName(nameOrigin); }
+        if(isEmpty(e.target.value)){ setCategoryName(nameOrigin); }
 
         axios.put(`/category/${categoryId}`, {
             data : {

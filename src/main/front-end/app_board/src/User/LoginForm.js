@@ -4,7 +4,6 @@ import "../App.css";
 function LoginForm(){
     function userLogin() {
         sessionStorage.setItem('username', document.getElementById("username").value);
-        alert(sessionStorage.getItem('username'));
     }
 
     return (

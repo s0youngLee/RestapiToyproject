@@ -31,7 +31,7 @@ function App() {
 
                 <Route path="/login" element={<LoginForm/>} />
                 <Route path="/login/signup" element={<SignupForm />} />
-                <Route path="/mypage/:username" element={<MyPage/>} />
+                <Route path="/mypage" element={<MyPage/>} />
         </Routes></Router>
     )
 }

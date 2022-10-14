@@ -1,4 +1,5 @@
 import {Link} from 'react-router-dom';
+import { isLogin } from './func';
 
 const Home = () => {
     return(
@@ -6,10 +7,15 @@ const Home = () => {
             <h1> Home Page </h1>
             <p> App_Board Front Tutorial </p>
 
-            {/*  사용자별 로그인 구현 후, 로그인이 되어있으면 Logout 보이게, 아니라면 Login 보이게 설정 / Logout 일 경우 로그아웃 호출*/}
-
             <Link id='none' to="/board"><button id="btn-default"> Board </button></Link>
-            <Link id='none' to="/login"><button id="btn-default"> Login </button></Link>
+
+            <Link id="none" to={`/login`}>
+                <button id="btn-default" style={isLogin() ? {display : "none"} : {right: "10px"}}> Login </button>
+            </Link>
+            <form action="/userlogin?logout" method="post">
+                <button style={isLogin() ? {right: "10px"} : {display : "none"}} type="submit" id="btn-default"
+                        onClick={() => sessionStorage.removeItem('username')} > Logout </button>
+            </form>
 
             <br/><br/><br/>
         </div>

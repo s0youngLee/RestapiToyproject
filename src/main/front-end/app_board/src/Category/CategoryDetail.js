@@ -1,8 +1,8 @@
 import {Link} from 'react-router-dom';
-import * as Function from '../func';
+import { Delete, Fetching }from '../func';
 
 function CategoryDeatil () {
-    const categoryList = Function.Fetching("category", 1);
+    const categoryList = Fetching("category", 1);
 
     return (
         <div>
@@ -27,8 +27,12 @@ function CategoryDeatilData({data}) {
         </div>
         <div>
             <Link to={`/board/category/${data.id}`}> <button id="btn-default"> Go to {data.name} </button></Link>
+            {(data.id !== 0) && <>
             <Link to={`/category/edit/${data.id}`} id="none"> <button id="btn-post"> Edit</button></Link>
-            <button id="btn-remove" onClick={() => { Function.Delete("category", data.id) }}> Delete </button>
+            <button id="btn-remove" 
+                    style={{}}
+                    onClick={() => { Delete("category", data.id) }}> Delete </button>
+            </>}
         </div>
         </>
     )
