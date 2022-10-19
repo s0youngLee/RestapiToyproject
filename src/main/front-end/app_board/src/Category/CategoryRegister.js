@@ -1,4 +1,5 @@
-import React, {useState, useCallback} from "react";
+import { useState, useCallback } from "react";
+import _ from 'lodash';
 import axios from "axios";
 
 function CategoryRegister(){    
@@ -13,20 +14,15 @@ function CategoryRegister(){
         setName(e.target.value);
     }, [])
     
-    
-    const isEmpty = function(value){
-        if(value === "" || value === null || value === undefined || ( value !== null && typeof value === "object" && !Object.keys(value).length)){
-            return true;
-        }else { return false; }
-    }
 
     const addCategory = (e) => {
-        if(isEmpty(id)){
+        e.preventDefault();
+        if(_.isEmpty(id)){
             alert("You must input your ID!!!");
             return Error;
         }else{setId(id);}
 
-        if(isEmpty(name)){
+        if(_.isEmpty(name)){
             alert("You must input Name!!!");
             return Error;
         }else{setName(name);}
@@ -41,7 +37,7 @@ function CategoryRegister(){
             window.location.replace(`/board/category/${id}`);
         }).catch((e) => {
             alert("Failed to add category.\nError : " + e.response.statusText);
-            window.location.replace("/category");
+            window.location.reload();
         });
 
     }
@@ -54,7 +50,7 @@ function CategoryRegister(){
                     <b style={{textAlign: "center"}}> Add Category </b> <br/>
                     <input  placeholder="Category ID" onChange={addId}></input> <br/>
                     <input  placeholder="Category Name" onChange={addName}></input> <br/>
-                    <button type="submit" id="btn-post" style={{textAlign: "right"}}> Add </button>
+                    <button type="submit" id="btn-post" > Add </button>
                 </div>
             </form>
         </>

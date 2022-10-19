@@ -1,8 +1,9 @@
 import {useState, useCallback} from 'react';
-import {getUrlId, isEmpty, Fetching, username} from "../func";
+import {getUrlId, FetchWithoutId} from "../func";
 import axios from "axios";
+import _ from 'lodash';
 
-function ArticleRegister(){
+function ArticleRegister({user}){
     const urlId = getUrlId(1);
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
@@ -22,12 +23,12 @@ function ArticleRegister(){
 
     const addArticle = (e) => {
         e.preventDefault();
-        if(isEmpty(title)){
+        if(_.isEmpty(title)){
             alert("You must input title!!!");
             return Error;
         }else{setTitle(title);}
 
-        if(isEmpty(content)){
+        if(_.isEmpty(content)){
             alert("You must input content!!!");
             return Error;
         }else{setContent(content);}
@@ -36,7 +37,7 @@ function ArticleRegister(){
             data : {
                 title : title,
                 content : content,
-                created_id : username(),
+                created_id : user?.nick_name,
                 category_id : selected
             }
         }).then((res) => {
@@ -54,10 +55,10 @@ function ArticleRegister(){
             <form onSubmit={addArticle}>
                 <div id="div-box">
                     <b style={{textAlign: "center"}}> Add Article </b> <br/>
-                    User ID : {username()} <br/>
+                    User ID : {user?.nick_name} <br/>
                     <b> Category : </b>
                     <select onChange={handleSelect} value={selected}>
-                        {Fetching("category", 3)?.map((category, index) => {
+                        {Array.from(FetchWithoutId("category").data)?.map((category, index) => {
                             return <option key={index} value={category.id}>{category.name}</option>;
                         })}
                     </select><br/>

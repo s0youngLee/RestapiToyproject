@@ -90,7 +90,7 @@ public class CategoryApiLogicService extends AbstractCrudMethod<CategoryRequest,
         return CategoryResponseDto.builder()
                 .id(category.getId())
                 .name(category.getName())
-                .articleCnt(category.getArticleList().size())
+                .articleCnt(category.getArticleList() == null ? 0 : category.getArticleList().size())
                 .build();
     }
 }

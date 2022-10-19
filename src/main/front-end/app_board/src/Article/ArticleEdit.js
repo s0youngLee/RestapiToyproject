@@ -1,19 +1,19 @@
 import {useState, useCallback} from "react";
-import { isEmpty, Fetching, username } from "../func";
+import { FetchWithId, FetchWithoutId } from "../func";
 import axios from "axios";
+import _ from "lodash";
 
-function ArticleEdit(){
-    const articleDetail = Fetching("board", 1);
-    const categoryList = Fetching("category", NaN);
+function ArticleEdit({user}){
+    const articleDetail = FetchWithId("board", 1);
+    const categoryList = Array.from(FetchWithoutId("category").data);
 
     if(!articleDetail) {return <div> Loading ... </div>}
     else { 
-        return <ArticleEditForm articleDetail={articleDetail} categoryList={categoryList}/>
+        return <ArticleEditForm articleDetail={articleDetail} categoryList={categoryList} user={user}/>
     }
 }
 
-
-function ArticleEditForm({articleDetail, categoryList}) {
+function ArticleEditForm({articleDetail, categoryList, user}) {
     const [title, setTitle] = useState(articleDetail.title);
     const [content, setContent] = useState(articleDetail.content);
     const [selected, setSelected] = useState(articleDetail.category_id);
@@ -32,38 +32,39 @@ function ArticleEditForm({articleDetail, categoryList}) {
 
     const editArticle = (e) => {
         e.preventDefault();
-        if(isEmpty(e.target.value)){ setTitle(articleDetail.title); }
-        if(isEmpty(e.target.value)){ setContent(articleDetail.content); }
+        if(_.isEmpty(e.target.value)){ setTitle(articleDetail.title); }
+        if(_.isEmpty(e.target.value)){ setContent(articleDetail.content); }
         
         axios.put(`/board/${articleDetail?.id}`, {
             data : {
                 title : title,
                 content : content,
-                created_id : username(),
+                created_id : user?.nick_name,
                 category_id : selected
             }
         }).then((res) => {
             alert("Article Edited");
-            window.location.href=`/board/${articleDetail?.id}`;
+            window.location.replace(`/board/${articleDetail?.id}`);
         }).catch((e) => {
             alert("Failed to edit article.\nPlease try again.");
             window.location.replace(`/board/${articleDetail?.id}`);
         });
     }
-
+    
     return(
         <div id="div-box">
             <form onSubmit={editArticle}>
                 <div id="div-box">
                     <b style={{textAlign: "center"}}> Edit Article </b> <br/>
-                    User ID : {username()} <br/>
+                    User ID : {user?.nick_name} <br/>
                     <b> Category : </b>
+                    {console.log(selected)}
                     <select onChange={handleSelect} value={selected}>
                         {categoryList?.map((category, index) => {
                             return <option key={index} value={category.id}>{category.name}</option>;
                         })}
                     </select><br/>
-                    <input placeholder={"Title : "+articleDetail.title} onChange={editTitle}></input> <br/>
+                    <input placeholder={"Title : " + articleDetail.title} onChange={editTitle}></input> <br/>
                     <textarea id="text-box" placeholder={"Content : " + articleDetail.content} onChange={editContent}></textarea> <br/>
                     <button type="submit" id="btn-post" style={{textAlign: "right"}}> Save </button>
                 </div>

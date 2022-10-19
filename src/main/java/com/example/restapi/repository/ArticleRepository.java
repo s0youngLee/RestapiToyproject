@@ -11,9 +11,10 @@ import com.example.restapi.model.entity.Article;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Integer> {
-    List<Article> findAllByCategoryId(Integer id);
+	List<Article> findAllByCategoryId(Integer id);
+	List<Article> findAllByCreatedId(String nickName);
+
     @Modifying
     @Query("update Article a set a.visitCnt = a.visitCnt + 1 where a.id = :articleId")
     void updateVisitCnt(int articleId);
-
 }

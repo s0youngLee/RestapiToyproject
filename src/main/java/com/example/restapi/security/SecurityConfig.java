@@ -2,8 +2,8 @@ package com.example.restapi.security;
 
 import java.util.Arrays;
 
-import javax.servlet.http.HttpSession;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -28,25 +28,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public SecurityConfig(UserService userService) {
 		this.userService = userService;
 	}
-
+	Logger logger = LoggerFactory.getLogger(MadeLogoutHandler.class);
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http.csrf().disable();
 		http
+			.cors().and()
 			//나중에 하드코딩방식 리팩토링하기
 			.authorizeRequests()
-			.antMatchers("/", "/user", "/userlogin/**").permitAll()
-			.antMatchers(HttpMethod.GET, "/board/**", "/comment/**", "/category").permitAll()
+			.antMatchers(HttpMethod.GET, "/", "/userlogin", "/board/**", "/comment/**", "/category").permitAll()
+			.antMatchers(HttpMethod.POST, "/user", "/userlogin/**").permitAll()
 
 			.antMatchers("/userlogin?logout").access("hasRole('ADMIN') or hasRole('USER')")
 			.antMatchers(HttpMethod.POST, "/board/**").access("hasRole('ADMIN') or hasRole('USER')")
 			.antMatchers(HttpMethod.PUT, "/board/**").access("hasRole('ADMIN') or hasRole('USER')")
 			.antMatchers(HttpMethod.DELETE, "/board/**").access("hasRole('ADMIN') or hasRole('USER')")
+			.antMatchers(HttpMethod.GET, "/user/article").access("hasRole('ADMIN') or hasRole('USER')")
+			.antMatchers(HttpMethod.GET, "/user/comment").access("hasRole('ADMIN') or hasRole('USER')")
 
 			.antMatchers(HttpMethod.POST, "/category/**").hasRole("ADMIN")
 			.antMatchers(HttpMethod.PUT, "/category/**").hasRole("ADMIN")
 			.antMatchers(HttpMethod.DELETE, "/category/**").hasRole("ADMIN")
+
+			.antMatchers(HttpMethod.GET, "/user/manage").hasRole("ADMIN")
+			.antMatchers(HttpMethod.PUT, "/user/manage").hasRole("ADMIN")
 			.anyRequest().authenticated()
 
 			.and()
@@ -55,24 +61,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 			.formLogin()
 				.loginPage("/userlogin").permitAll()
-				.successHandler((request, response, authentication) -> {
-							HttpSession session = request.getSession();
-							System.out.println("authentication : " + authentication.getName());
-							response.sendRedirect("http://localhost:3000/board");
-						}
-					)
-				.failureHandler((request, response, exception) -> {
-						System.out.println("exception : " + exception.getMessage());
-						response.sendRedirect("http://localhost:3000");
-					}
-				)
+				.successHandler(new MadeLoginSuccessHandler(userService, logger)).permitAll()
+				.failureHandler(new MadeLoginFailureHandler(logger)).permitAll()
+
 			.and()
+
 			.logout()
-				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-				.addLogoutHandler(new TaskImplementingLogoutHandler()).permitAll()
-				.deleteCookies("remove")
-				.invalidateHttpSession(false)
-				.logoutSuccessUrl("/http://localhost:3000");
+				.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll()
+				.addLogoutHandler(new MadeLogoutHandler(logger)).permitAll()
+				.deleteCookies("user")
+				.clearAuthentication(true)
+				.invalidateHttpSession(true)
+				.logoutSuccessUrl("http://localhost:3000");
 	}
 
 
@@ -93,7 +93,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
 		configuration.setAllowedMethods(Arrays.asList("*"));
-		configuration.setAllowedHeaders(Arrays.asList("Access-Control-Allow-Origin : *"));
+		configuration.setAllowedHeaders(Arrays.asList("Access-Control-Allow-Origin"));
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;

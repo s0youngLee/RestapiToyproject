@@ -103,6 +103,10 @@ public class ArticleApiLogicService extends AbstractCrudMethod<ArticleRequest, A
         return listResponse(articleRepository.findAllByCategoryId(categoryId));
     }
 
+    public List<ArticleListResponseDto> getUserArticles(String nickName){
+        return listResponse(articleRepository.findAllByCreatedId(nickName));
+    }
+
     private Header<ArticleResponseDto> response(Article article){
         ArticleResponseDto body = ArticleResponseDto.builder()
                 .id(article.getId())

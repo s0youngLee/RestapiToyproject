@@ -91,6 +91,14 @@ public class CommentApiLogicService extends AbstractCrudMethod<CommentRequest, C
         return commentList;
     }
 
+    public List<CommentResponseDto> getUserComment(String nickName){
+        List<CommentResponseDto> commentList = new ArrayList<>();
+        for(Comment comment : commentRepository.findAllByUserId(nickName)){
+            commentList.add(buildComment(comment));
+        }
+        return commentList;
+    }
+
     private CommentResponseDto buildComment(Comment comment){
         return CommentResponseDto.builder()
                 .id(comment.getId())

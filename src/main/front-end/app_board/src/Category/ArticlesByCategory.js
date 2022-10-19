@@ -1,11 +1,11 @@
-import {Link} from 'react-router-dom';
-import Article from "../Article/Article";
-import {Fetching, getUrlId} from "../func";
+import { Link } from 'react-router-dom';
+import ArticleList from '../Article/ArticleList';
+import { FetchWithId, getUrlId } from "../func";
 
 
-function ArticlesByCategory(){
-    const category = Fetching("category", 1);
-    const articleByCategory = Fetching("board/category", 1);
+function ArticlesByCategory({user}){
+    const category = FetchWithId("category", 1);
+    const articleByCategory = Array.from(FetchWithId("board/category", 1));
     
     if(!articleByCategory) { return <div> Loading ... </div> }
     else {
@@ -14,24 +14,8 @@ function ArticlesByCategory(){
             <div>
                 <h1 style={{color: "#373737", textAlign:"center"}}> Category : {category?.name} </h1> 
             </div>
-            <table id="list">
-                <thead>
-                    <tr>
-                        <th id="item"> ID </th>
-                        <th id="item"> Title </th>
-                        <th id="item"> Category </th>
-                        <th id="item"> Created By </th>
-                        <th id="item"> Created At </th>
-                        <th id="item"> Visit </th> 
-                        <th id="item"> Comment </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {articleByCategory?.map((article, index) => (
-                        <tr key={index}><Article data={article} /></tr>
-                        ))}
-                </tbody>
-            </table>
+            <ArticleList user={user} articleList={articleByCategory} />
+            
             <br/>
             <div style={{width: "100%", textAlign: "center"}}>
                 <Link to={`/`} id="none"> <button id="btn-default"> Home </button></Link>

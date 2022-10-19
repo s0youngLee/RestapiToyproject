@@ -1,10 +1,11 @@
 import axios from "axios";
 import {useState, useCallback} from "react";
-import { Fetching, getUrlId, isEmpty } from "../func";
+import { FetchWithId, getUrlId } from "../func";
+import _ from 'lodash';
 
 
 function CategoryEdit(){
-    const category = Fetching("category", 1);
+    const category = FetchWithId("category", 1);
     if(!category) {return <div> Loading ... </div>}
     else { 
         return (
@@ -25,7 +26,7 @@ function CategoryEditForm({categoryId, nameOrigin}){
     }, [])
     
     const editCategory = (e) => {
-        if(isEmpty(e.target.value)){ setCategoryName(nameOrigin); }
+        if(_.isEmpty(e.target.value)){ setCategoryName(nameOrigin); }
 
         axios.put(`/category/${categoryId}`, {
             data : {
@@ -33,10 +34,10 @@ function CategoryEditForm({categoryId, nameOrigin}){
             }
         }).then(() => {
             alert("Category edited. Move to " + categoryName);
-            window.location.replace("/category");
+            window.location.replace(`/board/category/${categoryId}`);
         }).catch((e) => {
             alert("Failed to edit category.\nError : " + e.response.statusText);
-            window.location.replace("/category");
+            window.location.reload();
         });
     }
 

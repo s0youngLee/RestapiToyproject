@@ -10,4 +10,6 @@ import com.example.restapi.model.entity.Comment;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
 	List<Comment> findAllByArticleId(Integer id);
+
+	List<Comment> findAllByUserId(String nickName);
 }

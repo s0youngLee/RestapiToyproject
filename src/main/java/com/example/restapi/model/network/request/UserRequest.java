@@ -4,18 +4,35 @@ import lombok.Builder;
 
 @Builder
 public class UserRequest {
-	private Integer code;
 	private String email;
 	private String password;
-
 	private String auth;
+	private String nickName;
+	private String name;
+	private String phone;
 
-	public Integer getCode() {
-		return code;
+	public String getNickName() {
+		return nickName;
 	}
 
-	public void setCode(Integer code) {
-		this.code = code;
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	public String getEmail() {

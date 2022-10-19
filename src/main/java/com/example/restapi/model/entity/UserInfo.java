@@ -13,43 +13,60 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Builder;
 
 // @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Builder
 public class UserInfo implements UserDetails {
-
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer code;
-
-	@JsonProperty("email")
 	private String email;
-
-	@JsonProperty("password")
 	private String password;
-
-	@JsonProperty("auth")
 	private String auth;
+	private String nickName;
+	private String name;
+	private String phone;
 
 	public UserInfo() {
 
 	}
 
-	public UserInfo(Integer code, String email, String password, String auth) {
+	public UserInfo(Integer code, String email, String password, String auth, String nickName, String name,
+		String phone) {
 		this.code = code;
 		this.email = email;
 		this.password = password;
 		this.auth = auth;
+		this.nickName = nickName;
+		this.name = name;
+		this.phone = phone;
 	}
 
-	public UserInfo(String email, String password, String auth) {
-		this.email = email;
-		this.password = password;
-		this.auth = auth;
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	public void setCode(Integer code) {

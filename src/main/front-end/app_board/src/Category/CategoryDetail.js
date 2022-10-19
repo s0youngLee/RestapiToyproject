@@ -1,20 +1,23 @@
 import {Link} from 'react-router-dom';
-import { Delete, Fetching }from '../func';
+import { Delete, FetchWithoutId }from '../func';
 
 function CategoryDeatil () {
-    const categoryList = Fetching("category", 1);
+    const categoryList = Array.from(FetchWithoutId("category").data);
 
-    return (
-        <div>
-            {categoryList?.map((category, index) => {
-                return <li key={index}><CategoryDeatilData data={category} /></li>
-            })}
-            <div style={{width: "100%", textAlign: "center", marginTop:"10px"}}>
-                <Link to={`/`} id="none"> <button id="btn-default"> Home </button></Link>
-                <Link to={`/category/add`} id="none"> <button id="btn-post"> Add Category </button></Link>
+    if(!categoryList){ return <div> Loading ... </div>}
+    else {
+        return (
+            <div>
+                {categoryList?.map((category, index) => {
+                    return <li key={index}><CategoryDeatilData data={category} /></li>
+                })}
+                <div style={{width: "100%", textAlign: "center", marginTop:"10px"}}>
+                    <Link to={`/`} id="none"> <button id="btn-default"> Home </button></Link>
+                    <Link to={`/category/add`} id="none"> <button id="btn-post"> Add Category </button></Link>
+                </div>
             </div>
-        </div>
-    ) 
+        ) 
+    }
 }
 
 function CategoryDeatilData({data}) {

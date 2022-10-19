@@ -1,5 +1,6 @@
 import {useState, useCallback} from "react";
-import { isEmpty } from "../func";
+import _ from 'lodash';
+import axios from "axios";
 
 function CommentEdit({data}){
     const [visible, setVisible] = useState(false);
@@ -13,7 +14,6 @@ function CommentEdit({data}){
 }
 
 function CommentEditForm({data}){
-    const axios = require('axios');
     const [content, setContent] = useState(data?.content);
     
     const editcontent = useCallback( e => {
@@ -21,7 +21,7 @@ function CommentEditForm({data}){
     }, [])
 
     const editComment = (e) => {
-        if(isEmpty(e.target.value)){ setContent(data.content); }
+        if(_.isEmpty(e.target.value)){ setContent(data.content); }
 
         axios.put(`/comment/${data.id}`, {
             data : {

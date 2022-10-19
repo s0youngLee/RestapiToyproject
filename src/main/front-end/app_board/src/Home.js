@@ -1,7 +1,15 @@
+import axios from 'axios';
 import {Link} from 'react-router-dom';
-import { isLogin } from './func';
+import { useCookies } from 'react-cookie';
 
-const Home = () => {
+function Home({isLogin}) {
+    const [, , removeCookie] = useCookies(['isLogin']);
+    function Logout() {			
+        axios.post('/logout');	
+        removeCookie(['isLogin']);
+        window.location.replace('/');   
+    };
+    
     return(
         <div id="home">
             <h1> Home Page </h1>
@@ -10,13 +18,10 @@ const Home = () => {
             <Link id='none' to="/board"><button id="btn-default"> Board </button></Link>
 
             <Link id="none" to={`/login`}>
-                <button id="btn-default" style={isLogin() ? {display : "none"} : {right: "10px"}}> Login </button>
+                <button id="btn-default" style={isLogin ? {display : "none"} : {right: "10px"}}> Login </button>
             </Link>
-            <form action="/userlogin?logout" method="post">
-                <button style={isLogin() ? {right: "10px"} : {display : "none"}} type="submit" id="btn-default"
-                        onClick={() => sessionStorage.removeItem('username')} > Logout </button>
-            </form>
-
+            <button style={isLogin ? {right: "10px"} : {display : "none"}} id="btn-default"
+                    onClick={() => Logout()} > Logout </button>
             <br/><br/><br/>
         </div>
     );

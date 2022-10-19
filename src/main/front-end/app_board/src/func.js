@@ -1,28 +1,28 @@
-import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import _ from "lodash";
-import { useState, useEffect } from "react";
+import axios from "axios";
 
-export function username(){
-    return sessionStorage.getItem('username');
+export function IsLogin(cookie){
+    if (_.isEqual(cookie.isLogin, "true")){ 
+        return true;
+    }
+    else{ 
+        return false; 
+    }
 }
 
-export function User(){
-    if(isLogin()){
-        return Fetching("user", username());
+export function User(Login){
+    if(Login){
+        const user = FetchWithoutId("user").data;
+        return user;
     }else{
         return null;
     }
 }
 
-export function isEmpty(value){
-    if(value === "" || value === null || value === undefined || ( value !== null && typeof value === "object" && !Object.keys(value).length)){
-        return true;
-    }else { return false; }
-}
-
-export function isLogin(){
-   if(sessionStorage.getItem('username')){ return true; }
-   else { return false; }
+export function canChange(user, id){
+    return isAdmin(user?.auth) ||  _.isEqual(id, user?.nick_name);
 }
 
 export function isAdmin(auth){
@@ -33,74 +33,76 @@ export function isAdmin(auth){
     }
 }
 
-export function thisUser(createdId){
-    return isLogin() && _.isEqual(createdId, username());
-}
-
-
 export function getUrlId(n){
     const urlList = ((window.location.href).split('/'));
     const id = urlList[(urlList.length)-n];
     return id;
 }
 
-export function Fetching(dataName, n){
-    const id = getUrlId(n);
+export function FetchWithoutId(dataName){
     const [data, setData] = useState({ data : {} });
-    const [loading, setLoading] = useState(true);
-
     useEffect(() => {
-        if(_.isEqual(dataName, "board/category") && (Number(id)===0)){
-            axios.get('/board/category/0').then((res) => {
-                setData(res?.data);
-                setLoading(false);
-            }).catch((e) => {
-                alert("Error : " + e.response.statusText + "\nReturn to Board.");
-                window.location.replace("/board");
-            });
-        }else if(_.isEqual(n, sessionStorage.getItem('username'))){
-            axios.get(`/${dataName}/${n}`).then((res) => {
-                setData(res?.data);
-                setLoading(false);
-            }).catch((e) => {
-                alert("Error : " + e.response.statusText + "\nReturn to Board.");
-                window.location.replace("/board");
-            })
-        }else if(isNaN(id)){
-            axios.get(`/${dataName}`).then((res) => {
-                setData(res?.data);
-                setLoading(false);
-            }).catch((e) => {
-                alert("Error : " + e.response.statusText + "\nReturn to Board.");
-                window.location.replace("/board");
-            });
-        }else{
-            axios.get(`/${dataName}/${id}`).then((res) => {
-                setData(res?.data);
-                setLoading(false);
-            }).catch((e) => {
-                console.log(e);
-                if(e.response.status === 400){
-                    alert("Don't have permission.\nPlease Login.");
-                    window.location.replace("/login");
-                }else{
-                    alert("Error : " + e.response.status + " " + e.response.statusText + "\nReturn to Board.");
-                    window.location.replace("/board");
-                }
-            });
-        }
-    }, []);
-    if(!loading) { return data.data; }
+        axios.get(`/${dataName}`)
+        .then((res) => {
+            setData(res?.data)
+        })
+        .catch((e) => {
+            ifError(e);
+        });
+    }, [dataName]);
+    if(!data){ return <div> Loading ... </div> }
+    else{ return data; }
+}
+
+export function FetchWithId(dataName, n){
+    const [data, setData] = useState({ data : {} });
+    const id = getUrlId(n);
+    useEffect( () => {
+        axios.get(`/${dataName}/${id}`)
+        .then((res) => {
+            setData(res?.data);
+        })
+        .catch((e) => {
+            ifError(e);
+        });
+    }, [dataName, id]);
+    if(!data){ return <div> Loading ... </div>}
+    else{ return data.data;}
 }
 
 export function Delete(dataName, dataId){
     axios.delete(`/${dataName}/${dataId}`).then(() => {
         alert("Successfully deleted.");
-        window.location.replace(`/${dataName}`);
-         // Comment : window.location.replace(`/${dataName}/${dataId}`); -- 보류
+        if(_.isEqual(dataName, "comment")){
+            window.location.reload();
+        }else {
+            window.location.replace(`/${dataName}`);
+        }
     }).catch((e) => {
         alert("Failed to delete.");
-        window.location.replace(`/${dataName}/${dataId}`);
-        // Comment : window.location.replace(`/${dataName}/${dataId-articleId}`); -- 보류
+        window.location.reload();
     });
+}
+
+
+export function ifError(e){
+    if(e.response.status === 400){
+        alert("Bad Request");
+        window.location.reload();
+    }else if(e.response.status === 401){
+        alert("Don't have permission.\nPlease Login.");
+        window.location.replace("/login");
+    }else if(e.response.status === 403){
+        alert("Response rejected.");
+        window.location.replace("/");
+    }else if(e.response.status === 404){
+        <div>
+            <h1> SORRY <br/> Page Not Found </h1><hr/>
+            <b>We can't found this page.</b>
+            <Link id="none" to={`/`}><button id="btn-remove">HOME</button></Link>
+        </div>
+    }else{
+        alert("Error : " + e.response.status + " " + e.response.statusText + "\nReturn to Home.");
+        window.location.replace("/");
+    }
 }
