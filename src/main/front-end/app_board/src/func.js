@@ -13,12 +13,20 @@ export function IsLogin(cookie){
 }
 
 export function User(Login){
-    if(Login){
-        const user = FetchWithoutId("user").data;
-        return user;
-    }else{
-        return null;
-    }
+    const [user, setUser] = useState({ data : {} });
+    useEffect(() => {
+        if(Login){
+            axios.get(`/user`)
+            .then((res) => {
+                setUser(res?.data)
+            })
+            .catch((e) => {
+                ifError(e);
+            });
+        }
+    }, [Login]);
+    if(!user){ return <div> Loading ... </div> }
+    else{ return user.data; }
 }
 
 export function canChange(user, id){

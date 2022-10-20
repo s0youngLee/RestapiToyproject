@@ -18,6 +18,7 @@ import com.example.restapi.service.UserService;
 
 public class MadeLoginSuccessHandler implements AuthenticationSuccessHandler {
 	private final UserService userService;
+
 	private final Logger logger;
 	public MadeLoginSuccessHandler(UserService userService, Logger logger) {
 		this.userService = userService;

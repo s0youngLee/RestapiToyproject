@@ -7,14 +7,12 @@ function CategoryDeatil () {
     if(!categoryList){ return <div> Loading ... </div>}
     else {
         return (
-            <div>
+            <div style={{margin: "10px"}}>
+                <b style={{ fontSize: "40px"}}> Category Setting </b><hr/>
                 {categoryList?.map((category, index) => {
                     return <li key={index}><CategoryDeatilData data={category} /></li>
                 })}
-                <div style={{width: "100%", textAlign: "center", marginTop:"10px"}}>
-                    <Link to={`/`} id="none"> <button id="btn-default"> Home </button></Link>
-                    <Link to={`/category/add`} id="none"> <button id="btn-post"> Add Category </button></Link>
-                </div>
+                <Link to={`/category/add`} id="none"> <button id="btn-post"> Add Category </button></Link>
             </div>
         ) 
     }

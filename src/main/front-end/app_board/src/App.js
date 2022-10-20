@@ -15,24 +15,23 @@ import SignupForm from "./Login/SignupForm";
 import MyPage from "./User/Mypage";
 import UserManage from "./User/ManageUser";
 import './App.css';
-
-export function Login() {
-    const [cookie, , ] = useCookies(['isLogin']);
-    let isLogin = IsLogin(cookie);
-    return isLogin;
-}
+import 'w3-css';
+import Bar from "./Bar";
 
 function App() {
-    const login = Login();
+    const [cookie, ,removeCookie] = useCookies(['isLogin']);
+    const login = IsLogin(cookie);
     const user = User(login);
 
     return(
-        <Router><Routes>
+        <Router>
+            <Bar isLogin={login} user={user} removeCookie={removeCookie}/>
+                <Routes>
                 <Route path="/" exact element={<Home isLogin={login}/>} />
 
                 <Route path="/board" element={<ArticleLists user={user} isLogin={login}/>} />
                 <Route path="/board/:articleId" element={<ArticleDetail user={user} isLogin={login}/>} /> 
-                <Route path="/board/category/:categoryId" element={<ArticlesByCategory user={user} />} />
+                <Route path="/board/category/:categoryId" element={<ArticlesByCategory user={user} isLogin={login} />} />
                 <Route path="/board/add/:categoryId" element={<ArticleRegister user={user}/>} />
                 <Route path="/board/edit/:articleId" element={<ArticleEdit user={user}/>} />
 
@@ -45,7 +44,8 @@ function App() {
                 
                 <Route path="/mypage" element={<MyPage user={user}/>} />
                 <Route path="/user/manage" element={<UserManage />} />
-        </Routes></Router>
+            </Routes>
+        </Router>
     )
 }
 

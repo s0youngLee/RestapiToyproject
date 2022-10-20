@@ -31,16 +31,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	Logger logger = LoggerFactory.getLogger(MadeLogoutHandler.class);
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-
-		http.csrf().disable();
 		http
 			.cors().and()
+			.csrf().disable();
+		http
 			//나중에 하드코딩방식 리팩토링하기
 			.authorizeRequests()
 			.antMatchers(HttpMethod.GET, "/", "/userlogin", "/board/**", "/comment/**", "/category").permitAll()
 			.antMatchers(HttpMethod.POST, "/user", "/userlogin/**").permitAll()
 
-			.antMatchers("/userlogin?logout").access("hasRole('ADMIN') or hasRole('USER')")
+			.antMatchers("/logout","/user/**").access("hasRole('ADMIN') or hasRole('USER')")
 			.antMatchers(HttpMethod.POST, "/board/**").access("hasRole('ADMIN') or hasRole('USER')")
 			.antMatchers(HttpMethod.PUT, "/board/**").access("hasRole('ADMIN') or hasRole('USER')")
 			.antMatchers(HttpMethod.DELETE, "/board/**").access("hasRole('ADMIN') or hasRole('USER')")
@@ -53,10 +53,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 			.antMatchers(HttpMethod.GET, "/user/manage").hasRole("ADMIN")
 			.antMatchers(HttpMethod.PUT, "/user/manage").hasRole("ADMIN")
-			.anyRequest().authenticated()
+			.anyRequest().authenticated();
 
-			.and()
-
+		http
 			.httpBasic().disable()
 
 			.formLogin()
@@ -69,7 +68,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.logout()
 				.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll()
 				.addLogoutHandler(new MadeLogoutHandler(logger)).permitAll()
-				.deleteCookies("user")
 				.clearAuthentication(true)
 				.invalidateHttpSession(true)
 				.logoutSuccessUrl("http://localhost:3000");

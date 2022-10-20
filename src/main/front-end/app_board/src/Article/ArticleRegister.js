@@ -51,11 +51,11 @@ function ArticleRegister({user}){
 
     return(
         <div style={{textAlign: "center"}}>
-            <br/><br/>
             <form onSubmit={addArticle}>
-                <div id="div-box">
-                    <b style={{textAlign: "center"}}> Add Article </b> <br/>
-                    User ID : {user?.nick_name} <br/>
+                <b style={{ fontSize: "40px"}}> Add Article </b> <hr/>
+
+                <div style={{width: "50%", margin: "auto", textAlign: "left"}}>
+                    <b style={{fontSize: "20px", justifyContent: "left"}}>User ID : {user?.nick_name} </b><br/>
                     <b> Category : </b>
                     <select onChange={handleSelect} value={selected}>
                         {Array.from(FetchWithoutId("category").data)?.map((category, index) => {
@@ -64,11 +64,11 @@ function ArticleRegister({user}){
                     </select><br/>
                     <input placeholder="Title" onChange={addTitle}></input> <br/>
                     <textarea id="text-box" placeholder="Content" onChange={addContent}></textarea> <br/>
-                    <button type="submit" id="btn-post"> Add </button>
                 </div>
+
+                <button type="submit" id="btn-post" > Add </button>
             </form>
-            <button style={{textAlign: "center"}} id='btn-default' 
-                    onClick={() => {window.location.href = `/`}}> Home </button>
+            {/* <button id='btn-default' onClick={() => {window.location.href = `/`}}> Home </button> */}
         </div>
     )
 }

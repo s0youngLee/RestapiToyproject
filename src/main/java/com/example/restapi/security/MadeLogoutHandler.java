@@ -2,7 +2,6 @@ package com.example.restapi.security;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -16,8 +15,8 @@ public class MadeLogoutHandler implements LogoutHandler {
 	@Override
 	public void logout(HttpServletRequest req, HttpServletResponse res,
 		Authentication authentication) {
-		HttpSession session = req.getSession();
-		session.removeAttribute("user");
+		// HttpSession session = req.getSession();
+		// session.removeAttribute("user");
 		// logger.info(String.valueOf(authentication));
 		logger.info("Logout successful.");
 	}

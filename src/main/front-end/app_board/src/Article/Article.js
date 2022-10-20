@@ -17,7 +17,7 @@ function Article({data, auth}) {
                 // />
 
                 <td id="btn-remove" onClick = {() => {
-                                "event.cancelBubble = true";
+                                window.event.cancelBubble = true;
                                 Delete("board", data.id);
                             }}/>
             }

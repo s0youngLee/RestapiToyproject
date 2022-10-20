@@ -11,10 +11,11 @@ function UserManage(){
     else{
         return (
             <div id="div-box"> 
-                <h1> User List </h1> <hr/>
+                <b style={{ fontSize: "40px"}}> User List </b> <hr/>
                 {manage.map((userinfo, index) => {
                     return (
                     <li key={index}>
+                        <b> CODE : </b> <span> {userinfo.code} </span>
                         <b> ID : </b> <span> {userinfo.email} </span>
                         <b> Name : </b> <span> {userinfo.name} </span> 
                         <b> NickName : </b> <span> {userinfo.nick_name} </span>
@@ -41,7 +42,7 @@ function EditUser({userinfo}){
     }, [])
 
     const editAuth = (e) => {
-        axios.put(`/user/manage/${userinfo.code}`, {
+        axios.put(`/user/${userinfo.code}`, {
             data : {
                 auth : userAuth
             }
@@ -71,7 +72,7 @@ function EditUser({userinfo}){
                 <button type="submit" id="btn-remove" style={{position:"absolute", right:"130px", top:"-3px"}}>Save</button>
             </form>
             <button id="btn-remove" style={{position:"absolute", right:"50px", top:"-3px"}}
-                    onClick={() => Delete("user/manage",userinfo.code)}> Remove </button>
+                    onClick={() => Delete("user",userinfo.code)}> Remove </button>
         </div>
     )
 }

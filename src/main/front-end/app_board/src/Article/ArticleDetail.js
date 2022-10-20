@@ -10,12 +10,12 @@ function ArticleDeatil({user, isLogin}){
 }
 
 function ArticleDetailData({data, user, isLogin}) {
-    if(!data?.created_id || !user?.nick_name){ return <div> Loading ... </div> }
+    if(!data?.created_id){ return <div> Loading ... </div> }
     else {
         return (
             <div style={{marginLeft: "10px"}}>
                 <div style={{padding: "10px", overflow: "auto"}}>
-                    <div style={{float: "left", width: "500px", marginRight: "20px"}}>
+                    <div style={{float: "left", width: "500px", marginRight: "20px", padding: "10px", overflow: "auto"}}>
                         <h1>Article Detail</h1> <br/>
                         <b> ID : </b> <span> {data?.id} </span> <br/>
                         <b> Title : </b> <span> {data?.title} </span> <br/>
@@ -25,18 +25,18 @@ function ArticleDetailData({data, user, isLogin}) {
                         <b> Created At : </b> <span> {data?.created_at} </span> <br/>
                         <b> Visit : </b> <span> {data?.visit_cnt} </span> 
                         <div style={{float: "right"}}>
-                        { _.isEqual(data?.created_id, user?.nick_name) &&
-                            <Link to={`/board/edit/${data?.id}`} id="none" >
-                                <button style={{float: "right"}} id="btn-post"> Edit </button></Link>}
-                        {canChange(user, data?.created_id) &&
-                            <button id="btn-remove" onClick={() => { Delete("board", data.id) }}>Delete</button>}
+                            { _.isEqual(data?.created_id, user?.nick_name) &&
+                                <Link to={`/board/edit/${data?.id}`} id="none" >
+                                    <button style={{float: "right"}} id="btn-post"> Edit </button></Link>}
+                            {canChange(user, data?.created_id) &&
+                                <button id="btn-remove" onClick={() => { Delete("board", data.id) }}>Delete</button>}
                         </div>
                         <br/> <br/>
                         <div style={{float: "right"}}>
-                            <Link to={`/`} id="none">
+                            {/* <Link to={`/`} id="none">
                                     <button id="btn-default"> Home </button></Link>
                             <Link to={`/board`} id="none">
-                                    <button id="btn-default"> Board </button></Link>
+                                    <button id="btn-default"> Board </button></Link> */}
                             {isLogin && <Link to={`/board/category/${data?.category_id}`} id="none">
                                 <button id="btn-default"> {data?.category_name} List </button></Link>}
                         </div>

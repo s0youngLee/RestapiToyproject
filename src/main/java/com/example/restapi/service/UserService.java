@@ -15,22 +15,16 @@ import org.springframework.stereotype.Service;
 import com.example.restapi.model.entity.UserInfo;
 import com.example.restapi.model.network.Header;
 import com.example.restapi.model.network.request.UserRequest;
-import com.example.restapi.model.network.response.UserResponse;
+import com.example.restapi.model.network.response.UserResponseDto;
 import com.example.restapi.repository.UserRepository;
 
 @Service
 public class UserService implements UserDetailsService {
-
 	private final UserRepository userRepository;
 	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
 
 	public UserService(@Lazy UserRepository userRepository) {
 		this.userRepository = userRepository;
-	}
-
-	public String phone_format(String number) {
-		String regEx = "(\\d{3})(\\d{3,4})(\\d{4})";
-		return number.replaceAll(regEx, "$1-$2-$3");
 	}
 
 	@Override
@@ -42,19 +36,28 @@ public class UserService implements UserDetailsService {
 		return user;
 	}
 
-	public UserInfo buildUser(UserInfo user){
-		return UserInfo.builder()
-			.code(user.getCode())
-			.email(user.getEmail())
-			.password(user.getPassword())
-			.auth(user.getAuth())
-			.nickName(user.getNickName())
-			.name(user.getName())
-			.phone(phone_format(user.getPhone()))
-			.build();
+	public String phone_format(String number) {
+		String regEx = "(\\d{3})(\\d{3,4})(\\d{4})";
+		return number.replaceAll(regEx, "$1-$2-$3");
 	}
 
-	public Integer register(Header<UserRequest> infoDto) {
+	public Header<UserResponseDto> userPage(UserInfo user) {
+		return Header.OK(buildUser(user));
+	}
+
+	public List<UserResponseDto> userList(String auth) {
+		if(Objects.equals(auth, "ROLE_ADMIN")){
+			List<UserResponseDto> responseList = new ArrayList<>();
+			for(UserInfo userInfo : userRepository.findAll()){
+				responseList.add(buildUser(userInfo));
+			}
+			return responseList;
+		}else {
+			throw new PermissionDeniedDataAccessException("Permission Denied.", new Throwable(auth));
+		}
+	}
+
+	public Header<UserInfo> register(Header<UserRequest> infoDto) {
 		UserRequest body = infoDto.getData();
 
 		UserInfo user = UserInfo.builder()
@@ -66,47 +69,18 @@ public class UserService implements UserDetailsService {
 			.phone(phone_format(body.getPhone()))
 			.build();
 
-		userRepository.save(user);
-
-		return user.getCode();
+		return Header.OK(userRepository.save(user));
 	}
 
 	public Header<UserInfo> changePassword(Integer code, Header<UserRequest> request) {
 		UserRequest body = request.getData();
+		UserInfo user = userRepository.getReferenceById(code);
 
-		return userRepository.findById(code)
-			.map(user -> {
-				user.setEmail(body.getEmail());
-				user.setName(body.getName());
-				user.setNickName(body.getNickName());
-				user.setPassword(encoder.encode(body.getPassword()));
-				user.setPhone(body.getPhone());
-				user.setAuth(body.getAuth());
-				return user;
-			})
-			.map(userRepository::save)
-			.map(user -> Header.OK(buildUser(userRepository.save(user))))
-			.orElseGet(()->Header.ERROR("No DATA"));
+		user.setPassword(encoder.encode(body.getPassword()));
+		return Header.OK(userRepository.save(user));
 	}
 
-	public List<UserResponse> manageUser(String auth) {
-		if(Objects.equals(auth, "ROLE_ADMIN")){
-			List<UserResponse> responseList = new ArrayList<>();
-			for(UserInfo userInfo : userRepository.findAll()){
-				responseList.add(UserResponse.builder()
-								.code(userInfo.getCode())
-								.email(userInfo.getEmail())
-								.name(userInfo.getName())
-								.nickName(userInfo.getNickName())
-								.phone(userInfo.getPhone())
-								.auth(userInfo.getAuth())
-								.build());
-			}
-			return responseList;
-		}else {
-			throw new PermissionDeniedDataAccessException("Permission Denied.", new Throwable(auth));
-		}
-	}
+
 
 	public Header<UserInfo> changeAuth(String auth, Header<UserRequest> request, Integer code) {
 		if(Objects.equals(auth, "ROLE_ADMIN")){
@@ -120,11 +94,25 @@ public class UserService implements UserDetailsService {
 		}
 	}
 
-	public Header deleteUser(Integer code) {
+
+	public Header deleteUser(int code) {
 		return userRepository.findById(code)
 			.map(delUser -> {
 				userRepository.delete(delUser);
 				return Header.OK();
 			}).orElseGet(() -> Header.ERROR("No DATA"));
 	}
+
+
+	public UserResponseDto buildUser(UserInfo user){
+		return UserResponseDto.builder()
+			.code(user.getCode())
+			.email(user.getEmail())
+			.name(user.getName())
+			.nickName(user.getNickName())
+			.phone(user.getPhone())
+			.auth(user.getAuth())
+			.build();
+	}
+
 }

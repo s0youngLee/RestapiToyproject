@@ -52,13 +52,13 @@ function ArticleEditForm({articleDetail, categoryList, user}) {
     }
     
     return(
-        <div id="div-box">
-            <form onSubmit={editArticle}>
-                <div id="div-box">
-                    <b style={{textAlign: "center"}}> Edit Article </b> <br/>
-                    User ID : {user?.nick_name} <br/>
+        <div style={{textAlign: "center"}}>
+            <form style={{textAlign: "center"}} onSubmit={editArticle}>
+                <b style={{ fontSize: "40px"}}> Edit Article </b> <hr/>
+
+                <div style={{width: "50%", margin: "auto", textAlign: "left"}}>
+                    <b style={{fontSize: "20px", justifyContent: "left"}}>User ID : {user?.nick_name} </b><br/>
                     <b> Category : </b>
-                    {console.log(selected)}
                     <select onChange={handleSelect} value={selected}>
                         {categoryList?.map((category, index) => {
                             return <option key={index} value={category.id}>{category.name}</option>;
@@ -66,10 +66,12 @@ function ArticleEditForm({articleDetail, categoryList, user}) {
                     </select><br/>
                     <input placeholder={"Title : " + articleDetail.title} onChange={editTitle}></input> <br/>
                     <textarea id="text-box" placeholder={"Content : " + articleDetail.content} onChange={editContent}></textarea> <br/>
-                    <button type="submit" id="btn-post" style={{textAlign: "right"}}> Save </button>
                 </div>
+                
+                <button type="submit" id="btn-post" style={{textAlign: "right"}}> Save </button>
             </form>
-            <button id="btn-remove" 
+
+            <button id="btn-remove"
                         onClick={() => {window.location.href=`/board/${articleDetail?.id}`}}> Back </button>
         </div>
     )

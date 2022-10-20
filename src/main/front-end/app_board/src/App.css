@@ -1,39 +1,3 @@
-#article {
-  height: 50px;
-}
-
-#list {
-  margin-top: 20px;
-  width: 100%;
-  border: 3px solid #000000;
-  border-collapse: collapse;
-  border-radius: 5px;
-  text-align: center;
-
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#item {
-  border: 1px solid #282c34;
-  padding: 10px;
-}
-
-#item-detail {
-  border: none;
-}
-
-#none {
-  width: 200px;
-  height: 200px;
-  text-decoration-line: none; 
-  color: inherit; 
-}
-#none:hover {
-  font-weight: bolder;
-  color: slateblue;
-}
-
 ul {
   list-style: none;
   padding-left: 0;
@@ -47,6 +11,55 @@ li {
   margin-right: 10px;
 }
 
+input{
+  width: 400px;
+  margin-bottom: 5px;
+}
+
+select {
+  width: 200px; 
+  padding: .5em .5em; 
+  border: 1px solid #999;
+  font-family: inherit; 
+  border-radius: 0px; 
+}
+
+#article {
+  height: 50px;
+}
+
+#list {
+  margin-top: 20px;
+  width: 100%;
+  /* border: 3px solid; */
+  border-collapse: collapse;
+  border-radius: 5px;
+  text-align: center;
+
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#item {
+  /* border: 1px solid black; */
+  padding: 10px;
+}
+
+/* #item-detail {
+  border: none;
+} */
+
+#none {
+  width: 200px;
+  height: 200px;
+  text-decoration-line: none; 
+  color: inherit; 
+}
+#none:hover {
+  font-weight: bolder;
+  color: slateblue;
+}
+
 #radioInput{
   width: 30px;
 }
@@ -55,6 +68,53 @@ li {
   background-color: lightsteelblue;
   cursor: pointer;
 }
+
+#home{
+  width: 300px;
+  height: 450px;
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  text-align: center;
+  transform: translate(-50%, 0%);
+}
+
+
+/* Box CSS */
+
+#text-box{
+  width: 400px;
+  height: 100px;
+  resize: none;
+  vertical-align: middle;
+}
+
+#div-box{
+  text-align: center;
+  margin-bottom: 10px;
+  position: relative;
+  height: 100%;
+}
+
+.box1{
+  display: inline-block;
+  margin: 10px;
+  width: 47%;
+  position: absolute;
+  left: 10px;
+}
+
+.box2{
+  display: inline-block;
+  margin: 10px;
+  position: absolute;
+  width: 47%;
+  right: 10px;
+}
+
+
+
+/* Button CSS */
 
 #btn-default {
   border-radius: 5px;
@@ -130,40 +190,4 @@ li {
 }#btn-remove:hover{
   background-color: lightcoral;
   color: aliceblue;
-}
-
-#home{
-  width: 300px;
-  height: 450px;
-  position: absolute;
-  top: 30px;
-  left: 50%;
-  text-align: center;
-  transform: translate(-50%, 0%);
-}
-
-input{
-  width: 400px;
-  margin-bottom: 5px;
-}
-
-#text-box{
-  width: 400px;
-  height: 100px;
-  resize: none;
-  vertical-align: middle;
-}
-
-#div-box{
-  text-align: center;
-  margin-bottom: 10px;
-  position: relative;
-}
-
-select {
-  width: 200px; 
-  padding: .5em .5em; 
-  border: 1px solid #999;
-  font-family: inherit; 
-  border-radius: 0px; 
 }

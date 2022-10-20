@@ -12,7 +12,6 @@ function LoginForm(){
             <button id="btn-post" type="submit">Login</button>
             <Link to="/login/signup"><button id="btn-default">Sign up</button></Link>
         </form> 
-        <Link id="none" to="/"><button id="btn-default">Home</button></Link>
     </div>
     )
 }
