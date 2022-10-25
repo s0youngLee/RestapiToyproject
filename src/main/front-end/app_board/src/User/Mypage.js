@@ -17,7 +17,8 @@ function MyPage({user}){
                     <b> Email : </b><span> {user.email} </span><br/>
                     <b> Nickname : </b><span> {user.nick_name} </span><br/>
                     <b> PhoneNumber : </b><span> {user.phone} </span><br/><br/>
-                    <button id="btn-post" style={{position: "absolute", top: "115px", right: "30px"}}
+                    <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" 
+                            style={{position: "absolute", top: "115px", right: "30px"}}
                             onClick={() => setVisible(!visible)}> {visible ? "Cancel" : "Change PW"} </button>
                     {visible && <PasswordEditForm user={user}/>}
                 </div><hr/>
@@ -25,7 +26,9 @@ function MyPage({user}){
                 <div className="box2"><MyComments /></div>
                 <div style={{position: "absolute", top: "160px", right: "30px"}}>
                     {isAdmin(user?.auth) && 
-                        <Link to={"/user/manage"} id="none"><button id="btn-remove">Manage users</button></Link>}
+                        <Link to={"/user"} id="none">
+                            <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red">Manage users</button>
+                        </Link>}
                 </div>
             </div>
         )

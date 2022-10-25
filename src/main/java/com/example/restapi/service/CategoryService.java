@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.example.restapi.controller.AbstractCrudMethod;
 import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.Category;
-import com.example.restapi.model.network.Header;
+import com.example.restapi.model.network.Status;
 import com.example.restapi.model.network.request.CategoryRequest;
 import com.example.restapi.model.network.response.CategoryResponseDto;
 import com.example.restapi.repository.ArticleRepository;
@@ -26,7 +26,7 @@ public class CategoryService extends AbstractCrudMethod<CategoryRequest, Categor
     }
 
     @Override
-    public Header<CategoryResponseDto> create(Header<CategoryRequest> request) {
+    public Status<CategoryResponseDto> create(Status<CategoryRequest> request) {
         System.out.println(request);
         CategoryRequest body = request.getData();
 
@@ -35,19 +35,19 @@ public class CategoryService extends AbstractCrudMethod<CategoryRequest, Categor
                 .name(body.getName())
                 .build();
 
-        return Header.OK(buildCategory(categoryRepository.save(category)));
+        return Status.OK(buildCategory(categoryRepository.save(category)));
     }
 
     @Override
-    public Header<CategoryResponseDto> read(int id) {
+    public Status<CategoryResponseDto> read(int id) {
         return categoryRepository.findById(id)
-                .map(category -> Header.OK(buildCategory(categoryRepository.save(category))))
-                .orElseGet(()-> Header.ERROR("No DATA"));
+                .map(category -> Status.OK(buildCategory(categoryRepository.save(category))))
+                .orElseGet(()-> Status.ERROR("No DATA"));
     }
 
     // category 목록
     @Override
-    public Header<CategoryResponseDto> update(Header<CategoryRequest> request, int id) {
+    public Status<CategoryResponseDto> update(Status<CategoryRequest> request, int id) {
         CategoryRequest body = request.getData();
 
         return categoryRepository.findById(id)
@@ -56,12 +56,12 @@ public class CategoryService extends AbstractCrudMethod<CategoryRequest, Categor
                     return category;
                 })
                 .map(categoryRepository::save)
-                .map(category -> Header.OK(buildCategory(categoryRepository.save(category))))
-                .orElseGet(()->Header.ERROR("No DATA"));
+                .map(category -> Status.OK(buildCategory(categoryRepository.save(category))))
+                .orElseGet(()-> Status.ERROR("No DATA"));
     }
 
     @Override
-    public Header delete(int categoryId) {
+    public Status delete(int categoryId) {
         List<Article> articleList = articleRepository.findAll();
 
         for(Article article : articleList){
@@ -73,9 +73,9 @@ public class CategoryService extends AbstractCrudMethod<CategoryRequest, Categor
         return categoryRepository.findById(categoryId)
                 .map(category -> {
                     categoryRepository.delete(category);
-                    return Header.OK();
+                    return Status.OK();
                 })
-                .orElseGet(()->Header.ERROR("NO DATA"));
+                .orElseGet(()-> Status.ERROR("NO DATA"));
     }
 
     public List<CategoryResponseDto> getList() {

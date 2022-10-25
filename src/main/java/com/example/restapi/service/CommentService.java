@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.example.restapi.controller.AbstractCrudMethod;
 import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.Comment;
-import com.example.restapi.model.network.Header;
+import com.example.restapi.model.network.Status;
 import com.example.restapi.model.network.request.CommentRequest;
 import com.example.restapi.model.network.response.CommentResponseDto;
 import com.example.restapi.repository.ArticleRepository;
@@ -32,7 +32,7 @@ public class CommentService extends AbstractCrudMethod<CommentRequest, CommentRe
     }
 
     @Override
-    public Header<CommentResponseDto> create(Header<CommentRequest> request) {
+    public Status<CommentResponseDto> create(Status<CommentRequest> request) {
         CommentRequest body = request.getData();
         if(body.getUserId()==null){
             body.setUserId("unknown");
@@ -45,20 +45,20 @@ public class CommentService extends AbstractCrudMethod<CommentRequest, CommentRe
                 .article(articleRepository.getReferenceById(body.getArticleId()))
                 .build();
 
-        return Header.OK(buildComment(commentRepository.save(comment)));
+        return Status.OK(buildComment(commentRepository.save(comment)));
     }
 
     @Override
     @Transactional
-    public Header<CommentResponseDto> read(int id) {
+    public Status<CommentResponseDto> read(int id) {
         return commentRepository.findById(id)
-            .map(comment -> Header.OK(buildComment(comment)))
-            .orElseGet(()-> Header.ERROR("No DATA"));
+            .map(comment -> Status.OK(buildComment(comment)))
+            .orElseGet(()-> Status.ERROR("No DATA"));
     }
 
     @Override
     @Transactional
-    public Header<CommentResponseDto> update(Header<CommentRequest> request, int id) {
+    public Status<CommentResponseDto> update(Status<CommentRequest> request, int id) {
         CommentRequest body = request.getData();
         return commentRepository.findById(id)
             .map(comment -> {
@@ -69,18 +69,18 @@ public class CommentService extends AbstractCrudMethod<CommentRequest, CommentRe
                 return comment;
             })
             .map(commentRepository::save)
-            .map(comment -> Header.OK(buildComment(comment)))
-            .orElseGet(()->Header.ERROR("No DATA"));
+            .map(comment -> Status.OK(buildComment(comment)))
+            .orElseGet(()-> Status.ERROR("No DATA"));
     }
 
     @Override
-    public Header delete(int id) {
+    public Status delete(int id) {
         return commentRepository.findById((id))
                 .map(comment -> {
                     commentRepository.delete(comment);
-                    return Header.OK();
+                    return Status.OK();
                 })
-                .orElseGet(()->Header.ERROR("No DATA"));
+                .orElseGet(()-> Status.ERROR("No DATA"));
     }
 
     public List<CommentResponseDto> getList(Article article){

@@ -11,7 +11,7 @@ function CategoryEdit(){
         return (
             <div style={{textAlign: "center"}}>
                 <CategoryEditForm categoryId={getUrlId(1)} nameOrigin={category?.name}/>
-                <button id="btn-remove" 
+                <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
                         onClick={() => {window.location.href=`/category`}}> Back </button>
             </div>
         )
@@ -49,7 +49,8 @@ function CategoryEditForm({categoryId, nameOrigin}){
                 <b style={{textAlign: "center"}}> Edit Category </b> <br/>
                 <input  placeholder={categoryId} readOnly></input> <br/>
                 <input  placeholder={nameOrigin} onChange={editName}></input> <br/>
-                <button type="submit" id="btn-post" style={{textAlign: "right"}}> Save </button>
+                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
+                        style={{textAlign: "right"}}> Save </button>
             </div>
         </form></>
     )

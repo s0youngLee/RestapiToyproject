@@ -19,7 +19,9 @@ public class MadeLoginFailureHandler implements AuthenticationFailureHandler {
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 		AuthenticationException exception) throws IOException, ServletException {
+
 		logger.error("Exception - " + exception.getMessage());
-		response.sendRedirect("http://localhost:3000/");
+		logger.error("Exception - " + exception.getCause());
+		response.sendRedirect("http://localhost:3000/login");
 	}
 }

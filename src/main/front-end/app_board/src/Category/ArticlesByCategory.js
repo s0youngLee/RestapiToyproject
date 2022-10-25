@@ -12,7 +12,9 @@ function ArticlesByCategory({user, isLogin}){
     return (
         <div id='div-box'>
             <b style={{ fontSize: "30px"}}> Category : {category?.name} </b>
-            {isLogin && <Link to={`/board/add/${getUrlId(1)}`} id="none"> <button id="btn-post"> Write article </button></Link>}
+            {isLogin && <Link to={`/board/add/${getUrlId(1)}`} id="none"> 
+                <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> Write article </button>
+            </Link>}
             <ArticleList user={user} articleList={articleByCategory} />
         </div>
     )}

@@ -59,7 +59,7 @@ function ArticleEditForm({articleDetail, categoryList, user}) {
                 <div style={{width: "50%", margin: "auto", textAlign: "left"}}>
                     <b style={{fontSize: "20px", justifyContent: "left"}}>User ID : {user?.nick_name} </b><br/>
                     <b> Category : </b>
-                    <select onChange={handleSelect} value={selected}>
+                    <select onChange={handleSelect} value={articleDetail.category_id}>
                         {categoryList?.map((category, index) => {
                             return <option key={index} value={category.id}>{category.name}</option>;
                         })}
@@ -67,11 +67,12 @@ function ArticleEditForm({articleDetail, categoryList, user}) {
                     <input placeholder={"Title : " + articleDetail.title} onChange={editTitle}></input> <br/>
                     <textarea id="text-box" placeholder={"Content : " + articleDetail.content} onChange={editContent}></textarea> <br/>
                 </div>
-                
-                <button type="submit" id="btn-post" style={{textAlign: "right"}}> Save </button>
+
+                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" 
+                        style={{textAlign: "right"}}> Save </button>
             </form>
 
-            <button id="btn-remove"
+            <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red"
                         onClick={() => {window.location.href=`/board/${articleDetail?.id}`}}> Back </button>
         </div>
     )

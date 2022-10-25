@@ -38,7 +38,7 @@ function CommentRegister({user}){
                     User ID : {user?.nick_name} <br/>
                 <textarea id="text-box" placeholder="Add a comment"
                           onChange={addContent}></textarea> 
-                <button type="submit" id="btn-post" > Add </button>
+                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > Add </button>
             </div>
             <br/>
         </form>

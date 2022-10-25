@@ -3,15 +3,6 @@ import { Link } from "react-router-dom";
 import _ from "lodash";
 import axios from "axios";
 
-export function IsLogin(cookie){
-    if (_.isEqual(cookie.isLogin, "true")){ 
-        return true;
-    }
-    else{ 
-        return false; 
-    }
-}
-
 export function User(Login){
     const [user, setUser] = useState({ data : {} });
     useEffect(() => {
@@ -65,7 +56,7 @@ export function FetchWithoutId(dataName){
 export function FetchWithId(dataName, n){
     const [data, setData] = useState({ data : {} });
     const id = getUrlId(n);
-    useEffect( () => {
+    useEffect(() => {
         axios.get(`/${dataName}/${id}`)
         .then((res) => {
             setData(res?.data);
@@ -79,17 +70,20 @@ export function FetchWithId(dataName, n){
 }
 
 export function Delete(dataName, dataId){
-    axios.delete(`/${dataName}/${dataId}`).then(() => {
-        alert("Successfully deleted.");
-        if(_.isEqual(dataName, "comment")){
+    if (window.confirm("Do you really want to delete?")){
+        axios.delete(`/${dataName}/${dataId}`).then(() => {
+            alert("Successfully deleted.");
+            if(_.isEqual(dataName, "comment")){
+                window.location.reload();
+            }else {
+                window.location.replace(`/${dataName}`);
+            }
+        }).catch((e) => {
+            alert("Failed to delete.");
             window.location.reload();
-        }else {
-            window.location.replace(`/${dataName}`);
-        }
-    }).catch((e) => {
-        alert("Failed to delete.");
-        window.location.reload();
-    });
+        });
+    }
+
 }
 
 
@@ -107,7 +101,7 @@ export function ifError(e){
         <div>
             <h1> SORRY <br/> Page Not Found </h1><hr/>
             <b>We can't found this page.</b>
-            <Link id="none" to={`/`}><button id="btn-remove">HOME</button></Link>
+            <Link id="none" to={`/`}><button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red">HOME</button></Link>
         </div>
     }else{
         alert("Error : " + e.response.status + " " + e.response.statusText + "\nReturn to Home.");

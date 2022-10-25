@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.example.restapi.model.entity.UserInfo;
-import com.example.restapi.model.network.Header;
+import com.example.restapi.model.network.Status;
 import com.example.restapi.model.network.request.ArticleRequest;
 import com.example.restapi.model.network.response.ArticleListResponseDto;
 import com.example.restapi.model.network.response.ArticleResponseDto;
@@ -39,13 +39,13 @@ public class ArticleController extends AbstractCrudMethod<ArticleRequest, Articl
     }
 
     @GetMapping("")
-    public Header<List<ArticleListResponseDto>> getArticleList() {
-        return Header.OK(articleService.getList());
+    public Status<List<ArticleListResponseDto>> getArticleList() {
+        return Status.OK(articleService.getList());
     }
 
     @GetMapping("/category/{categoryId}")
-    public Header<List<ArticleListResponseDto>> getArticlesByCategory(@PathVariable int categoryId){
-        return Header.OK(articleService.getArticleListByCategory(categoryId));
+    public Status<List<ArticleListResponseDto>> getArticlesByCategory(@PathVariable int categoryId){
+        return Status.OK(articleService.getArticleListByCategory(categoryId));
     }
 
     @GetMapping("/user")

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.restapi.model.network.Header;
+import com.example.restapi.model.network.Status;
 import com.example.restapi.model.network.request.CategoryRequest;
 import com.example.restapi.model.network.response.CategoryResponseDto;
 import com.example.restapi.service.CategoryService;
@@ -30,8 +30,8 @@ public class CategoryController extends AbstractCrudMethod<CategoryRequest, Cate
     }
 
     @GetMapping("")
-    public Header<List<CategoryResponseDto>> getCategoryList(){
-        return Header.OK(categoryService.getList());
+    public Status<List<CategoryResponseDto>> getCategoryList(){
+        return Status.OK(categoryService.getList());
     }
 
 }

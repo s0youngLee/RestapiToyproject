@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.example.restapi.model.entity.UserInfo;
-import com.example.restapi.model.network.Header;
+import com.example.restapi.model.network.Status;
 import com.example.restapi.model.network.request.UserRequest;
 import com.example.restapi.model.network.response.UserResponseDto;
 import com.example.restapi.service.UserService;
@@ -36,31 +36,31 @@ public class UserController {
 	}
 
 	@GetMapping("")
-	public Header<UserResponseDto> loadUserInfo(@ModelAttribute("user") UserInfo user){
+	public Status<UserResponseDto> loadUserInfo(@ModelAttribute("user") UserInfo user){
 		return userService.userPage(user);
 	}
 
 	@GetMapping("/manage")
-	public Header<List<UserResponseDto>> manageUser(@ModelAttribute("user") UserInfo user){
-		return Header.OK(userService.userList(user.getAuth()));
+	public Status<List<UserResponseDto>> manageUser(@ModelAttribute("user") UserInfo user){
+		return Status.OK(userService.userList(user.getAuth()));
 	}
 
 	@PostMapping("")
-	public Header<UserInfo> signup(@RequestBody Header<UserRequest> request) {
+	public Status<UserInfo> signup(@RequestBody Status<UserRequest> request) {
 		return userService.register(request);
 	}
 
 	@PutMapping("")
-	public Header<UserInfo> changePassword(@SessionAttribute("user") UserInfo user, @RequestBody Header<UserRequest> request) {
+	public Status<UserInfo> changePassword(@SessionAttribute("user") UserInfo user, @RequestBody Status<UserRequest> request) {
 		return userService.changePassword(user.getCode(), request);
 	}
 	@PutMapping("/{code}")
-	public Header<UserInfo> changeAuth(@ModelAttribute("user") UserInfo user,@PathVariable Integer code, @RequestBody Header<UserRequest> request){
+	public Status<UserInfo> changeAuth(@ModelAttribute("user") UserInfo user,@PathVariable Integer code, @RequestBody Status<UserRequest> request){
 		return userService.changeAuth(user.getAuth(), request, code);
 	}
 
 	@DeleteMapping("/{code}")
-	public Header deleteUser(@PathVariable Integer code){
+	public Status deleteUser(@PathVariable Integer code){
 		return userService.deleteUser(code);
 	}
 }

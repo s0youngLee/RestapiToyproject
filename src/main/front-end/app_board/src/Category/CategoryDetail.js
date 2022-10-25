@@ -12,7 +12,7 @@ function CategoryDeatil () {
                 {categoryList?.map((category, index) => {
                     return <li key={index}><CategoryDeatilData data={category} /></li>
                 })}
-                <Link to={`/category/add`} id="none"> <button id="btn-post"> Add Category </button></Link>
+                <Link to={`/category/add`} id="none"> <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> Add Category </button></Link>
             </div>
         ) 
     }
@@ -27,11 +27,14 @@ function CategoryDeatilData({data}) {
             <b> Article : {data.article_cnt} ea </b><br/>
         </div>
         <div>
-            <Link to={`/board/category/${data.id}`}> <button id="btn-default"> Go to {data.name} </button></Link>
+            <Link to={`/board/category/${data.id}`} id="none">
+                <button className='w3-button w3-border w3-round-xlarge w3-small  w3-hover-deep-purple'> Go to {data.name} </button>
+            </Link>
             {(data.id !== 0) && <>
-            <Link to={`/category/edit/${data.id}`} id="none"> <button id="btn-post"> Edit</button></Link>
-            <button id="btn-remove" 
-                    style={{}}
+            <Link to={`/category/edit/${data.id}`} id="none">
+                <button className="w3-button w3-border w3-round-xlarge w3-small  w3-hover-teal"> Edit</button>
+            </Link>
+            <button className="w3-button w3-border w3-round-xlarge w3-small  w3-hover-red" 
                     onClick={() => { Delete("category", data.id) }}> Delete </button>
             </>}
         </div>

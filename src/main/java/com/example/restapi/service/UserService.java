@@ -4,36 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.PermissionDeniedDataAccessException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.restapi.model.entity.UserInfo;
-import com.example.restapi.model.network.Header;
+import com.example.restapi.model.network.Status;
 import com.example.restapi.model.network.request.UserRequest;
 import com.example.restapi.model.network.response.UserResponseDto;
 import com.example.restapi.repository.UserRepository;
+import com.example.restapi.security.MadeLogoutHandler;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 	private final UserRepository userRepository;
-	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
-
+	Logger logger = LoggerFactory.getLogger(MadeLogoutHandler.class);
+	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 	public UserService(@Lazy UserRepository userRepository) {
 		this.userRepository = userRepository;
-	}
-
-	@Override
-	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		final UserInfo user = userRepository.findByEmail(email);
-		if(user == null) {
-			throw new UsernameNotFoundException(email + " doesn't exist.");
-		}
-		return user;
 	}
 
 	public String phone_format(String number) {
@@ -41,8 +32,8 @@ public class UserService implements UserDetailsService {
 		return number.replaceAll(regEx, "$1-$2-$3");
 	}
 
-	public Header<UserResponseDto> userPage(UserInfo user) {
-		return Header.OK(buildUser(user));
+	public Status<UserResponseDto> userPage(UserInfo user) {
+		return Status.OK(buildUser(user));
 	}
 
 	public List<UserResponseDto> userList(String auth) {
@@ -57,50 +48,49 @@ public class UserService implements UserDetailsService {
 		}
 	}
 
-	public Header<UserInfo> register(Header<UserRequest> infoDto) {
+	public Status<UserInfo> register(Status<UserRequest> infoDto) {
 		UserRequest body = infoDto.getData();
-
 		UserInfo user = UserInfo.builder()
-			.email(body.getEmail())
-			.password(encoder.encode(body.getPassword()))
-			.auth(body.getAuth())
-			.nickName(body.getNickName())
-			.name(body.getName())
-			.phone(phone_format(body.getPhone()))
-			.build();
+				.email(body.getEmail())
+				.password(encoder.encode(body.getPassword()))
+				.auth(body.getAuth())
+				.nickName(body.getNickName())
+				.name(body.getName())
+				.phone(phone_format(body.getPhone()))
+				.build();
 
-		return Header.OK(userRepository.save(user));
+		return Status.OK(userRepository.save(user));
 	}
 
-	public Header<UserInfo> changePassword(Integer code, Header<UserRequest> request) {
+	public Status<UserInfo> changePassword(Integer code, Status<UserRequest> request) {
 		UserRequest body = request.getData();
 		UserInfo user = userRepository.getReferenceById(code);
 
 		user.setPassword(encoder.encode(body.getPassword()));
-		return Header.OK(userRepository.save(user));
+		return Status.OK(userRepository.save(user));
 	}
 
 
 
-	public Header<UserInfo> changeAuth(String auth, Header<UserRequest> request, Integer code) {
+	public Status<UserInfo> changeAuth(String auth, Status<UserRequest> request, Integer code) {
 		if(Objects.equals(auth, "ROLE_ADMIN")){
 			UserRequest body = request.getData();
 			UserInfo user = userRepository.getReferenceById(code);
 
 			user.setAuth(body.getAuth());
-			return Header.OK(userRepository.save(user));
+			return Status.OK(userRepository.save(user));
 		}else {
 			throw new PermissionDeniedDataAccessException("Permission Denied.", new Throwable(auth));
 		}
 	}
 
 
-	public Header deleteUser(int code) {
+	public Status deleteUser(int code) {
 		return userRepository.findById(code)
 			.map(delUser -> {
 				userRepository.delete(delUser);
-				return Header.OK();
-			}).orElseGet(() -> Header.ERROR("No DATA"));
+				return Status.OK();
+			}).orElseGet(() -> Status.ERROR("No DATA"));
 	}
 
 

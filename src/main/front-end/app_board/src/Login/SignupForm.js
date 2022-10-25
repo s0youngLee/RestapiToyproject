@@ -56,7 +56,11 @@ function SignupForm(){
             alert("Register Successed.\nPlease login.");
             window.location.href="/login";
         }).catch((e) => {
-            alert("Error. Please try again.\n" + e.response);
+            if(e.response.status === 500){
+                alert("Existing user ID. \nPlease try again.");
+            }else{
+                alert("Error. Please try again.\n" + e.response);
+            }
             window.location.replace("/login/signup");
         });
     }
@@ -76,10 +80,11 @@ function SignupForm(){
                     <input type="radio" name="auth" value="ROLE_ADMIN" style={{"width": "30px"}} onChange={setAdmin}/> ADMIN ||
                     <input type="radio" name="auth" value="ROLE_USER" defaultChecked="checked" style={{"width": "30px"}} onChange={setUser}/> USER <br/>
                 </p>
-                <button type="submit" id="btn-post">Join</button>
+                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal">Join</button>
             </form>
 
-            <Link id="none" to="/login"><button id="btn-default">Go to Login →</button></Link>
+            <Link id="none" to="/login">
+                <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-deep-purple">Go to Login →</button></Link>
         </div>
     )
 }

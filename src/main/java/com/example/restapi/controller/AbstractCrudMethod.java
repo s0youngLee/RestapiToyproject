@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.example.restapi.model.network.Header;
+import com.example.restapi.model.network.Status;
 
 public abstract class AbstractCrudMethod<Req, Res>{
     protected AbstractCrudMethod<Req,Res> baseService;
@@ -19,7 +19,7 @@ public abstract class AbstractCrudMethod<Req, Res>{
      * @return baseService.create(request)
      */
     @PostMapping("")
-    public Header<Res> create(@RequestBody Header<Req> request) {
+    public Status<Res> create(@RequestBody Status<Req> request) {
         return baseService.create(request);
     }
 
@@ -30,7 +30,7 @@ public abstract class AbstractCrudMethod<Req, Res>{
      * @return baseService.read(id)
      */
     @GetMapping("{id}")
-    public Header<Res> read(@PathVariable int id) {
+    public Status<Res> read(@PathVariable int id) {
         return baseService.read(id);
     }
 
@@ -42,7 +42,7 @@ public abstract class AbstractCrudMethod<Req, Res>{
      * @return baseService.create(request)
      */
     @PutMapping("{id}")
-    public Header<Res> update(@RequestBody Header<Req> request, @PathVariable int id) {
+    public Status<Res> update(@RequestBody Status<Req> request, @PathVariable int id) {
         return baseService.update(request, id);
     }
 
@@ -53,7 +53,7 @@ public abstract class AbstractCrudMethod<Req, Res>{
      * @return baseService.delete(id)
      */
     @DeleteMapping("{id}")
-    public Header delete(@PathVariable int id) {
+    public Status delete(@PathVariable int id) {
         return baseService.delete(id);
     }
 }

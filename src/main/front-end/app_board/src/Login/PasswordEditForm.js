@@ -1,12 +1,10 @@
 import { useState, useCallback } from "react";
-import { useCookies } from "react-cookie";
 import _ from "lodash";
 import axios from "axios";
 
 function PasswordEditForm({user}) {
     const [newPassword, setNewPassword] = useState("");
     const [checkPassword, setCheckPassword] = useState("");
-    const [, , removeCookie] = useCookies(['isLogin']);
     
     const inputPassword = useCallback( e => {
         setNewPassword(e.target.value);
@@ -34,7 +32,7 @@ function PasswordEditForm({user}) {
             }
         }).then(() => {
             alert("Password Changed.\nPlease re-login.");
-            removeCookie(['isLogin']);
+            sessionStorage.removeItem("isLogin");
             axios.post("/logout");
             window.location.replace(`/login`);
         }).catch((e) => {
@@ -52,7 +50,7 @@ function PasswordEditForm({user}) {
                     <b> Change password </b><br/>
                     <input type={"password"} placeholder="New Password" onChange={inputPassword} required autoFocus></input><br/>
                     <input type={"password"} placeholder="Check Password" onChange={checkNewPassword} required></input><br/>
-                    <button type="submit" id="btn-post"> Change </button>
+                    <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> Change </button>
                 </div>
             </form> </>
         )

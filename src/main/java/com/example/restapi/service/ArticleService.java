@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.example.restapi.controller.AbstractCrudMethod;
 import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.Category;
-import com.example.restapi.model.network.Header;
+import com.example.restapi.model.network.Status;
 import com.example.restapi.model.network.request.ArticleRequest;
 import com.example.restapi.model.network.response.ArticleListResponseDto;
 import com.example.restapi.model.network.response.ArticleResponseDto;
@@ -36,7 +36,7 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
     }
 
     @Override
-    public Header<ArticleResponseDto> create(Header<ArticleRequest> request) {
+    public Status<ArticleResponseDto> create(Status<ArticleRequest> request) {
 
         ArticleRequest body = request.getData();
 
@@ -56,16 +56,16 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
 
     @Override
     @Transactional
-    public Header<ArticleResponseDto> read(int id) {
+    public Status<ArticleResponseDto> read(int id) {
         articleService.updateVisitCnt(id);
         return articleRepository.findById(id)
                 .map(this::response)
-                .orElseGet(()-> Header.ERROR("No DATA"));
+                .orElseGet(()-> Status.ERROR("No DATA"));
     }
 
 
     @Override
-    public Header<ArticleResponseDto> update(Header<ArticleRequest> request, int id) {
+    public Status<ArticleResponseDto> update(Status<ArticleRequest> request, int id) {
         ArticleRequest body = request.getData();
 
         return articleRepository.findById(id)
@@ -82,17 +82,17 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
                 })
                 .map(articleRepository::save)
                 .map(this::response)
-                .orElseGet(()->Header.ERROR("No DATA"));
+                .orElseGet(()-> Status.ERROR("No DATA"));
     }
 
     @Override
-    public Header delete(int id) {
+    public Status delete(int id) {
         return articleRepository.findById(id)
                 .map(article -> {
                     articleRepository.delete(article);
-                    return Header.OK();
+                    return Status.OK();
                 })
-                .orElseGet(()->Header.ERROR("No DATA"));
+                .orElseGet(()-> Status.ERROR("No DATA"));
     }
     
     public List<ArticleListResponseDto> getList(){
@@ -107,7 +107,7 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
         return listResponse(articleRepository.findAllByCreatedId(nickName));
     }
 
-    private Header<ArticleResponseDto> response(Article article){
+    private Status<ArticleResponseDto> response(Article article){
         ArticleResponseDto body = ArticleResponseDto.builder()
                 .id(article.getId())
                 .title(article.getTitle())
@@ -120,7 +120,7 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
                 .comment(commentService.getList(article))
                 .build();
 
-        return Header.OK(body);
+        return Status.OK(body);
     }
 
     private List<ArticleListResponseDto> listResponse(List<Article> articleList){

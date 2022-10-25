@@ -66,9 +66,8 @@ function ArticleRegister({user}){
                     <textarea id="text-box" placeholder="Content" onChange={addContent}></textarea> <br/>
                 </div>
 
-                <button type="submit" id="btn-post" > Add </button>
+                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > Add </button>
             </form>
-            {/* <button id='btn-default' onClick={() => {window.location.href = `/`}}> Home </button> */}
         </div>
     )
 }

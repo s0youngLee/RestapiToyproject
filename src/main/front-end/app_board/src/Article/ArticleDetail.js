@@ -27,18 +27,11 @@ function ArticleDetailData({data, user, isLogin}) {
                         <div style={{float: "right"}}>
                             { _.isEqual(data?.created_id, user?.nick_name) &&
                                 <Link to={`/board/edit/${data?.id}`} id="none" >
-                                    <button style={{float: "right"}} id="btn-post"> Edit </button></Link>}
+                                    <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> 
+                                        Edit </button></Link>}
                             {canChange(user, data?.created_id) &&
-                                <button id="btn-remove" onClick={() => { Delete("board", data.id) }}>Delete</button>}
-                        </div>
-                        <br/> <br/>
-                        <div style={{float: "right"}}>
-                            {/* <Link to={`/`} id="none">
-                                    <button id="btn-default"> Home </button></Link>
-                            <Link to={`/board`} id="none">
-                                    <button id="btn-default"> Board </button></Link> */}
-                            {isLogin && <Link to={`/board/category/${data?.category_id}`} id="none">
-                                <button id="btn-default"> {data?.category_name} List </button></Link>}
+                                <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
+                                        onClick={() => { Delete("board", data.id) }}>Delete</button>}
                         </div>
                     </div>
                 </div><hr/>

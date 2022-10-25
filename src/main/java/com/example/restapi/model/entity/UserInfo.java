@@ -22,6 +22,7 @@ public class UserInfo implements UserDetails {
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer code;
+
 	private String email;
 	private String password;
 	private String auth;

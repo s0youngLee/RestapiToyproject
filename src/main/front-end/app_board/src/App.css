@@ -24,6 +24,15 @@ select {
   border-radius: 0px; 
 }
 
+td, tr, th {
+  padding: 10px;
+}
+
+button{
+  margin-left: 5px!important;
+  font-weight: bolder!important;
+} 
+
 #article {
   height: 50px;
 }
@@ -31,7 +40,6 @@ select {
 #list {
   margin-top: 20px;
   width: 100%;
-  /* border: 3px solid; */
   border-collapse: collapse;
   border-radius: 5px;
   text-align: center;
@@ -40,23 +48,17 @@ select {
   margin-right: auto;
 }
 
-#item {
-  /* border: 1px solid black; */
-  padding: 10px;
+#del {
+  background-color: lightcoral;
+}#del:hover{
+  cursor: pointer;
 }
 
-/* #item-detail {
-  border: none;
-} */
-
 #none {
-  width: 200px;
-  height: 200px;
-  text-decoration-line: none; 
+  text-decoration-line: none;
   color: inherit; 
 }
 #none:hover {
-  font-weight: bolder;
   color: slateblue;
 }
 
@@ -110,84 +112,4 @@ select {
   position: absolute;
   width: 47%;
   right: 10px;
-}
-
-
-
-/* Button CSS */
-
-#btn-default {
-  border-radius: 5px;
-  background-color: white;
-  border: 1px solid slateblue;
-  color: slateblue;
-  font-weight: bolder;
-  margin: 5px;
-  vertical-align: middle;
-}#btn-default:hover{
-  background-color: slateblue;
-  color: aliceblue;
-}
-
-#btn-category{
-  min-width: 100px;
-  max-width: 150px;
-  height: 50px;
-  border-radius: 5px;
-  background-color: white;
-  color: #373737;
-  border: 3px solid #373737;
-  font-weight: bolder;
-  font-size: larger;
-  vertical-align: middle;
-  overflow: hidden;
-  text-overflow: "ellipsis";
-  
-  margin: 5px;
-}#btn-category:hover{
-  background-color: slateblue;
-  color: aliceblue;
-}
-
-#btn-post{
-  border-radius: 5px;
-  background-color: white;
-  color: mediumturquoise;
-  border: 1px solid mediumturquoise;
-  font-weight: bolder;
-  margin: 5px;
-  vertical-align: middle;
-}#btn-post:hover{
-  background-color: mediumturquoise;
-  color: aliceblue;
-}
-
-#btn-user{
-  width: 100px;
-  height: 50px;
-  position: absolute;
-  top: 10px;
-  margin: 5px;
-  border: 1px solid mediumturquoise;
-  border-radius: 5px;
-  color: mediumturquoise;
-  background-color: white;
-  vertical-align: middle;
-  font-weight: bolder;
-}#btn-user:hover{
-  background-color: mediumturquoise;
-  color: aliceblue;
-}
-
-#btn-remove{
-  border-radius: 5px;
-  background-color: white;
-  color: lightcoral;
-  border: 1px solid #f08080;
-  font-weight: bolder;
-  margin: 5px;
-  vertical-align: middle;
-}#btn-remove:hover{
-  background-color: lightcoral;
-  color: aliceblue;
 }

@@ -1,7 +1,5 @@
-import CommentEdit from "./CommentEdit";
+import CommentData from "./CommentData";
 import CommentRegister from "./CommentRegister";
-import { Delete, canChange } from "../func";
-import _ from "lodash";
 
 function Comment({article, user, isLogin}){
     return (
@@ -15,23 +13,6 @@ function Comment({article, user, isLogin}){
             </div>
         </div>
     ) 
-}
-
-
-function CommentData({index, data, user}){
-    return(
-        <><li  key={index}>
-            <b> User ID : </b> <span> {data?.user_id} </span> <br/>
-            <b> Content : </b> <span> {data?.content} </span> <br/>
-            <b> Created At : </b> <span> {data?.created_at} </span>
-            
-            { _.isEqual(data?.user_id, user?.nick_name) && 
-                <CommentEdit data={data}/>}
-            {canChange(user, data?.user_id) &&
-                <button id="btn-remove" onClick={() => { Delete("comment", data.id) }}>Delete</button>
-            }
-        </li> <br/></>
-    );
 }
 
 export default Comment;

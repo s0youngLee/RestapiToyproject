@@ -24,7 +24,9 @@ function UserManage(){
                     </li>
                     )
                 })}
-                <Link id="none" to={`/mypage`}><button id="btn-default">Go to MyPage →</button></Link>
+                <Link id="none" to={`/mypage`}>
+                    <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-deep-purple">Go to MyPage →</button>
+                </Link>
             </div>
         )
     }
@@ -69,9 +71,11 @@ function EditUser({userinfo}){
                     defaultChecked={authCheck({role:"ROLE_ADMIN"})}  onChange={setAdmin}/> ADMIN 
                 <input id="radioInput" type="radio" name="auth" value="ROLE_USER"  
                     defaultChecked={authCheck({role:"ROLE_USER"})}  onChange={setUser}/> USER <br/>
-                <button type="submit" id="btn-remove" style={{position:"absolute", right:"130px", top:"-3px"}}>Save</button>
+                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
+                        style={{position:"absolute", right:"100px", top:"3px"}}>Save</button>
             </form>
-            <button id="btn-remove" style={{position:"absolute", right:"50px", top:"-3px"}}
+            <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
+                    style={{position:"absolute", right:"15px", top:"3px"}}
                     onClick={() => Delete("user",userinfo.code)}> Remove </button>
         </div>
     )

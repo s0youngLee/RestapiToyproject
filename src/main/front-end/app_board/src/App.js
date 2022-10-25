@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { IsLogin, User } from "./func";
-import { useCookies } from "react-cookie";
+import { User } from "./func";
 import Home from "./Home";
 import ArticleLists from "./Article/ArticleLists";
 import ArticleDetail from "./Article/ArticleDetail";
@@ -19,13 +18,12 @@ import 'w3-css';
 import Bar from "./Bar";
 
 function App() {
-    const [cookie, ,removeCookie] = useCookies(['isLogin']);
-    const login = IsLogin(cookie);
+    const login = sessionStorage.getItem("isLogin");
     const user = User(login);
 
     return(
         <Router>
-            <Bar isLogin={login} user={user} removeCookie={removeCookie}/>
+            <Bar isLogin={login} user={user}/>
                 <Routes>
                 <Route path="/" exact element={<Home isLogin={login}/>} />
 
@@ -43,7 +41,7 @@ function App() {
                 <Route path="/login/signup" element={<SignupForm />} />
                 
                 <Route path="/mypage" element={<MyPage user={user}/>} />
-                <Route path="/user/manage" element={<UserManage />} />
+                <Route path="/user" element={<UserManage />} />
             </Routes>
         </Router>
     )
