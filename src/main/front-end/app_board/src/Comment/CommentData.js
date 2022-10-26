@@ -53,10 +53,10 @@ function CommentEditForm({data}){
         <>
         <br/><br/>
         <form onSubmit={editComment}>
-            <div id="div-box" style={{textAlign: "left"}}>
+            <div className="div-box" style={{textAlign: "left"}}>
                 <b style={{textAlign: "center"}}> Edit comment </b> <br/>
-                <input  placeholder={data?.user_id} readOnly></input> <br/>
-                <input  placeholder={data?.content} onChange={editcontent}></input>
+                <b> User ID : {data?.user_id}</b><br/>
+                <input  value={content} onChange={editcontent}></input>
                 <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> Save </button>
             </div>
         </form></>

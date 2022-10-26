@@ -36,7 +36,7 @@ function CommentRegister({user}){
             <div style={{height: "160px"}}>
                 <b> Add Comment</b> <br/>
                     User ID : {user?.nick_name} <br/>
-                <textarea id="text-box" placeholder="Add a comment"
+                <textarea className="text-box" placeholder="Add a comment"
                           onChange={addContent}></textarea> 
                 <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > Add </button>
             </div>

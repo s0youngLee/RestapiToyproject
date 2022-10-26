@@ -1,6 +1,6 @@
 function Home() {
     return(
-        <div id="home">
+        <div className="home">
             <b style={{ fontSize: "40px"}}> Home Page </b>
             <p> 
                 App_Board Tutorial <br/>

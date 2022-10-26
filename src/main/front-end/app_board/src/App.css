@@ -7,8 +7,7 @@ li {
   border: 1px solid #282c34;
   padding: 20px;
   list-style: none;
-  margin-top: 10px;
-  margin-right: 10px;
+  margin: 10px;
 }
 
 input{
@@ -24,20 +23,7 @@ select {
   border-radius: 0px; 
 }
 
-td, tr, th {
-  padding: 10px;
-}
-
-button{
-  margin-left: 5px!important;
-  font-weight: bolder!important;
-} 
-
-#article {
-  height: 50px;
-}
-
-#list {
+table {
   margin-top: 20px;
   width: 100%;
   border-collapse: collapse;
@@ -48,30 +34,28 @@ button{
   margin-right: auto;
 }
 
-#del {
-  background-color: lightcoral;
-}#del:hover{
-  cursor: pointer;
+td, tr, th {
+  padding: 10px;
 }
 
-#none {
+button{
+  margin-left: 5px!important;
+  font-weight: bolder!important;
+} 
+
+.none {
   text-decoration-line: none;
   color: inherit; 
-}
-#none:hover {
+}.none:hover {
   color: slateblue;
 }
 
-#radioInput{
-  width: 30px;
-}
-
-#clickable:hover{
+.clickable:hover{
   background-color: lightsteelblue;
   cursor: pointer;
 }
 
-#home{
+.home{
   width: 300px;
   height: 450px;
   position: absolute;
@@ -81,35 +65,24 @@ button{
   transform: translate(-50%, 0%);
 }
 
-
 /* Box CSS */
-
-#text-box{
+.text-box{
   width: 400px;
   height: 100px;
   resize: none;
   vertical-align: middle;
 }
 
-#div-box{
+.div-box{
   text-align: center;
   margin-bottom: 10px;
   position: relative;
   height: 100%;
 }
 
-.box1{
-  display: inline-block;
-  margin: 10px;
-  width: 47%;
-  position: absolute;
-  left: 10px;
-}
-
-.box2{
+.box {
   display: inline-block;
   margin: 10px;
   position: absolute;
   width: 47%;
-  right: 10px;
 }

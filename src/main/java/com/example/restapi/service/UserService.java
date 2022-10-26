@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -48,7 +51,7 @@ public class UserService {
 		}
 	}
 
-	public Status<UserInfo> register(Status<UserRequest> infoDto) {
+	public Status<UserInfo> register(Status<UserRequest> infoDto, HttpServletResponse response) {
 		UserRequest body = infoDto.getData();
 		UserInfo user = UserInfo.builder()
 				.email(body.getEmail())
@@ -58,8 +61,14 @@ public class UserService {
 				.name(body.getName())
 				.phone(phone_format(body.getPhone()))
 				.build();
-
-		return Status.OK(userRepository.save(user));
+		try{
+			return Status.OK(userRepository.save(user));
+		}catch (DataIntegrityViolationException e){
+			logger.error("Existing User. Please Try again.");
+			response.setStatus(400);
+			return Status.ERROR("Existing User. Please Try again.");
+		}
+		// return Status.ERROR();
 	}
 
 	public Status<UserInfo> changePassword(Integer code, Status<UserRequest> request) {

@@ -10,7 +10,7 @@ function MyArticles(){
                 <h2> Articles </h2>
                 {articles?.map((article, index) => {
                     return (
-                    <Link  key={index} id="none" to={`/board/${article.id}`}>
+                    <Link  key={index} className="none" to={`/board/${article.id}`}>
                         <li style={{textAlign: "left"}}>
                             <b>Title : </b> {article.title} &nbsp;&nbsp;
                             <b>Category : </b> {article.category_name} <br/>

@@ -10,7 +10,7 @@ function MyPage({user}){
     if(!user) { return <div> Loading ... </div> }
     else {
         return (
-            <div id="div-box">
+            <div className="div-box">
                 <b style={{ fontSize: "40px"}}>MY PAGE</b> <hr/>
                 <div style={{textAlign: "left",padding: "10px", margin: "20px", marginBottom: 0}}>
                     <b> Name : </b><span> {user.name} </span><br/>
@@ -22,11 +22,11 @@ function MyPage({user}){
                             onClick={() => setVisible(!visible)}> {visible ? "Cancel" : "Change PW"} </button>
                     {visible && <PasswordEditForm user={user}/>}
                 </div><hr/>
-                <div className="box1"><MyArticles /></div>
-                <div className="box2"><MyComments /></div>
+                <div className="box" style={{left: "10px"}}><MyArticles /></div>
+                <div className="box"><MyComments /></div>
                 <div style={{position: "absolute", top: "160px", right: "30px"}}>
                     {isAdmin(user?.auth) && 
-                        <Link to={"/user"} id="none">
+                        <Link to={"/user"} className="none">
                             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red">Manage users</button>
                         </Link>}
                 </div>

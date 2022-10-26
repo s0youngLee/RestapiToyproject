@@ -26,7 +26,7 @@ function ArticleDetailData({data, user, isLogin}) {
                         <b> Visit : </b> <span> {data?.visit_cnt} </span> 
                         <div style={{float: "right"}}>
                             { _.isEqual(data?.created_id, user?.nick_name) &&
-                                <Link to={`/board/edit/${data?.id}`} id="none" >
+                                <Link to={`/board/edit/${data?.id}`} className="none" >
                                     <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> 
                                         Edit </button></Link>}
                             {canChange(user, data?.created_id) &&

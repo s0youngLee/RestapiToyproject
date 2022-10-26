@@ -10,9 +10,9 @@ function ArticlesByCategory({user, isLogin}){
     if(!articleByCategory) { return <div> Loading ... </div> }
     else {
     return (
-        <div id='div-box'>
+        <div className='div-box'>
             <b style={{ fontSize: "30px"}}> Category : {category?.name} </b>
-            {isLogin && <Link to={`/board/add/${getUrlId(1)}`} id="none"> 
+            {isLogin && <Link to={`/board/add/${getUrlId(1)}`} className="none"> 
                 <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> Write article </button>
             </Link>}
             <ArticleList user={user} articleList={articleByCategory} />

@@ -46,7 +46,7 @@ function PasswordEditForm({user}) {
         return (
             <><br/>
             <form onSubmit={changePW}>
-                <div id="div-box">
+                <div className="div-box">
                     <b> Change password </b><br/>
                     <input type={"password"} placeholder="New Password" onChange={inputPassword} required autoFocus></input><br/>
                     <input type={"password"} placeholder="Check Password" onChange={checkNewPassword} required></input><br/>

@@ -44,7 +44,7 @@ function LoginForm(){
     }
 
     return (
-    <div id="div-box">
+    <div className="div-box">
         <br/>
         <form >
             <h2 >Please Login</h2> <hr/>
@@ -52,7 +52,7 @@ function LoginForm(){
             <input type="password" id="password" name="password" placeholder="Password" onChange={onChangeAccount} required/><br/>
             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" type="submit" 
                     onClick={userlogin} >Login</button>
-            <Link id="none" to="/login/signup">
+            <Link className="none" to="/login/signup">
                 <button className="w3-button w3-round-xlarge w3-small w3-hover-deep-purple w3-border">Sign up</button>
             </Link>
         </form> 

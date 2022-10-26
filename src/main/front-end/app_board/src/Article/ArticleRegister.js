@@ -50,7 +50,7 @@ function ArticleRegister({user}){
     }
 
     return(
-        <div style={{textAlign: "center"}}>
+        <div className="div-box">
             <form onSubmit={addArticle}>
                 <b style={{ fontSize: "40px"}}> Add Article </b> <hr/>
 
@@ -62,8 +62,8 @@ function ArticleRegister({user}){
                             return <option key={index} value={category.id}>{category.name}</option>;
                         })}
                     </select><br/>
-                    <input placeholder="Title" onChange={addTitle}></input> <br/>
-                    <textarea id="text-box" placeholder="Content" onChange={addContent}></textarea> <br/>
+                    <input placeholder='Title' onChange={addTitle}></input> <br/>
+                    <textarea placeholder='Content' className="text-box" onChange={addContent}></textarea> <br/>
                 </div>
 
                 <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > Add </button>

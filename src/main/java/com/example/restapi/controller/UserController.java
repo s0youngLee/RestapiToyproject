@@ -2,6 +2,8 @@ package com.example.restapi.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,8 +48,8 @@ public class UserController {
 	}
 
 	@PostMapping("")
-	public Status<UserInfo> signup(@RequestBody Status<UserRequest> request) {
-		return userService.register(request);
+	public Status<UserInfo> signup(@RequestBody Status<UserRequest> request, HttpServletResponse response) {
+		return userService.register(request, response);
 	}
 
 	@PutMapping("")

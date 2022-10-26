@@ -3,6 +3,15 @@ import { Link } from "react-router-dom";
 import _ from "lodash";
 import axios from "axios";
 
+export const sliceArrayByLimit = (totalPage, limit) => {
+    const totalPageArray = Array(totalPage)
+      .fill()
+      .map((_, i) => i);
+    return Array(Math.ceil(totalPage / limit))
+      .fill()
+      .map(() => totalPageArray.splice(0, limit));
+  };
+
 export function User(Login){
     const [user, setUser] = useState({ data : {} });
     useEffect(() => {
@@ -83,7 +92,6 @@ export function Delete(dataName, dataId){
             window.location.reload();
         });
     }
-
 }
 
 
@@ -101,7 +109,7 @@ export function ifError(e){
         <div>
             <h1> SORRY <br/> Page Not Found </h1><hr/>
             <b>We can't found this page.</b>
-            <Link id="none" to={`/`}><button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red">HOME</button></Link>
+            <Link className="none" to={`/`}><button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red">HOME</button></Link>
         </div>
     }else{
         alert("Error : " + e.response.status + " " + e.response.statusText + "\nReturn to Home.");

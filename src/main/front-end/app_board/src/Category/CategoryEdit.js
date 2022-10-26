@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 function CategoryEdit(){
     const category = FetchWithId("category", 1);
-    if(!category) {return <div> Loading ... </div>}
+    if(_.isEmpty(category)) {return <div> Loading ... </div>}
     else { 
         return (
             <div style={{textAlign: "center"}}>
@@ -45,10 +45,10 @@ function CategoryEditForm({categoryId, nameOrigin}){
     return (
         <><br/><br/><br/>
         <form onSubmit={editCategory}>
-            <div id="div-box">
+            <div className="div-box">
                 <b style={{textAlign: "center"}}> Edit Category </b> <br/>
-                <input  placeholder={categoryId} readOnly></input> <br/>
-                <input  placeholder={nameOrigin} onChange={editName}></input> <br/>
+                <b> Category ID : {categoryId}</b><br/>
+                <input  value={categoryName} onChange={editName}></input> <br/>
                 <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
                         style={{textAlign: "right"}}> Save </button>
             </div>

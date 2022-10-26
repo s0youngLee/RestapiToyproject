@@ -10,7 +10,7 @@ function UserManage(){
     if(!manage){ return <div> Loading ... </div>}
     else{
         return (
-            <div id="div-box"> 
+            <div className="div-box"> 
                 <b style={{ fontSize: "40px"}}> User List </b> <hr/>
                 {manage.map((userinfo, index) => {
                     return (
@@ -24,7 +24,7 @@ function UserManage(){
                     </li>
                     )
                 })}
-                <Link id="none" to={`/mypage`}>
+                <Link className="none" to={`/mypage`}>
                     <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-deep-purple">Go to MyPage →</button>
                 </Link>
             </div>
@@ -64,7 +64,7 @@ function EditUser({userinfo}){
     }
 
     return (
-        <div id="div-box" style={{position:"relative"}}>
+        <div className="div-box" style={{position:"relative"}}>
             <form onSubmit={editAuth}>
                 <b> ROLE : </b>
                 <input id="radioInput" type="radio" name="auth" value="ROLE_ADMIN" 

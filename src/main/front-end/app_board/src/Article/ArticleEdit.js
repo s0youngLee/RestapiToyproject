@@ -7,7 +7,7 @@ function ArticleEdit({user}){
     const articleDetail = FetchWithId("board", 1);
     const categoryList = Array.from(FetchWithoutId("category").data);
 
-    if(!articleDetail) {return <div> Loading ... </div>}
+    if(_.isEmpty(articleDetail)) {return <div> Loading ... </div>}
     else { 
         return <ArticleEditForm articleDetail={articleDetail} categoryList={categoryList} user={user}/>
     }
@@ -20,6 +20,7 @@ function ArticleEditForm({articleDetail, categoryList, user}) {
 
     const editTitle = useCallback(e => {
         setTitle(e.target.value);
+        
     }, [])
     
     const editContent = useCallback(e => {
@@ -52,8 +53,8 @@ function ArticleEditForm({articleDetail, categoryList, user}) {
     }
     
     return(
-        <div style={{textAlign: "center"}}>
-            <form style={{textAlign: "center"}} onSubmit={editArticle}>
+        <div className="div-box" >
+            <form onSubmit={editArticle}>
                 <b style={{ fontSize: "40px"}}> Edit Article </b> <hr/>
 
                 <div style={{width: "50%", margin: "auto", textAlign: "left"}}>
@@ -64,8 +65,8 @@ function ArticleEditForm({articleDetail, categoryList, user}) {
                             return <option key={index} value={category.id}>{category.name}</option>;
                         })}
                     </select><br/>
-                    <input placeholder={"Title : " + articleDetail.title} onChange={editTitle}></input> <br/>
-                    <textarea id="text-box" placeholder={"Content : " + articleDetail.content} onChange={editContent}></textarea> <br/>
+                    <input value={title} onChange={editTitle}></input> <br/>
+                    <textarea className="text-box" onChange={editContent}>{content}</textarea> <br/>
                 </div>
 
                 <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" 

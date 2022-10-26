@@ -56,17 +56,21 @@ function SignupForm(){
             alert("Register Successed.\nPlease login.");
             window.location.href="/login";
         }).catch((e) => {
-            if(e.response.status === 500){
-                alert("Existing user ID. \nPlease try again.");
+            if(e.response.status === 400){
+                if (window.confirm("Existing User ID.\nWanna login with this id?")){
+                    window.location.replace("/login");
+                }else{
+                    alert("Please register with other ID");
+                }
             }else{
                 alert("Error. Please try again.\n" + e.response);
+                window.location.replace("/login/signup");
             }
-            window.location.replace("/login/signup");
         });
     }
 
     return (
-        <div id="div-box">
+        <div className="div-box">
             <br/>
             <h2>Sign Up</h2> <hr/>
 
@@ -83,7 +87,7 @@ function SignupForm(){
                 <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal">Join</button>
             </form>
 
-            <Link id="none" to="/login">
+            <Link className="none" to="/login">
                 <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-deep-purple">Go to Login →</button></Link>
         </div>
     )

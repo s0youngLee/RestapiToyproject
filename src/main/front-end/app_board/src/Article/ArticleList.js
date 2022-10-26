@@ -1,11 +1,21 @@
 import { useState } from "react";
 import Article from "./Article";
 import { isAdmin, Delete } from "../func";
+import Pagination from "react-js-pagination";
+import axios from "axios";
+import _ from "lodash";
 import "../App.css";
+
 
 function ArticleList({user, articleList}){
     const [allChecked, setAllChecked] = useState(false);
     const [checkedItems, setCheckedItems] = useState(new Set());
+    
+    const pageLimit = 5; // page display cnt limit
+    const articleCntPerPage = 10; // article cnt per pages
+    const [currentPage, setCurrentPage] = useState(1);
+    const offset = (currentPage - 1) * articleCntPerPage;
+    const articlesPerPage = articleList.slice(offset, offset + articleCntPerPage);
 
     const checkedItemHandler = (id, isChecked) => {
         if(isChecked) {
@@ -22,30 +32,47 @@ function ArticleList({user, articleList}){
         checkedItemHandler(id, target.checked);
     };
 
-    const changeAll = (() => {
-        setAllChecked(!allChecked);
-        for(var i = 0;i < Array.from(articleList).length; i++){
+    const changeAll = ((state) => {
+        setAllChecked(state);
+        for(var i = 0;i < articlesPerPage.length; i++){
             const item = document.getElementsByName("check")[i];
-            item.checked = !allChecked;
+            item.checked = state;
             checkedItemHandler(Number(item.value), item.checked);
         }
     })
+
+    const handlePageChange = (currentPage) => {
+        setCurrentPage(currentPage);
+        if(isAdmin(user.auth)){
+            checkedItems.clear();
+            changeAll(false);
+        }
+    };
+
+    function DeleteArticles(){
+        if (window.confirm("Do you really want to delete " + checkedItems.size + " articles?")){
+            Array.from(checkedItems).map((id, index) => {
+                axios.delete(`/board/${id}`);
+            });
+            alert("Successfully deleted.");
+            window.location.replace(`/board`);
+        }
+    }
 
     
     return(
         <>
         {isAdmin(user.auth) && 
             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
-                    onClick={() => Array.from(checkedItems).map((id, index) => {
-                                return Delete("board", id);
-                            })}>  Delete </button>}
+                    onClick={() => DeleteArticles()}>  Delete </button>}
 
-        <table id="list">
+        <table>
             <thead style={{borderBottom: "2px solid #000000", backgroundColor: "#aa9dff"}}>
             <tr>
                 {isAdmin(user.auth) && 
-                    <th> <input type={'checkbox'} style={{width: "20px", height: "20px"}}
-                                checked={allChecked} onChange={() => changeAll()}/></th>
+                    <th> <input type={'checkbox'} style={{width: "20px", height: "20px"}} checked={allChecked} 
+                                onChange={() => { 
+                                    changeAll(!allChecked); }}/></th>
                 }
                 <th> ID </th>
                 <th> Title </th>
@@ -57,9 +84,9 @@ function ArticleList({user, articleList}){
             </tr>
             </thead>
             <tbody>
-                {articleList?.map((article, index) => {
+                {articlesPerPage.map((article, index) => {
                    return (
-                    <tr id="clickable" key={index}>
+                    <tr className="clickable" key={index}>
                         {isAdmin(user.auth) && 
                             <input  type={'checkbox'} onChange={(e) => {checkHandler(e, article.id);}}
                             name="check" value={article.id}
@@ -69,7 +96,18 @@ function ArticleList({user, articleList}){
                     </tr>
                 )})}
             </tbody>
-        </table>
+        </table> <hr/>
+        <Pagination
+            activePage={currentPage} 
+            itemsCountPerPage={articleCntPerPage} 
+            totalItemsCount={articleList.length} 
+            pageRangeDisplayed={pageLimit} 
+            onChange={handlePageChange}
+            innerClass={""}
+            activeClass={"w3-button w3-round-xxlarge w3-small w3-deep-purple"}
+            itemClass={"w3-button w3-round-xxlarge w3-small w3-hover-deep-purple"}
+            linkClass={"none"}
+        />
         </>
     )
 }

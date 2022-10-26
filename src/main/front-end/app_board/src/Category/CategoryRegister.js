@@ -44,7 +44,7 @@ function CategoryRegister(){
 
     return(
 
-        <div id="div-box">
+        <div className="div-box">
             <form onSubmit={addCategory}>
                     <b style={{ fontSize: "40px"}}> Add Category </b> <hr/>
                     <input  placeholder="Category ID" onChange={addId}></input> <br/>
