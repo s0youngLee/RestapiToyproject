@@ -18,8 +18,8 @@ function LoginForm(){
     };
 
     let form = new FormData();
-    form.append('username', account.username);
-    form.append('password', account.password);
+        form.append('username', account.username);
+        form.append('password', account.password);
 
     const userlogin = (e) => {
         e.preventDefault();

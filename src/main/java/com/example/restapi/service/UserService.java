@@ -65,7 +65,7 @@ public class UserService {
 			return Status.OK(userRepository.save(user));
 		}catch (DataIntegrityViolationException e){
 			logger.error("Existing User. Please Try again.");
-			response.setStatus(400);
+			response.setStatus(451);
 			return Status.ERROR("Existing User. Please Try again.");
 		}
 		// return Status.ERROR();

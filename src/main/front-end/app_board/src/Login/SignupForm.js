@@ -56,7 +56,7 @@ function SignupForm(){
             alert("Register Successed.\nPlease login.");
             window.location.href="/login";
         }).catch((e) => {
-            if(e.response.status === 400){
+            if(e.response.status === 451){
                 if (window.confirm("Existing User ID.\nWanna login with this id?")){
                     window.location.replace("/login");
                 }else{

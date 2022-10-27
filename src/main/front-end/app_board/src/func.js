@@ -21,11 +21,11 @@ export function User(Login){
                 setUser(res?.data)
             })
             .catch((e) => {
-                ifError(e);
+                // ifError(e);
             });
         }
     }, [Login]);
-    if(!user){ return <div> Loading ... </div> }
+    if(_.isEmpty(user)){ return <div> Loading ... </div> }
     else{ return user.data; }
 }
 
@@ -52,13 +52,14 @@ export function FetchWithoutId(dataName){
     useEffect(() => {
         axios.get(`/${dataName}`)
         .then((res) => {
-            setData(res?.data)
+            setData(res?.data);
         })
         .catch((e) => {
-            ifError(e);
+            // ifError(e);
         });
     }, [dataName]);
-    if(!data){ return <div> Loading ... </div> }
+    console.log(data);
+    if(_.isEmpty(data)){ return <div> Loading ... </div> }
     else{ return data; }
 }
 
@@ -71,10 +72,10 @@ export function FetchWithId(dataName, n){
             setData(res?.data);
         })
         .catch((e) => {
-            ifError(e);
+            // ifError(e);
         });
     }, [dataName, id]);
-    if(!data){ return <div> Loading ... </div>}
+    if(_.isEmpty(data)){ return <div> Loading ... </div>}
     else{ return data.data;}
 }
 

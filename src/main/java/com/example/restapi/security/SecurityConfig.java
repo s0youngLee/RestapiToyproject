@@ -1,51 +1,62 @@
 package com.example.restapi.security;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.example.restapi.service.UserSecurityService;
 
 @Configuration
 @EnableWebSecurity
-// WebSecurityConfigurerAdapter : deprecated. 실습 후 @Bean 형태로 !!꼭!! 수정할 것
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 	private final UserSecurityService userSecurityService;
 	public SecurityConfig(UserSecurityService userSecurityService) {
 		this.userSecurityService = userSecurityService;
 	}
 	Logger logger = LoggerFactory.getLogger(MadeLogoutHandler.class);
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+	protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
-			.cors().and()
-			.csrf().disable();
 
-		http.sessionManagement()
-			.sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
+			.csrf().disable()
+			.httpBasic().disable()
 
-		http
+			.sessionManagement()
+			.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+
+			.and()
+			// .addFilter(corsFilter())
+			// .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
+
 			.authorizeRequests()
+			.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 			.antMatchers(HttpMethod.GET, Constants.permitAllArrayGET).permitAll()
 			.antMatchers(HttpMethod.POST, Constants.permitAllArrayPOST).permitAll()
 			.antMatchers(Constants.authenticatedArray).authenticated()
 			.antMatchers(Constants.adminArray).hasRole("ADMIN")
-			.anyRequest().authenticated();
+			.anyRequest().permitAll().and()
+			.cors()
 
-		http
-			.httpBasic().disable()
+			.and()
+
+			.authenticationProvider(authenticationProvider())
 
 			.formLogin()
 				.loginPage("/userlogin")
@@ -61,17 +72,67 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.clearAuthentication(true)
 				.invalidateHttpSession(true)
 				.logoutSuccessUrl("http://localhost:3000");
+
+		return http.build();
 	}
 
-	@Override
-	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userSecurityService)
-			.passwordEncoder(encoder());
-	}
+	// @Bean
+	// public WebSecurityCustomizer webSecurityCustomizer() {
+	// 	return (web) -> web.ignoring()
+	// 		.antMatchers(Constants.permitAllArrayGET);
+	// }
 
 	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-		return authenticationConfiguration.getAuthenticationManager();
+	public CorsConfigurationSource corsConfigurationSource() {
+		final CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(List.of("*"));
+		configuration.setAllowedMethods(List.of("*"));
+		configuration.setAllowedHeaders(List.of("*"));
+
+		configuration.addAllowedOrigin("*");
+		configuration.addAllowedHeader("*");
+		configuration.addAllowedMethod("*");
+
+		configuration.setAllowCredentials(true);
+
+		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
+	//
+	// @Bean
+	// public CorsFilter corsFilter(){
+	// 	final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	// 	CorsConfiguration configuration = new CorsConfiguration();
+	// 	configuration.setAllowCredentials(true);
+	// 	configuration.addAllowedOriginPattern("*");
+	// 	configuration.addAllowedHeader("*");
+	// 	configuration.addAllowedMethod("*");
+	// 	source.registerCorsConfiguration("/**", configuration);
+	// 	return new CorsFilter();
+	// }
+
+	@Bean
+	public DaoAuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+
+		authProvider.setUserDetailsService(userSecurityService);
+		authProvider.setPasswordEncoder(encoder());
+
+		return authProvider;
+	}
+
+	// @Bean
+	// public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+	// 	return authenticationConfiguration.getAuthenticationManager();
+	// }
+
+	@Bean
+	public AuthenticationManager authenticationManager(HttpSecurity http, PasswordEncoder encoder, UserSecurityService userSecurityService ) throws Exception {
+		return http.getSharedObject(AuthenticationManagerBuilder.class)
+			.userDetailsService(userSecurityService)
+			.passwordEncoder(encoder)
+			.and().build();
 	}
 
 	@Bean

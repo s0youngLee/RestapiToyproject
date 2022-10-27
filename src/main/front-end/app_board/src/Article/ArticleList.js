@@ -1,9 +1,8 @@
 import { useState } from "react";
 import Article from "./Article";
-import { isAdmin, Delete } from "../func";
+import { isAdmin } from "../func";
 import Pagination from "react-js-pagination";
 import axios from "axios";
-import _ from "lodash";
 import "../App.css";
 
 
@@ -52,7 +51,7 @@ function ArticleList({user, articleList}){
     function DeleteArticles(){
         if (window.confirm("Do you really want to delete " + checkedItems.size + " articles?")){
             Array.from(checkedItems).map((id, index) => {
-                axios.delete(`/board/${id}`);
+                return axios.delete(`/board/${id}`);
             });
             alert("Successfully deleted.");
             window.location.replace(`/board`);
