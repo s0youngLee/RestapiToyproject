@@ -8,6 +8,7 @@ import ArticleRegister from "./Article/ArticleRegister";
 import CategoryRegister from "./Category/CategoryRegister";
 import CategoryEdit from "./Category/CategoryEdit";
 import ArticlesByCategory from "./Category/ArticlesByCategory";
+import ArticleSearchList from "./Article/ArticleSearchList";
 import CategoryDeatil from "./Category/CategoryDetail";
 import LoginForm from "./Login/LoginForm";
 import SignupForm from "./Login/SignupForm";
@@ -30,6 +31,7 @@ function App() {
                 <Route path="/board" element={<ArticleLists user={user} isLogin={login}/>} />
                 <Route path="/board/:articleId" element={<ArticleDetail user={user} isLogin={login}/>} /> 
                 <Route path="/board/category/:categoryId" element={<ArticlesByCategory user={user} isLogin={login} />} />
+                <Route path="/search/:keyword" element={<ArticleSearchList user={user} />} />
                 <Route path="/board/add/:categoryId" element={<ArticleRegister user={user}/>} />
                 <Route path="/board/edit/:articleId" element={<ArticleEdit user={user}/>} />
 

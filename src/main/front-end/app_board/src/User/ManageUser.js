@@ -67,11 +67,11 @@ function EditUser({userinfo}){
         <div className="div-box" style={{position:"relative"}}>
             <form onSubmit={editAuth}>
                 <b> ROLE : </b>
-                <input id="radioInput" type="radio" name="auth" value="ROLE_ADMIN" 
-                    defaultChecked={authCheck({role:"ROLE_ADMIN"})}  onChange={setAdmin}/> ADMIN 
-                <input id="radioInput" type="radio" name="auth" value="ROLE_USER"  
+                <input className="w3-radio" type="radio" name="auth" value="ROLE_ADMIN" 
+                    defaultChecked={authCheck({role:"ROLE_ADMIN"})}  onChange={setAdmin}/> ADMIN &nbsp;&nbsp;
+                <input className="w3-radio" type="radio" name="auth" value="ROLE_USER"  
                     defaultChecked={authCheck({role:"ROLE_USER"})}  onChange={setUser}/> USER <br/>
-                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
+                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" 
                         style={{position:"absolute", right:"100px", top:"3px"}}>Save</button>
             </form>
             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 

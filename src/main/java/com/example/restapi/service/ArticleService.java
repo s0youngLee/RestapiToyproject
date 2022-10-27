@@ -51,7 +51,7 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
                 .comment(new ArrayList<>())
                 .build();
 
-        return response(articleRepository.save(article));
+        return articleBuilder(articleRepository.save(article));
     }
 
     @Override
@@ -59,7 +59,7 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
     public Status<ArticleResponseDto> read(int id) {
         articleService.updateVisitCnt(id);
         return articleRepository.findById(id)
-                .map(this::response)
+                .map(this::articleBuilder)
                 .orElseGet(()-> Status.ERROR("No DATA"));
     }
 
@@ -81,7 +81,7 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
                     return article;
                 })
                 .map(articleRepository::save)
-                .map(this::response)
+                .map(this::articleBuilder)
                 .orElseGet(()-> Status.ERROR("No DATA"));
     }
 
@@ -107,7 +107,7 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
         return listResponse(articleRepository.findAllByCreatedId(nickName));
     }
 
-    private Status<ArticleResponseDto> response(Article article){
+    private Status<ArticleResponseDto> articleBuilder(Article article){
         ArticleResponseDto body = ArticleResponseDto.builder()
                 .id(article.getId())
                 .title(article.getTitle())
@@ -122,21 +122,24 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
 
         return Status.OK(body);
     }
+    private ArticleListResponseDto listResponseBuilder(Article article) {
+        ArticleListResponseDto addBody = ArticleListResponseDto.builder()
+            .id(article.getId())
+            .title(article.getTitle())
+            .createdId(article.getCreatedId())
+            .categoryName(article.getCategory().getName())
+            .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+            .visitCnt(article.getVisitCnt())
+            .commentCnt(article.getComment().size())
+            .build();
+        return addBody;
+    }
+
 
     private List<ArticleListResponseDto> listResponse(List<Article> articleList){
         List<ArticleListResponseDto> newList = new ArrayList<>();
-
         for(Article article: articleList){
-            ArticleListResponseDto addBody = ArticleListResponseDto.builder()
-                    .id(article.getId())
-                    .title(article.getTitle())
-                    .createdId(article.getCreatedId())
-                    .categoryName(article.getCategory().getName())
-                    .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-                    .visitCnt(article.getVisitCnt())
-                    .commentCnt(article.getComment().size())
-                    .build();
-            newList.add(addBody);
+            newList.add(listResponseBuilder(article));
         }
         return newList;
     }
@@ -144,4 +147,15 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
     public void updateVisitCnt(int articleId) {
         articleRepository.updateVisitCnt(articleId);
     }
+
+	public List<ArticleListResponseDto> getSearchResults(String keyword) {
+        List<ArticleListResponseDto> searchResults = new ArrayList<>();
+        // 먼저 내용부터 찾기
+        for(Article article: articleRepository.findAll()){
+            if(article.getContent().contains(keyword) || article.getTitle().contains(keyword)){
+                searchResults.add(listResponseBuilder(article));
+            }
+        }
+        return searchResults;
+	}
 }

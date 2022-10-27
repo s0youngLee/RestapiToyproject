@@ -21,7 +21,7 @@ export function User(Login){
                 setUser(res?.data)
             })
             .catch((e) => {
-                // ifError(e);
+                ifError(e);
             });
         }
     }, [Login]);
@@ -55,10 +55,9 @@ export function FetchWithoutId(dataName){
             setData(res?.data);
         })
         .catch((e) => {
-            // ifError(e);
+            ifError(e);
         });
     }, [dataName]);
-    console.log(data);
     if(_.isEmpty(data)){ return <div> Loading ... </div> }
     else{ return data; }
 }
@@ -72,11 +71,11 @@ export function FetchWithId(dataName, n){
             setData(res?.data);
         })
         .catch((e) => {
-            // ifError(e);
+            ifError(e);
         });
     }, [dataName, id]);
     if(_.isEmpty(data)){ return <div> Loading ... </div>}
-    else{ return data.data;}
+    else{ return data;}
 }
 
 export function Delete(dataName, dataId){

@@ -1,13 +1,14 @@
+import _ from 'lodash';
 import { Link } from 'react-router-dom';
 import ArticleList from '../Article/ArticleList';
 import { FetchWithId, getUrlId } from "../func";
 
 
 function ArticlesByCategory({user, isLogin}){
-    const category = FetchWithId("category", 1);
-    const articleByCategory = Array.from(FetchWithId("board/category", 1));
+    const category = FetchWithId("category", 1).data;
+    const articleByCategory = Array.from(FetchWithId("board/category", 1).data);
     
-    if(!articleByCategory) { return <div> Loading ... </div> }
+    if(_.isEmpty(articleByCategory)) { return <div> Loading ... </div> }
     else {
     return (
         <div className='div-box'>

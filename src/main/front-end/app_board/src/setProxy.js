@@ -4,7 +4,8 @@ module.exports = function (app) {
   app.use(
     createProxyMiddleware('*', {
       target: 'http://localhost:8080',
-      changeOrigin: true
+      changeOrigin: true,
+      // headers: {'Access-Control-Allow-Origin':'*'}
     })
   );
 }; 

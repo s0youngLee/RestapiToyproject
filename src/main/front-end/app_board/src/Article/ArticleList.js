@@ -69,7 +69,7 @@ function ArticleList({user, articleList}){
             <thead style={{borderBottom: "2px solid #000000", backgroundColor: "#aa9dff"}}>
             <tr>
                 {isAdmin(user.auth) && 
-                    <th> <input type={'checkbox'} style={{width: "20px", height: "20px"}} checked={allChecked} 
+                    <th> <input type={'checkbox'} className="w3-check" checked={allChecked} 
                                 onChange={() => { 
                                     changeAll(!allChecked); }}/></th>
                 }
@@ -89,7 +89,7 @@ function ArticleList({user, articleList}){
                         {isAdmin(user.auth) && 
                             <input  type={'checkbox'} onChange={(e) => {checkHandler(e, article.id);}}
                             name="check" value={article.id}
-                            style={{width: "20px", height: "20px", margin: "11px"}}/>
+                            className="w3-check"/>
                         }
                         <Article data={article} auth={user?.auth}/>
                     </tr>

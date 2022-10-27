@@ -4,7 +4,7 @@ import axios from "axios";
 import _ from "lodash";
 
 function ArticleEdit({user}){
-    const articleDetail = FetchWithId("board", 1);
+    const articleDetail = FetchWithId("board", 1).data;
     const categoryList = Array.from(FetchWithoutId("category").data);
 
     if(_.isEmpty(articleDetail)) {return <div> Loading ... </div>}

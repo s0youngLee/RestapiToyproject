@@ -12,7 +12,7 @@ function Bar({isLogin, user}) {
             window.location.replace('/');
         }
     };
-    return (
+    return ( 
         <>
             <div className="w3-top">
                 <div className="w3-bar w3-large" style={{backgroundColor:"#cab6ff"}}>
@@ -28,14 +28,14 @@ function Bar({isLogin, user}) {
                                 ))}
                         </div>
                     </div>
+                    {isAdmin(user?.auth) &&
+                        <Link to={"/category"} className="none"><button className="w3-bar-item w3-button w3-hover-red">Setting</button></Link>
+                    }
 
                     {!isLogin && <Link to={'/login'} className="none"><button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">Login</button></Link>}
                     {isLogin && <Link to={'/mypage'} className="none"><button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">MyPage</button></Link>}
                     {isLogin && <button className="w3-bar-item w3-button w3-hover-red w3-right"
                         onClick={() => Logout()}>Logout</button>}
-                    {isAdmin(user?.auth) &&
-                        <Link to={"/category"} className="none"><button className="w3-bar-item w3-button w3-hover-red">Setting</button></Link>
-                    }
                 </div>
             </div><br/><br/>
         </>

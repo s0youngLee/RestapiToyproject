@@ -80,15 +80,16 @@ function SignupForm(){
                 <input type="password" name="password" placeholder="Password" onChange={inputPassword} required/> <br/>
                 <input type="text" name="nickname" placeholder="nickname" onChange={inputNickName} required/> <br/>
                 <input type="text" maxLength={'11'} name="phone" placeholder="phone number" onChange={inputPhoneNumber}/> <br/>
-                <p> ROLE : 
-                    <input type="radio" name="auth" value="ROLE_ADMIN" style={{"width": "30px"}} onChange={setAdmin}/> ADMIN ||
-                    <input type="radio" name="auth" value="ROLE_USER" defaultChecked="checked" style={{"width": "30px"}} onChange={setUser}/> USER <br/>
+                <p> ROLE : &nbsp;&nbsp;
+                    <input type="radio" className="w3-radio" name="auth" value="ROLE_USER" defaultChecked="checked" onChange={setUser}/> User&nbsp;&nbsp;
+                    <input type="radio" className="w3-radio" name="auth" value="ROLE_ADMIN" onChange={setAdmin}/> Admin<br/>
                 </p>
                 <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal">Join</button>
+                <Link className="none" to="/login">
+                    <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-deep-purple">Go to Login →</button>
+                </Link>
             </form>
 
-            <Link className="none" to="/login">
-                <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-deep-purple">Go to Login →</button></Link>
         </div>
     )
 }

@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 
 function CategoryEdit(){
-    const category = FetchWithId("category", 1);
+    const category = FetchWithId("category", 1).data;
     if(_.isEmpty(category)) {return <div> Loading ... </div>}
     else { 
         return (

@@ -4,7 +4,7 @@ import { FetchWithId, Delete, canChange } from '../func';
 import _ from 'lodash';
 
 function ArticleDeatil({user, isLogin}){
-    const articleDetail = FetchWithId("board", 1);
+    const articleDetail = FetchWithId("board", 1).data;
     if(!articleDetail) { return <div> Loading .. </div>}
     else { return <ArticleDetailData data={articleDetail} user={user} isLogin={isLogin}/>; }
 }
