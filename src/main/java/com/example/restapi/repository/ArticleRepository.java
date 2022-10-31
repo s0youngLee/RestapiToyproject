@@ -17,4 +17,8 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
     @Modifying
     @Query("update Article a set a.visitCnt = a.visitCnt + 1 where a.id = :articleId")
     void updateVisitCnt(int articleId);
+
+	@Modifying
+	@Query("update Article a set a.visitCnt = a.visitCnt - 1 where a.id = :articleId")
+	void decreaseVisitCnt(int articleId);
 }

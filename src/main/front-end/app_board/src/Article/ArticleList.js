@@ -24,10 +24,15 @@ function ArticleList({user, articleList}){
             checkedItems.delete(id);
             setCheckedItems(checkedItems);
         }
+        if(checkedItems.size === articleCntPerPage){
+            setAllChecked(true);
+        }
     };
 
     const checkHandler = ({ target }, id) => {
-        if(target.checked===false){setAllChecked(false)}
+        if(target.checked===false){
+            setAllChecked(false)
+        }
         checkedItemHandler(id, target.checked);
     };
 
@@ -57,7 +62,6 @@ function ArticleList({user, articleList}){
             window.location.replace(`/board`);
         }
     }
-
     
     return(
         <>
@@ -66,7 +70,7 @@ function ArticleList({user, articleList}){
                     onClick={() => DeleteArticles()}>  Delete </button>}
 
         <table>
-            <thead style={{borderBottom: "2px solid #000000", backgroundColor: "#aa9dff"}}>
+            <thead style={{backgroundColor: "#bdb5f6"}}>
             <tr>
                 {isAdmin(user.auth) && 
                     <th> <input type={'checkbox'} className="w3-check" checked={allChecked} 

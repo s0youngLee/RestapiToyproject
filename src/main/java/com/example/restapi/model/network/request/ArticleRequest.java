@@ -2,6 +2,8 @@ package com.example.restapi.model.network.request;
 
 import java.time.LocalDateTime;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.Builder;
 
 @Builder
@@ -12,6 +14,9 @@ public class ArticleRequest {
 	private String createdId;
 	private LocalDateTime createdAt;
 	private Integer categoryId;
+	// private List<Files> files;
+
+	private MultipartFile[] files;
 
 	public Integer getId() {
 		return id;
@@ -61,4 +66,7 @@ public class ArticleRequest {
 		this.categoryId = categoryId;
 	}
 
+	public MultipartFile[] getFiles() {
+		return files;
+	}
 }

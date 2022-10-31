@@ -48,7 +48,7 @@ function CategoryEditForm({categoryId, nameOrigin}){
             <div className="div-box">
                 <b style={{textAlign: "center"}}> Edit Category </b> <br/>
                 <b> Category ID : {categoryId}</b><br/>
-                <input  value={categoryName} onChange={editName}></input> <br/>
+                <input type={"text"} value={categoryName} onChange={editName}></input> <br/>
                 <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
                         style={{textAlign: "right"}}> Save </button>
             </div>

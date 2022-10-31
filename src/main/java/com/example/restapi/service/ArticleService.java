@@ -9,8 +9,10 @@ import javax.transaction.Transactional;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.restapi.controller.AbstractCrudMethod;
+import com.example.restapi.controller.FileController;
 import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.Category;
 import com.example.restapi.model.network.Status;
@@ -19,20 +21,29 @@ import com.example.restapi.model.network.response.ArticleListResponseDto;
 import com.example.restapi.model.network.response.ArticleResponseDto;
 import com.example.restapi.repository.ArticleRepository;
 import com.example.restapi.repository.CategoryRepository;
+import com.example.restapi.repository.FileRepository;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @Service
 public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleResponseDto> {
     private final CategoryRepository categoryRepository;
     private final ArticleRepository articleRepository;
     private final ArticleService articleService;
     private final CommentService commentService;
+    private final FileController fileController;
+    private final FileRepository fileRepository;
 
     public ArticleService(@Lazy CategoryRepository categoryRepository, @Lazy ArticleRepository articleRepository,
-        @Lazy ArticleService articleService, CommentService commentService) {
+        @Lazy ArticleService articleService, CommentService commentService, FileController fileController,
+        FileRepository fileRepository) {
         this.categoryRepository = categoryRepository;
         this.articleRepository = articleRepository;
         this.articleService = articleService;
         this.commentService = commentService;
+        this.fileController = fileController;
+        this.fileRepository = fileRepository;
     }
 
     @Override
@@ -54,10 +65,39 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
         return articleBuilder(articleRepository.save(article));
     }
 
+    public Status<ArticleResponseDto> write(List<MultipartFile> uploadFiles, Status<ArticleRequest> request) throws
+        Exception {
+        // Iterator it = uploadFiles.getFileNames();
+        // Map<String, MultipartFile> fileMap = uploadFiles.getFileMap();
+        // List<MultipartFile> fileList = new ArrayList<>();
+        //
+        // while(it.hasNext()){
+        //     fileList.add(fileMap.get(it.next()));
+        // }
+        //
+        // fileController.uploadFile(fileList);
+
+        fileController.uploadFile(uploadFiles);
+        ArticleRequest body = request.getData();
+
+        Article article = Article.builder()
+            .id(body.getId())
+            .title(body.getTitle())
+            .content(body.getContent())
+            .createdId(body.getCreatedId())
+            .createdAt(LocalDateTime.now())
+            .category(categoryRepository.getReferenceById(body.getCategoryId()))
+            .visitCnt(0)
+            .comment(new ArrayList<>())
+            .build();
+
+        return articleBuilder(articleRepository.save(article));
+    }
+
     @Override
     @Transactional
     public Status<ArticleResponseDto> read(int id) {
-        articleService.updateVisitCnt(id);
+        articleRepository.updateVisitCnt(id);
         return articleRepository.findById(id)
                 .map(this::articleBuilder)
                 .orElseGet(()-> Status.ERROR("No DATA"));
@@ -67,7 +107,6 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
     @Override
     public Status<ArticleResponseDto> update(Status<ArticleRequest> request, int id) {
         ArticleRequest body = request.getData();
-
         return articleRepository.findById(id)
                 .map(article -> {
                     article.setTitle(body.getTitle());
@@ -144,9 +183,6 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
         return newList;
     }
 
-    public void updateVisitCnt(int articleId) {
-        articleRepository.updateVisitCnt(articleId);
-    }
 
 	public List<ArticleListResponseDto> getSearchResults(String keyword) {
         List<ArticleListResponseDto> searchResults = new ArrayList<>();
@@ -158,4 +194,8 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
         }
         return searchResults;
 	}
+
+    public void decreaseVisitCnt(int id) {
+        articleRepository.decreaseVisitCnt(id);
+    }
 }

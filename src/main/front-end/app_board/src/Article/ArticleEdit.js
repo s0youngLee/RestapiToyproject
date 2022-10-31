@@ -6,7 +6,6 @@ import _ from "lodash";
 function ArticleEdit({user}){
     const articleDetail = FetchWithId("board", 1).data;
     const categoryList = Array.from(FetchWithoutId("category").data);
-
     if(_.isEmpty(articleDetail)) {return <div> Loading ... </div>}
     else { 
         return <ArticleEditForm articleDetail={articleDetail} categoryList={categoryList} user={user}/>
@@ -45,7 +44,7 @@ function ArticleEditForm({articleDetail, categoryList, user}) {
             }
         }).then((res) => {
             alert("Article Edited");
-            window.location.replace(`/board/${articleDetail?.id}`);
+            window.location.reload(`/board/${articleDetail?.id}`);
         }).catch((e) => {
             alert("Failed to edit article.\nPlease try again.");
             window.location.replace(`/board/${articleDetail?.id}`);
@@ -65,8 +64,8 @@ function ArticleEditForm({articleDetail, categoryList, user}) {
                             return <option key={index} value={category.id}>{category.name}</option>;
                         })}
                     </select><br/>
-                    <input value={title} onChange={editTitle}></input> <br/>
-                    <textarea className="text-box" onChange={editContent}>{content}</textarea> <br/>
+                    <input type="text" value={title} onChange={editTitle} required autoFocus /> <br/>
+                    <textarea className="text-box" value={content} onChange={editContent} required /> <br/>
                 </div>
 
                 <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" 

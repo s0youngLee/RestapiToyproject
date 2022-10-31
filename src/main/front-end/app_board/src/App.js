@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { User } from "./func";
 import Home from "./Home";
-import ArticleLists from "./Article/ArticleLists";
+import Board from "./Article/Board";
 import ArticleDetail from "./Article/ArticleDetail";
 import ArticleEdit from "./Article/ArticleEdit";
 import ArticleRegister from "./Article/ArticleRegister";
@@ -28,7 +28,7 @@ function App() {
                 <Routes>
                 <Route path="/" exact element={<Home isLogin={login}/>} />
 
-                <Route path="/board" element={<ArticleLists user={user} isLogin={login}/>} />
+                <Route path="/board" element={<Board user={user} isLogin={login}/>} />
                 <Route path="/board/:articleId" element={<ArticleDetail user={user} isLogin={login}/>} /> 
                 <Route path="/board/category/:categoryId" element={<ArticlesByCategory user={user} isLogin={login} />} />
                 <Route path="/search/:keyword" element={<ArticleSearchList user={user} />} />

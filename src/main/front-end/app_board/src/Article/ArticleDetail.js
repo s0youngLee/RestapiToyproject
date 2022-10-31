@@ -2,6 +2,12 @@ import { Link } from 'react-router-dom';
 import Comment from "../Comment/Comment";
 import { FetchWithId, Delete, canChange } from '../func';
 import _ from 'lodash';
+import { useState } from 'react';
+import ArticleEdit from './ArticleEdit';
+// import { Modal } from 'reactstrap';
+// import Modal from 'reactstrap/types/lib/Modal';
+import { Modal } from 'react-bootstrap';
+import ModalForm from './Modal';
 
 function ArticleDeatil({user, isLogin}){
     const articleDetail = FetchWithId("board", 1).data;
@@ -10,6 +16,14 @@ function ArticleDeatil({user, isLogin}){
 }
 
 function ArticleDetailData({data, user, isLogin}) {
+    const [isOpen, setIsOpen] = useState(false);
+    const handleClose = () => setIsOpen(false);
+    const handleShow = () => setIsOpen(true);
+
+    const Modal = ({isOpen}) => {
+        return !isOpen ? null : <ModalForm user={user} articleDetail={data} handleClose={handleClose}/>
+    }
+
     if(!data?.created_id){ return <div> Loading ... </div> }
     else {
         return (
@@ -26,9 +40,19 @@ function ArticleDetailData({data, user, isLogin}) {
                         <b> Visit : </b> <span> {data?.visit_cnt} </span> 
                         <div style={{float: "right"}}>
                             { _.isEqual(data?.created_id, user?.nick_name) &&
-                                <Link to={`/board/edit/${data?.id}`} className="none" >
-                                    <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> 
-                                        Edit </button></Link>}
+                                <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
+                                        onClick={() => setIsOpen(true)}>Edit</button>
+                                // <Link to={`/board/edit/${data?.id}`} className="none" >
+                                //     <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> 
+                                //         Edit </button></Link>
+                            }
+                            {/* <Modal className="popup-content" isOpen={isOpen} /> */}
+                            <dialog open={isOpen}>
+                                <dialogtitle> <b style={{fontSize: "20px"}}>Edit article </b></dialogtitle>
+                                <dialogcontent>
+                                <ModalForm user={user} articleDetail={data} handleClose={handleClose}/>
+                                </dialogcontent>
+                            </dialog>
                             {canChange(user, data?.created_id) &&
                                 <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
                                         onClick={() => { Delete("board", data.id) }}>Delete</button>}

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import 'w3-css';
 import { FetchWithoutId, isAdmin } from "./func";
+import SearchForm from "./Article/SearchForm";
 
 function Bar({isLogin, user}) {
     const categoryList = Array.from(FetchWithoutId("category").data);
@@ -32,6 +33,7 @@ function Bar({isLogin, user}) {
                         <Link to={"/category"} className="none"><button className="w3-bar-item w3-button w3-hover-red">Setting</button></Link>
                     }
 
+                    <SearchForm />
                     {!isLogin && <Link to={'/login'} className="none"><button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">Login</button></Link>}
                     {isLogin && <Link to={'/mypage'} className="none"><button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">MyPage</button></Link>}
                     {isLogin && <button className="w3-bar-item w3-button w3-hover-red w3-right"
