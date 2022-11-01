@@ -5,7 +5,8 @@ import { FetchWithoutId } from '../func';
 import _ from 'lodash';
 
 function Board({user, isLogin}){
-    const articleList = Array.from(FetchWithoutId("board").data);
+    const article = FetchWithoutId("board");
+    const articleList = Array.from(article.data);
     
     if(_.isEmpty(articleList)){ return <div> Loading... </div> }
     else {

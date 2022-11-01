@@ -1,6 +1,5 @@
 import React,{useState, useCallback} from "react";
 import { getUrlId } from "../func";
-import _ from 'lodash';
 import axios from "axios";
 
 function CommentRegister({user}){
@@ -28,7 +27,7 @@ function CommentRegister({user}){
     }
 
     return(
-        <form onSubmit={addComment}>
+        <form onSubmit={addComment} style={{marginLeft: "10px"}}>
             <div style={{height: "160px"}}>
                 <b> Add Comment</b> <br/>
                     User ID : {user?.nick_name} <br/>

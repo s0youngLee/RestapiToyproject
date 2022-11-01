@@ -47,12 +47,12 @@ function CategoryRegister(){
         <div className="div-box">
             <form onSubmit={addCategory}>
                     <b style={{ fontSize: "40px"}}> Add Category </b> <hr/>
-                    <input  placeholder="Category ID" onChange={addId}></input> <br/>
-                    <input  placeholder="Category Name" onChange={addName}></input> <br/>
+                    <input type={"text"} placeholder="Category ID" onChange={addId}></input> <br/>
+                    <input type={"text"} placeholder="Category Name" onChange={addName}></input> <br/>
                     <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > Add </button>
+                    <button onClick={() => {window.location.replace('/category')}} 
+                            className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red"> Back </button>
             </form>
-            <button onClick={() => {window.location.replace('/category')}} 
-                    className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red"> Back </button>
         </div>
     )
 }

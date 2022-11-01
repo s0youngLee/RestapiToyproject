@@ -1,6 +1,5 @@
 package com.example.restapi.model.entity;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -23,13 +22,14 @@ import lombok.experimental.Accessors;
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 @Accessors(chain = true)
-public class Files {
+public class Filedata {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String originName;
+	private String saveFile;
 	private String saveName;
-	private BigDecimal fileSize;
+	private Long fileSize;
 	private LocalDateTime date;
 
 	@Column(name = "article_id", insertable = false, updatable = false)
@@ -40,20 +40,22 @@ public class Files {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Article article;
 
-	public Files() {
+	public Filedata() {
 
 	}
 
-	public Files(Integer id, String originName, String saveName, BigDecimal fileSize, LocalDateTime date,
+	public Filedata(Integer id, String originName, String saveFile, String saveName, Long fileSize, LocalDateTime date,
 		Integer articleId, Article article) {
 		this.id = id;
 		this.originName = originName;
+		this.saveFile = saveFile;
 		this.saveName = saveName;
 		this.fileSize = fileSize;
 		this.date = date;
 		this.articleId = articleId;
 		this.article = article;
 	}
+
 
 	public Integer getId() {
 		return id;
@@ -95,11 +97,11 @@ public class Files {
 		this.saveName = saveName;
 	}
 
-	public BigDecimal getFileSize() {
+	public Long getFileSize() {
 		return fileSize;
 	}
 
-	public void setFileSize(BigDecimal fileSize) {
+	public void setFileSize(Long fileSize) {
 		this.fileSize = fileSize;
 	}
 
@@ -111,5 +113,11 @@ public class Files {
 		this.date = date;
 	}
 
+	public String getSaveFile() {
+		return saveFile;
+	}
 
+	public void setSaveFile(String saveFile) {
+		this.saveFile = saveFile;
+	}
 }

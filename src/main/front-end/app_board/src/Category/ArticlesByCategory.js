@@ -8,7 +8,7 @@ function ArticlesByCategory({user, isLogin}){
     const category = FetchWithId("category", 1).data;
     const articleByCategory = Array.from(FetchWithId("board/category", 1).data);
     
-    if(_.isEmpty(articleByCategory)) { return <div> Loading ... </div> }
+    if(_.isEmpty(category)) { return <div> Loading ... </div> }
     else {
     return (
         <div className='div-box'>

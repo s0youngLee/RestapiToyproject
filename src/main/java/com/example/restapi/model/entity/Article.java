@@ -40,14 +40,14 @@ public class Article {
     private List<Comment> comment;
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
-    private List<Files> files;
+    private List<Filedata> files;
 
 
     public Article() {
 
     }
 
-    public Article(Integer id, String title, String content, String createdId, LocalDateTime createdAt, Integer visitCnt, Category category, List<Comment> comment, List<Files> files) {
+    public Article(Integer id, String title, String content, String createdId, LocalDateTime createdAt, Integer visitCnt, Category category, List<Comment> comment, List<Filedata> files) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -59,11 +59,11 @@ public class Article {
         this.files = files;
     }
 
-    public List<Files> getFiles() {
+    public List<Filedata> getFiles() {
         return files;
     }
 
-    public void setFiles(List<Files> files) {
+    public void setFiles(List<Filedata> files) {
         this.files = files;
     }
 

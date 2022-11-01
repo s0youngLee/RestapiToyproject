@@ -54,7 +54,9 @@ function ArticleList({user, articleList}){
     };
 
     function DeleteArticles(){
-        if (window.confirm("Do you really want to delete " + checkedItems.size + " articles?")){
+        if(checkedItems.size===0){
+            alert("Checked Items doesn't exist. \nPlease select article to delete.");
+        }else if (window.confirm("Do you really want to delete " + checkedItems.size + " articles?")){
             Array.from(checkedItems).map((id, index) => {
                 return axios.delete(`/board/${id}`);
             });

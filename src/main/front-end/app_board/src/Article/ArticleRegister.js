@@ -35,35 +35,29 @@ function ArticleRegister({user}){
     }, [inputFile]);
     
     for(let i = 0;i < files.length; i++){
-        formData.append("uploadFiles", files[i]);
+        formData.append("file", files[i]);
     }
-
+    
     const addArticle = (e) => {
         e.preventDefault();
-
-        console.log(formData.get("uploadFiles"));
-        axios.post('/board', {
-            data : {
+        let data = {
+            data: {
                 title : title,
                 content : content,
                 created_id : user?.nick_name,
                 category_id : selected
-            }            
-        }).then((res) => {
+            }
+        }
+        formData.append("article", new Blob([JSON.stringify(data)], {type: "application/json"}));
+    
+        axios.post('/board/withfile', formData)
+        .then((res) => {
             alert("Article Registered.\nMove to selected category.");
             window.location.href=`/board/category/${selected}`;
         }).catch((e) => {
             alert("Failed to register an article.\nPlease try again.");
             window.location.replace(`/board/add/${urlId}`);
         });
-        
-        axios.post("/upload", formData)
-        .then(() => {
-            console.log("post success");
-        })
-        .catch((err) => {
-            console.log("Status code : " + err.response.status + ", " + err.response.statusText);
-        })
     }
 
 
@@ -84,12 +78,13 @@ function ArticleRegister({user}){
                     <textarea placeholder='Content' className="text-box" onChange={addContent} required></textarea> <br/>
 
                     <input className="upload-name" value={fileName} disabled/>
-                    <label className="upload" htmlFor="file"> upload </label> 
-                    <input type="file" name={"upfile"} id="file" style={{display:"none"}} onChange={uploadFile}/>
+                    <label className="w3-button w3-border w3-round-large w3-small w3-hover-teal" htmlFor="file"> upload </label> 
+                    <input type="file" name={"upfile"} id="file" style={{display:"none"}} onChange={uploadFile} multiple/>
                 </div><br/>
 
-                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" 
-                       > Add </button>
+                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > Add </button>
+                <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
+                        onClick={() => {window.location.replace("/board")}}> Back </button>
             </form>
         </div>
     )

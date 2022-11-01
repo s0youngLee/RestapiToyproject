@@ -1,6 +1,7 @@
 package com.example.restapi.model.network.request;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +17,7 @@ public class ArticleRequest {
 	private Integer categoryId;
 	// private List<Files> files;
 
-	private MultipartFile[] files;
+	private List<MultipartFile> files;
 
 	public Integer getId() {
 		return id;
@@ -66,7 +67,7 @@ public class ArticleRequest {
 		this.categoryId = categoryId;
 	}
 
-	public MultipartFile[] getFiles() {
+	public List<MultipartFile> getFiles() {
 		return files;
 	}
 }

@@ -1,5 +1,6 @@
 package com.example.restapi.service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.restapi.controller.AbstractCrudMethod;
-import com.example.restapi.controller.FileController;
 import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.Category;
 import com.example.restapi.model.network.Status;
@@ -21,7 +21,6 @@ import com.example.restapi.model.network.response.ArticleListResponseDto;
 import com.example.restapi.model.network.response.ArticleResponseDto;
 import com.example.restapi.repository.ArticleRepository;
 import com.example.restapi.repository.CategoryRepository;
-import com.example.restapi.repository.FileRepository;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -30,58 +29,26 @@ import lombok.extern.log4j.Log4j2;
 public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleResponseDto> {
     private final CategoryRepository categoryRepository;
     private final ArticleRepository articleRepository;
-    private final ArticleService articleService;
     private final CommentService commentService;
-    private final FileController fileController;
-    private final FileRepository fileRepository;
+    private final FileService fileService;
 
     public ArticleService(@Lazy CategoryRepository categoryRepository, @Lazy ArticleRepository articleRepository,
-        @Lazy ArticleService articleService, CommentService commentService, FileController fileController,
-        FileRepository fileRepository) {
+        @Lazy CommentService commentService,@Lazy FileService fileService) {
         this.categoryRepository = categoryRepository;
         this.articleRepository = articleRepository;
-        this.articleService = articleService;
+        this.fileService = fileService;
         this.commentService = commentService;
-        this.fileController = fileController;
-        this.fileRepository = fileRepository;
     }
 
     @Override
     public Status<ArticleResponseDto> create(Status<ArticleRequest> request) {
-
-        ArticleRequest body = request.getData();
-
-        Article article = Article.builder()
-                .id(body.getId())
-                .title(body.getTitle())
-                .content(body.getContent())
-                .createdId(body.getCreatedId())
-                .createdAt(LocalDateTime.now())
-                .category(categoryRepository.getReferenceById(body.getCategoryId()))
-                .visitCnt(0)
-                .comment(new ArrayList<>())
-                .build();
-
-        return articleBuilder(articleRepository.save(article));
+        return null;
     }
 
-    public Status<ArticleResponseDto> write(List<MultipartFile> uploadFiles, Status<ArticleRequest> request) throws
-        Exception {
-        // Iterator it = uploadFiles.getFileNames();
-        // Map<String, MultipartFile> fileMap = uploadFiles.getFileMap();
-        // List<MultipartFile> fileList = new ArrayList<>();
-        //
-        // while(it.hasNext()){
-        //     fileList.add(fileMap.get(it.next()));
-        // }
-        //
-        // fileController.uploadFile(fileList);
-
-        fileController.uploadFile(uploadFiles);
+    @Transactional
+    public void register(List<MultipartFile> uploadFiles, Status<ArticleRequest> request) throws Exception {
         ArticleRequest body = request.getData();
-
         Article article = Article.builder()
-            .id(body.getId())
             .title(body.getTitle())
             .content(body.getContent())
             .createdId(body.getCreatedId())
@@ -89,9 +56,11 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
             .category(categoryRepository.getReferenceById(body.getCategoryId()))
             .visitCnt(0)
             .comment(new ArrayList<>())
+            .files(new ArrayList<>())
             .build();
 
-        return articleBuilder(articleRepository.save(article));
+        articleRepository.save(article);
+        article.setFiles(fileService.upload(uploadFiles, article.getId())); // file upload
     }
 
     @Override
@@ -103,9 +72,8 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
                 .orElseGet(()-> Status.ERROR("No DATA"));
     }
 
-
-    @Override
-    public Status<ArticleResponseDto> update(Status<ArticleRequest> request, int id) {
+    @Transactional
+    public Status<ArticleResponseDto> edit(List<MultipartFile> uploadFiles, Status<ArticleRequest> request, int id) {
         ArticleRequest body = request.getData();
         return articleRepository.findById(id)
                 .map(article -> {
@@ -113,6 +81,11 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
                     article.setContent(body.getContent());
                     article.setCreatedId(body.getCreatedId());
                     article.setCreatedAt(LocalDateTime.now());
+                    try {
+                        article.setFiles(fileService.upload(uploadFiles, id));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     article.setCategory(Category.builder()
                                    .id(body.getCategoryId())
                                    .name(categoryRepository.findById(body.getCategoryId()).get().getName())
@@ -157,6 +130,7 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
                 .categoryId(article.getCategory().getId())
                 .visitCnt(article.getVisitCnt())
                 .comment(commentService.getList(article))
+                .files(fileService.getList(article))
                 .build();
 
         return Status.OK(body);

@@ -3,7 +3,6 @@ import { User } from "./func";
 import Home from "./Home";
 import Board from "./Article/Board";
 import ArticleDetail from "./Article/ArticleDetail";
-import ArticleEdit from "./Article/ArticleEdit";
 import ArticleRegister from "./Article/ArticleRegister";
 import CategoryRegister from "./Category/CategoryRegister";
 import CategoryEdit from "./Category/CategoryEdit";
@@ -19,6 +18,7 @@ import 'w3-css';
 import Bar from "./Bar";
 
 function App() {
+    // const categoryList = Array.from(FetchWithoutId("category").data);
     const login = sessionStorage.getItem("isLogin");
     const user = User(login);
 
@@ -33,7 +33,6 @@ function App() {
                 <Route path="/board/category/:categoryId" element={<ArticlesByCategory user={user} isLogin={login} />} />
                 <Route path="/search/:keyword" element={<ArticleSearchList user={user} />} />
                 <Route path="/board/add/:categoryId" element={<ArticleRegister user={user}/>} />
-                <Route path="/board/edit/:articleId" element={<ArticleEdit user={user}/>} />
 
                 <Route path="/category" element={<CategoryDeatil />} />
                 <Route path="/category/add/" element={<CategoryRegister />} />

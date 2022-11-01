@@ -1,21 +1,19 @@
 import {useState, useCallback} from "react";
-import { FetchWithId, FetchWithoutId } from "../func";
+import { FetchWithoutId } from "../func";
 import axios from "axios";
 import _ from "lodash";
 
-function ArticleEdit({user}){
-    const articleDetail = FetchWithId("board", 1).data;
+function EditModalForm({user, articleDetail, handleClose}){
     const categoryList = Array.from(FetchWithoutId("category").data);
-    if(_.isEmpty(articleDetail)) {return <div> Loading ... </div>}
-    else { 
-        return <ArticleEditForm articleDetail={articleDetail} categoryList={categoryList} user={user}/>
-    }
-}
 
-function ArticleEditForm({articleDetail, categoryList, user}) {
     const [title, setTitle] = useState(articleDetail.title);
     const [content, setContent] = useState(articleDetail.content);
     const [selected, setSelected] = useState(articleDetail.category_id);
+
+    const formData = new FormData();
+    const inputFile = document.getElementsByName("upfile");
+    const [fileName, setFileName] = useState(["Upload File",]);
+    const [files, setFiles] = useState({data : {}});
 
     const editTitle = useCallback(e => {
         setTitle(e.target.value);
@@ -30,52 +28,74 @@ function ArticleEditForm({articleDetail, categoryList, user}) {
         setSelected(e.target.value);
     };
 
+    const uploadFile = useCallback((e) => {
+        if(!_.isEmpty(inputFile)){
+            setFiles(inputFile[0].files);
+            setFileName(inputFile[0].files[0].name);
+        }
+    }, [inputFile]);
+    
+    for(let i = 0;i < files.length; i++){
+        formData.append("file", files[i]);
+    }
+
     const editArticle = (e) => {
         e.preventDefault();
         if(_.isEmpty(e.target.value)){ setTitle(articleDetail.title); }
         if(_.isEmpty(e.target.value)){ setContent(articleDetail.content); }
-        
-        axios.put(`/board/${articleDetail?.id}`, {
-            data : {
+
+        let data = {
+            data: {
                 title : title,
                 content : content,
                 created_id : user?.nick_name,
                 category_id : selected
             }
-        }).then((res) => {
+        }
+        formData.append("article", new Blob([JSON.stringify(data)], {type: "application/json"}));
+        
+        axios.put(`/board/withfile/${articleDetail?.id}`, formData)
+        .then((res) => {
             alert("Article Edited");
             window.location.reload(`/board/${articleDetail?.id}`);
         }).catch((e) => {
+            console.log(formData.get("article"))
+            console.log(formData.get("file"))
             alert("Failed to edit article.\nPlease try again.");
             window.location.replace(`/board/${articleDetail?.id}`);
         });
     }
-    
-    return(
-        <div className="div-box" >
-            <form onSubmit={editArticle}>
-                <b style={{ fontSize: "40px"}}> Edit Article </b> <hr/>
+    if(_.isEmpty(articleDetail)) {return <div> Loading ... </div>}
+    else { 
+        return(
+            <>
+                <b style={{fontSize: "25px", textAlign: "left"}}>Edit article</b><hr/>
+                <form onSubmit={editArticle}>
+                    <div style={{margin: "auto", textAlign: "left"}}>
+                        <b style={{fontSize: "20px"}}>User ID : {user?.nick_name} </b><br/>
+                        <b style={{fontSize: "17px"}}> Category : </b>
+                        <select onChange={handleSelect} value={selected}>
+                            {categoryList?.map((category, index) => {
+                                return <option key={index} value={category.id}>{category.name}</option>;
+                            })}
+                        </select><br/>
+                        <input type="text" value={title} onChange={editTitle} required autoFocus /> <br/>
+                        <textarea className="text-box" value={content} onChange={editContent} required /> <br/>
 
-                <div style={{width: "50%", margin: "auto", textAlign: "left"}}>
-                    <b style={{fontSize: "20px", justifyContent: "left"}}>User ID : {user?.nick_name} </b><br/>
-                    <b> Category : </b>
-                    <select onChange={handleSelect} value={articleDetail.category_id}>
-                        {categoryList?.map((category, index) => {
-                            return <option key={index} value={category.id}>{category.name}</option>;
-                        })}
-                    </select><br/>
-                    <input type="text" value={title} onChange={editTitle} required autoFocus /> <br/>
-                    <textarea className="text-box" value={content} onChange={editContent} required /> <br/>
-                </div>
+                        <input className="upload-name" value={fileName} disabled/>
+                        <label className="w3-button w3-border w3-round-large w3-small w3-hover-teal" htmlFor="file"> upload </label> 
+                        <input type="file" name={"upfile"} id="file" style={{display:"none"}} onChange={uploadFile} multiple/>
+                    </div>
 
-                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" 
-                        style={{textAlign: "right"}}> Save </button>
-            </form>
-
-            <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red"
-                        onClick={() => {window.location.href=`/board/${articleDetail?.id}`}}> Back </button>
-        </div>
-    )
+                    <div style={{textAlign: "right"}}>
+                        <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > Save </button>
+                        <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red"
+                                onClick={handleClose}> Back </button>
+                    </div>
+                </form>
+            </>
+        )
+    }
 }
 
-export default ArticleEdit;
+export default EditModalForm;
