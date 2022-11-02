@@ -2,8 +2,9 @@ import {useState, useCallback, useMemo} from "react";
 import { FetchWithoutId } from "../func";
 import axios from "axios";
 import _ from "lodash";
+import Files from "./FileForm";
 
-function EditModalForm({user, articleDetail, handleClose}){
+function ArticleEditForm({user, articleDetail, handleClose}){
     const categoryList = Array.from(FetchWithoutId("category").data);
 
     const [title, setTitle] = useState(articleDetail.title);
@@ -95,11 +96,14 @@ function EditModalForm({user, articleDetail, handleClose}){
                                     onClick={handleClose}> Back </button>
                         </div>
                     </div>
-
                 </form>
+                <div>
+                    <b style={{fontSize: "25px", marginLeft: "10px"}}> File List </b>
+                    <Files files={articleDetail?.files} user={user} createdId={articleDetail?.id}/>
+                </div>
             </>
         )
     }
 }
 
-export default EditModalForm;
+export default ArticleEditForm;

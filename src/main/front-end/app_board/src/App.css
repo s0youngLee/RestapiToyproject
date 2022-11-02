@@ -21,7 +21,7 @@ input[type=text], input[type=password] {
 
 .upload-name {
   display: inline-block;
-  height: 4%;
+  height: 6%;
   padding: 0 10px;
   vertical-align: middle;
   border: 1px solid #dddddd;
@@ -33,7 +33,7 @@ input[type=text], input[type=password] {
 .upload {
   display: inline-block;
   width: 10%;
-  height: 4%;
+  height: 6%;
   vertical-align: middle;
   border: 1px solid gainsboro;
   font-weight: bold;
@@ -51,7 +51,7 @@ input[type=text], input[type=password] {
 
 textarea {
   width: 60%;
-  height: 40%;
+  height: 68%;
   resize: none!important;
   vertical-align: middle;
   border: 1px solid gainsboro;
@@ -115,7 +115,7 @@ button{
   text-align: center;
   margin-bottom: 10px;
   position: relative;
-  height: 80vh;
+  height: 50vh;
 }
 
 .box {
@@ -124,12 +124,6 @@ button{
   position: absolute;
   width: 47%;
 }
-
-/* .search-container {
-  position: absolute;
-  left: 400px;
-  top: -6px;
-} */
 
 .page-bar {
   display: inline-block;

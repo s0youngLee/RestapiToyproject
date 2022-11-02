@@ -1,10 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { FetchWithId, Delete, canChange } from '../func';
 import _ from 'lodash';
 import * as Modal from 'react-modal';
-import ModalForm from './ArticleEdit';
 import Comment from "../Comment/Comment";
-import axios from 'axios';
+import Files from './FileForm';
+import ArticleEditForm from './ArticleEdit';
 
 function ArticleDeatil({user, isLogin}){
     const articleDetail = FetchWithId("board", 1).data;
@@ -36,7 +36,7 @@ function ArticleDetailData({data, user, isLogin}) {
                                         onClick={() => setIsOpen(true)}>Edit</button>
                             }
                             <Modal isOpen={isOpen} onRequestClose={handleClose}>
-                                <ModalForm user={user} articleDetail={data} handleClose={handleClose} />
+                                <ArticleEditForm user={user} articleDetail={data} handleClose={handleClose} />
                             </Modal>
                             {canChange(user, data?.created_id) &&
                                 <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
@@ -48,58 +48,6 @@ function ArticleDetailData({data, user, isLogin}) {
                 <Comment article={data} user={user} isLogin={isLogin}/></>
         )
     }
-}
-
-function Files({files, user, createdId}) {
-    let resource = useMemo(() => { return new Blob(); },[])
-
-    function downloadFile(file){
-        axios.get(`/download/${file.id}`, {responseType: "blob"})
-        .then((res)=>{
-            resource = res.data;
-            // console.log("downloading "+ file.origin_name + " ...");
-            const downloadUrl = window.URL.createObjectURL(resource);
-            const anchor = document.createElement('a');
-
-            document.body.appendChild(anchor);
-            anchor.download = file.origin_name;
-            anchor.href = downloadUrl;
-            anchor.click();
-    
-            document.body.removeChild(anchor);
-            window.URL.revokeObjectURL(downloadUrl);
-        }).catch((e) => {
-            console.log(e);
-        })
-    }
-
-    function deleteFile(id, filename){
-        if(window.confirm("Delete file " + filename + " ? ")){
-            axios.delete(`/delete/${id}`).catch((e) => {
-                console.log(e.response.status + " : " + e.response.statusText);
-            })
-            window.location.reload();
-        }
-    }
-
-    return(
-        <>
-            {Array.from(files).map((file, index) => {
-                return (
-                    <li key={index}>
-                        fileName : {file.origin_name} <br/>
-                        fileSize : {Number(file.file_size).toFixed(2)} MB <br/>
-                        date : {file.date} 
-                        <button className='w3-button w3-border w3-round-xlarge w3-small w3-hover-cyan' id='download' value={"download"}
-                                onClick={() => {downloadFile(file)}} >Download</button>
-                        {canChange(user, createdId) && <button className='w3-button w3-border w3-round-xlarge w3-small w3-hover-red'
-                                onClick={() => {deleteFile(file.id, file.origin_name)}}>Delete</button>
-                        }
-                    </li>
-                )
-            })}
-        </>
-    )
 }
 
 export default ArticleDeatil;
