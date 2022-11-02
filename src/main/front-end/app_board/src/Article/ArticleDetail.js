@@ -29,7 +29,7 @@ function ArticleDetailData({data, user, isLogin}) {
                         <b> Created By : </b> <span> {data?.created_id} </span> <br/>
                         <b> Created At : </b> <span> {data?.created_at} </span> <br/>
                         <b> Visit : </b> <span> {data?.visit_cnt} </span> <br/>
-                        <Files files={data?.files}/>
+                        <Files files={data?.files} user={user} createdId={data?.id}/>
                         <div style={{float: "right"}}>
                             { _.isEqual(data?.created_id, user?.nick_name) &&
                                 <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
@@ -40,7 +40,8 @@ function ArticleDetailData({data, user, isLogin}) {
                             </Modal>
                             {canChange(user, data?.created_id) &&
                                 <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
-                                        onClick={() => { Delete("board", data.id) }}>Delete</button>}
+                                        onClick={() => { Delete("board", data.id) }}>Delete</button>
+                            }
                         </div>
                     </div>
                 </div><hr/>
@@ -49,19 +50,25 @@ function ArticleDetailData({data, user, isLogin}) {
     }
 }
 
-function Files({files}) {
+function Files({files, user, createdId}) {
 
     function downloadFile(file){
-        // let params = new URLSearchParams();
-        // params.append("filename", file.save_file);
         axios.get(`/download/${file.id}`, {reseponseType: 'blob'}).then(()=>{
             console.log("downloading "+ file.origin_name + " ...");
         }).then((res) => {
             console.log(res);
         }).catch((e) => {
             console.log(e.response.status  + " : " + e.response.statusText);
-            // console.log(e);
         })
+    }
+
+    function deleteFile(id, filename){
+        if(window.confirm("Delete file " + filename + " ? ")){
+            axios.delete(`/delete/${id}`).catch((e) => {
+                console.log(e.response.status + " : " + e.response.statusText);
+            })
+            window.location.reload();
+        }
     }
 
     return(
@@ -74,6 +81,9 @@ function Files({files}) {
                         date : {file.date} 
                         <button className='w3-button w3-border w3-round-xlarge w3-small w3-hover-cyan' id='download' value={"download"}
                                 onClick={() => {downloadFile(file)}}>Download</button>
+                        {canChange(user, createdId) && <button className='w3-button w3-border w3-round-xlarge w3-small w3-hover-red'
+                                onClick={() => {deleteFile(file.id, file.origin_name)}}>Delete</button>
+                        }
                     </li>
                 )
             })}

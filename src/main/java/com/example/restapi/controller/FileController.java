@@ -1,5 +1,6 @@
 package com.example.restapi.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -10,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,20 +45,21 @@ public class FileController {
 		}else{
 			String resourceName = resource.getFilename();
 
-			// HttpHeaders headers = new HttpHeaders();
-			// try{
-			// 	headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="
-			// 		+ new String(resourceName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
-			// }catch (Exception e){
-			// 	e.printStackTrace();
-			// 	log.error(e.getMessage());
-			// }
-
-			// return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
 			return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename="
 						+ new String(resourceName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1))
 				.body(resource);
+		}
+	}
+
+	@DeleteMapping("/delete/{id}")
+	public void deleteFile(@PathVariable Integer id){
+		try{
+			File file = new File(fileRepository.getReferenceById(id).getSaveName());
+			file.delete();
+			fileRepository.deleteById(id);
+		}catch (Exception e){
+			log.info(e.getMessage());
 		}
 	}
 }

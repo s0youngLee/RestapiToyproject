@@ -1,4 +1,4 @@
-import {useState, useCallback} from "react";
+import {useState, useCallback, useMemo} from "react";
 import { FetchWithoutId } from "../func";
 import axios from "axios";
 import _ from "lodash";
@@ -12,7 +12,7 @@ function EditModalForm({user, articleDetail, handleClose}){
 
     const formData = new FormData();
     const inputFile = document.getElementsByName("upfile");
-    const [fileName, setFileName] = useState(["Upload File",]);
+    const fileName = useMemo(() => {return new Array("Selected Files")},[]);
     const [files, setFiles] = useState({data : {}});
 
     const editTitle = useCallback(e => {
@@ -29,11 +29,14 @@ function EditModalForm({user, articleDetail, handleClose}){
     };
 
     const uploadFile = useCallback((e) => {
+        fileName.length = 0;
         if(!_.isEmpty(inputFile)){
             setFiles(inputFile[0].files);
-            setFileName(inputFile[0].files[0].name);
+            for(let i = 0; i < inputFile[0].files.length ; i++){
+                fileName.push(inputFile[0].files[i].name);
+            }
         }
-    }, [inputFile]);
+    }, [inputFile, fileName]);
     
     for(let i = 0;i < files.length; i++){
         formData.append("file", files[i]);
@@ -71,7 +74,7 @@ function EditModalForm({user, articleDetail, handleClose}){
             <>
                 <b style={{fontSize: "25px", textAlign: "left"}}>Edit article</b><hr/>
                 <form onSubmit={editArticle}>
-                    <div style={{margin: "auto", textAlign: "left"}}>
+                    <div className="div-box" style={{textAlign: "left"}}>
                         <b style={{fontSize: "20px"}}>User ID : {user?.nick_name} </b><br/>
                         <b style={{fontSize: "17px"}}> Category : </b>
                         <select onChange={handleSelect} value={selected}>
@@ -79,19 +82,20 @@ function EditModalForm({user, articleDetail, handleClose}){
                                 return <option key={index} value={category.id}>{category.name}</option>;
                             })}
                         </select><br/>
-                        <input type="text" value={title} onChange={editTitle} required autoFocus /> <br/>
-                        <textarea className="text-box" value={content} onChange={editContent} required /> <br/>
+                        <input style={{width:"100%", marginLeft: "0"}} type="text" value={title} onChange={editTitle} required autoFocus /> <br/>
+                        <textarea style={{width:"100%"}} value={content} onChange={editContent} required /> <br/>
 
-                        <input className="upload-name" value={fileName} disabled/>
-                        <label className="w3-button w3-border w3-round-large w3-small w3-hover-teal" htmlFor="file"> upload </label> 
+                        <input className="upload-name" style={{width:"85%", marginTop: "5px"}} value={fileName} disabled/>
+                        <label className="upload" style={{width:"15%", marginTop: "5px"}} htmlFor="file"> Selecet File </label> 
                         <input type="file" name={"upfile"} id="file" style={{display:"none"}} onChange={uploadFile} multiple/>
+
+                        <div style={{textAlign: "right", marginTop: "5px"}}>
+                            <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > Save </button>
+                            <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red"
+                                    onClick={handleClose}> Back </button>
+                        </div>
                     </div>
 
-                    <div style={{textAlign: "right"}}>
-                        <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > Save </button>
-                        <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red"
-                                onClick={handleClose}> Back </button>
-                    </div>
                 </form>
             </>
         )

@@ -7,7 +7,6 @@ function MyArticles(){
     else {
         return (
             <>
-                <h2> Articles </h2>
                 {articles?.map((article, index) => {
                     return (
                     <Link  key={index} className="none" to={`/board/${article.id}`}>

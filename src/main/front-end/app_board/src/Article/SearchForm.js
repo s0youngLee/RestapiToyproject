@@ -20,7 +20,7 @@ function SearchForm(){
     return (
         <div className="search-container">
             <form onSubmit={searchArticle}>
-                <div>
+                <div style={{width: "50vh"}}>
                     <input type="text" placeholder="Please enter your keyword(s) to search." name="search" onChange={handleParam} required/>
                     <input type={"image"} src={require("../searchIcon.png").default} alt={"icon"}
                            style={{width:"30px", height:"30px", objectFit: "fill", verticalAlign: "middle"}} />
