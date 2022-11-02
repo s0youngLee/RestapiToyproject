@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { FetchWithId, Delete, canChange } from '../func';
 import _ from 'lodash';
 import * as Modal from 'react-modal';
@@ -51,14 +51,25 @@ function ArticleDetailData({data, user, isLogin}) {
 }
 
 function Files({files, user, createdId}) {
+    let resource = useMemo(() => { return new Blob(); },[])
 
     function downloadFile(file){
-        axios.get(`/download/${file.id}`, {reseponseType: 'blob'}).then(()=>{
-            console.log("downloading "+ file.origin_name + " ...");
-        }).then((res) => {
-            console.log(res);
+        axios.get(`/download/${file.id}`, {responseType: "blob"})
+        .then((res)=>{
+            resource = res.data;
+            // console.log("downloading "+ file.origin_name + " ...");
+            const downloadUrl = window.URL.createObjectURL(resource);
+            const anchor = document.createElement('a');
+
+            document.body.appendChild(anchor);
+            anchor.download = file.origin_name;
+            anchor.href = downloadUrl;
+            anchor.click();
+    
+            document.body.removeChild(anchor);
+            window.URL.revokeObjectURL(downloadUrl);
         }).catch((e) => {
-            console.log(e.response.status  + " : " + e.response.statusText);
+            console.log(e);
         })
     }
 
@@ -80,7 +91,7 @@ function Files({files, user, createdId}) {
                         fileSize : {Number(file.file_size).toFixed(2)} MB <br/>
                         date : {file.date} 
                         <button className='w3-button w3-border w3-round-xlarge w3-small w3-hover-cyan' id='download' value={"download"}
-                                onClick={() => {downloadFile(file)}}>Download</button>
+                                onClick={() => {downloadFile(file)}} >Download</button>
                         {canChange(user, createdId) && <button className='w3-button w3-border w3-round-xlarge w3-small w3-hover-red'
                                 onClick={() => {deleteFile(file.id, file.origin_name)}}>Delete</button>
                         }

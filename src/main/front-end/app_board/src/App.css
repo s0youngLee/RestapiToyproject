@@ -11,13 +11,12 @@ li {
 }
 
 input[type=text], input[type=password] {
-  width: 40%;
   padding: 6px;
   margin: 8px;
   font-size: 17px;
   border-radius: 5px;
-  width: 60%;
   border: 1px solid gainsboro;
+  width: 60%;
 }
 
 .upload-name {
@@ -126,11 +125,11 @@ button{
   width: 47%;
 }
 
-.search-container {
+/* .search-container {
   position: absolute;
   left: 400px;
   top: -6px;
-}
+} */
 
 .page-bar {
   display: inline-block;

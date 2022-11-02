@@ -59,7 +59,7 @@ public class FileController {
 			file.delete();
 			fileRepository.deleteById(id);
 		}catch (Exception e){
-			log.info(e.getMessage());
+			log.error(e.getMessage());
 		}
 	}
 }

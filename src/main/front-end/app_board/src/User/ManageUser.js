@@ -2,7 +2,6 @@ import React, { useCallback, useState } from "react";
 import _ from "lodash";
 import { Delete, FetchWithoutId } from "../func";
 import axios from "axios";
-import { Link } from "react-router-dom";
 
 function UserManage(){
     const manage = Array.from(FetchWithoutId("user/manage").data);
