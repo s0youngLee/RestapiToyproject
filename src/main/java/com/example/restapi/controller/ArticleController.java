@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import com.example.restapi.model.entity.UserInfo;
 import com.example.restapi.model.network.Status;
@@ -73,8 +74,9 @@ public class ArticleController extends AbstractCrudMethod<ArticleRequest, Articl
     }
 
     @PutMapping(value = "/withfile/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public Status<ArticleResponseDto> edit(@RequestPart("file") List<MultipartFile> uploadFiles, @RequestPart("article") Status<ArticleRequest> request, @PathVariable int id) {
-        return articleService.edit(uploadFiles, request, id);
+    public void edit(@RequestPart("file") List<MultipartFile> uploadFiles, @RequestPart("article") Status<ArticleRequest> request, @PathVariable int id)
+        throws MissingServletRequestPartException {
+        articleService.edit(uploadFiles, request, id);
     }
 
 }

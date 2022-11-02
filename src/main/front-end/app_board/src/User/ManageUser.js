@@ -10,24 +10,28 @@ function UserManage(){
     if(!manage){ return <div> Loading ... </div>}
     else{
         return (
-            <div className="div-box"> 
-                <b style={{ fontSize: "40px"}}> User List </b> <hr/>
+            <>
                 {manage.map((userinfo, index) => {
                     return (
-                    <li key={index}>
-                        <b> CODE : </b> <span> {userinfo.code} </span>
-                        <b> ID : </b> <span> {userinfo.email} </span>
-                        <b> Name : </b> <span> {userinfo.name} </span> 
-                        <b> NickName : </b> <span> {userinfo.nick_name} </span>
-                        <b> PhoneNumber : </b> <span> {userinfo.phone} </span>
-                        <EditUser userinfo={userinfo} />
-                    </li>
+                        // <tr key={index}>
+                        //     <td> {userinfo.code} </td>
+                        //     <td> {userinfo.email} </td>
+                        //     <td> {userinfo.name} </td>
+                        //     <td> {userinfo.nick_name} </td>
+                        //     <td> {userinfo.phone} </td>
+                        //     <td> <EditUser userinfo={userinfo} /> </td>
+                        // </tr>
+                        <li key={index}>
+                            <b> CODE : </b> <span> {userinfo.code} </span>
+                            <b> ID : </b> <span> {userinfo.email} </span>
+                            <b> Name : </b> <span> {userinfo.name} </span> 
+                            <b> NickName : </b> <span> {userinfo.nick_name} </span>
+                            <b> PhoneNumber : </b> <span> {userinfo.phone} </span>
+                            <EditUser userinfo={userinfo} />
+                        </li>
                     )
                 })}
-                <Link className="none" to={`/mypage`}>
-                    <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-deep-purple">Go to MyPage →</button>
-                </Link>
-            </div>
+            </>
         )
     }
 }
@@ -50,7 +54,6 @@ function EditUser({userinfo}){
             }
         }).then(() => {
             alert("User's auth edited.");
-            window.location.reload();
         }).catch((e) => {
             alert("Failed to edit auth.\nPlease try again.");
             window.location.replace("/manage");
@@ -64,7 +67,7 @@ function EditUser({userinfo}){
     }
 
     return (
-        <div className="div-box" style={{position:"relative"}}>
+        <div style={{position:"relative"}}>
             <form onSubmit={editAuth}>
                 <b> ROLE : </b>
                 <input className="w3-radio" type="radio" name="auth" value="ROLE_ADMIN" 

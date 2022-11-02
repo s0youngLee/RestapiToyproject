@@ -1,24 +1,31 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { User } from "./func";
+
 import Home from "./Home";
+import Bar from "./Bar";
+
 import Board from "./Article/Board";
 import ArticleDetail from "./Article/ArticleDetail";
 import ArticleRegister from "./Article/ArticleRegister";
+import ArticleSearchList from "./Article/ArticleSearchList";
+
 import CategoryRegister from "./Category/CategoryRegister";
 import CategoryEdit from "./Category/CategoryEdit";
 import ArticlesByCategory from "./Category/ArticlesByCategory";
-import ArticleSearchList from "./Article/ArticleSearchList";
 import CategoryDeatil from "./Category/CategoryDetail";
+
 import LoginForm from "./Login/LoginForm";
 import SignupForm from "./Login/SignupForm";
+
 import MyPage from "./User/Mypage";
 import UserManage from "./User/ManageUser";
+import MyArticles from "./User/MyArticles";
+import MyComments from "./User/MyComments";
+
 import './App.css';
 import 'w3-css';
-import Bar from "./Bar";
 
 function App() {
-    // const categoryList = Array.from(FetchWithoutId("category").data);
     const login = sessionStorage.getItem("isLogin");
     const user = User(login);
 
@@ -42,6 +49,8 @@ function App() {
                 <Route path="/login/signup" element={<SignupForm />} />
                 
                 <Route path="/mypage" element={<MyPage user={user}/>} />
+                <Route path="/mypage/board" element={<MyArticles/>} />
+                <Route path="/mypage/comments" element={<MyComments/>} />
                 <Route path="/user" element={<UserManage />} />
             </Routes>
         </Router>

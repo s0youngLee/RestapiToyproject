@@ -7,7 +7,6 @@ function MyComments(){
     else {
         return (
             <>
-                <h2> Comments </h2>
                 {comments?.map((comment, index) => {
                     return (
                     <Link key={index} className="none" to={`/board/${comment?.article_id}`}>

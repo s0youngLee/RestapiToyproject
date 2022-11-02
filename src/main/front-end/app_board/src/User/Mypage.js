@@ -1,12 +1,23 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import PasswordEditForm from "../Login/PasswordEditForm";
 import { isAdmin } from "../func";
 import MyArticles from "./MyArticles";
 import MyComments from "./MyComments";
+import UserManage from "./ManageUser";
 
 function MyPage({user}){
     const [visible, setVisible] = useState(false);
+    
+    const [visibleArticle, setVisibleArticle] = useState(true);
+    const [visibleComment, setVisibleComment] = useState(false);
+    const [visibleUser, setVisibleUser] = useState(false);
+
+    function setClicked(){
+        setVisibleArticle(false);
+        setVisibleComment(false);
+        setVisibleUser(false);    
+    }
+
     if(!user) { return <div> Loading ... </div> }
     else {
         return (
@@ -22,14 +33,30 @@ function MyPage({user}){
                             onClick={() => setVisible(!visible)}> {visible ? "Cancel" : "Change PW"} </button>
                     {visible && <PasswordEditForm user={user}/>}
                 </div><hr/>
-                <div className="box" style={{left: "10px"}}><MyArticles /></div>
-                <div className="box"><MyComments /></div>
-                <div style={{position: "absolute", top: "160px", right: "30px"}}>
+                <div style={{width: "100%", height: "5.6vh", textAlign: "center", lineHeight : "5.6vh"}}>
+                    <div className="page-bar" 
+                        style={visibleArticle ? {backgroundColor: "mediumslateblue", color: "aliceblue", fontSize: "20px"} : {}} 
+                        onClick={() => {
+                            setClicked();
+                            setVisibleArticle(true);
+                            }}> My Articles </div>
+                    <div className="page-bar" 
+                        style={visibleComment ? {backgroundColor: "mediumslateblue", color: "aliceblue", fontSize: "20px"} : {}}
+                        onClick={() => {
+                            setClicked();
+                            setVisibleComment(true);
+                            }}> My Comments </div>
                     {isAdmin(user?.auth) && 
-                        <Link to={"/user"} className="none">
-                            <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red">Manage users</button>
-                        </Link>}
-                </div>
+                    <div className="page-bar" 
+                        style={visibleUser ? {backgroundColor: "mediumslateblue", color: "aliceblue", fontSize: "20px"} : {}}
+                        onClick={() => {
+                            setClicked();
+                            setVisibleUser(true);
+                            }}> Manage Users </div>}
+                </div><hr/>
+                {visibleArticle && <MyArticles />}
+                {visibleComment && <MyComments />}
+                {visibleUser && <UserManage />}
             </div>
         )
     }
