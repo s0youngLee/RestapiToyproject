@@ -34,7 +34,7 @@ function CategoryRegister(){
             }
         }).then(() => {
             alert("Category registerd. Move to " + name);
-            window.location.replace(`/board/category/${id}`);
+            window.location.href=`/board/category/${id}`;
         }).catch((e) => {
             alert("Failed to add category.\nError : " + e.response.statusText);
             window.location.reload();
@@ -50,7 +50,7 @@ function CategoryRegister(){
                     <input type={"text"} placeholder="Category ID" onChange={addId}></input> <br/>
                     <input type={"text"} placeholder="Category Name" onChange={addName}></input> <br/>
                     <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > Add </button>
-                    <button onClick={() => {window.location.replace('/category')}} 
+                    <button onClick={() => {window.location.href='/category'}} 
                             className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red"> Back </button>
             </form>
         </div>

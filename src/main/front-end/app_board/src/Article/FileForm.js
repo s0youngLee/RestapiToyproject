@@ -9,7 +9,6 @@ function Files({files, user, createdId}) {
         axios.get(`/download/${file.id}`, {responseType: "blob"})
         .then((res)=>{
             resource = res.data;
-            // console.log("downloading "+ file.origin_name + " ...");
             const downloadUrl = window.URL.createObjectURL(resource);
             const anchor = document.createElement('a');
 
@@ -35,22 +34,20 @@ function Files({files, user, createdId}) {
     }
 
     return(
-        <>
+        <div style={{textAlign: "left"}}>
             {Array.from(files).map((file, index) => {
-                return (
-                    <li key={index}>
-                        fileName : {file.origin_name} <br/>
-                        fileSize : {Number(file.file_size).toFixed(2)} MB <br/>
-                        date : {file.date} 
-                        <button className='w3-button w3-border w3-round-xlarge w3-small w3-hover-cyan' id='download' value={"download"}
-                                onClick={() => {downloadFile(file)}} >Download</button>
-                        {canChange(user, createdId) && <button className='w3-button w3-border w3-round-xlarge w3-small w3-hover-red'
-                                onClick={() => {deleteFile(file.id, file.origin_name)}}>Delete</button>
-                        }
-                    </li>
-                )
+                return (<div key={index}>
+                    {canChange(user, createdId) && 
+                        <input type={"image"} src={require("../remove.png").default} alt={"icon"}
+                                style={{width:"20px", height:"20px", objectFit: "fill", verticalAlign: "middle", marginLeft: "10px"}}
+                                onClick={() => {deleteFile(file.id, file.origin_name)}} />
+                    }
+                    <span className="filelink" onClick={() => {downloadFile(file)}}> 
+                        &nbsp;&nbsp; {file.origin_name}  &nbsp;&nbsp; {Number(file.file_size).toFixed(2)} MB <br/>
+                    </span>
+                </div>)
             })}
-        </>
+        </div>
     )
 }
 

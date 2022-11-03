@@ -40,11 +40,6 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
         this.commentService = commentService;
     }
 
-    @Override
-    public Status<ArticleResponseDto> create(Status<ArticleRequest> request) {
-        return null;
-    }
-
     @Transactional
     public void register(List<MultipartFile> uploadFiles, Status<ArticleRequest> request) throws Exception {
         ArticleRequest body = request.getData();
@@ -53,6 +48,7 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
             .content(body.getContent())
             .createdId(body.getCreatedId())
             .createdAt(LocalDateTime.now())
+            .finalEditDate(LocalDateTime.now())
             .category(categoryRepository.getReferenceById(body.getCategoryId()))
             .visitCnt(0)
             .comment(new ArrayList<>())
@@ -84,7 +80,7 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
                     article.setTitle(body.getTitle());
                     article.setContent(body.getContent());
                     article.setCreatedId(body.getCreatedId());
-                    article.setCreatedAt(LocalDateTime.now());
+                    article.setFinalEditDate(LocalDateTime.now());
                     try {
                         article.setFiles(fileService.upload(uploadFiles, id));
                     } catch (NullPointerException e){
@@ -104,9 +100,11 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
     }
 
     @Override
+    @Transactional
     public Status delete(int id) {
         return articleRepository.findById(id)
                 .map(article -> {
+                    fileService.deleteFileByArticleId(id);
                     articleRepository.delete(article);
                     return Status.OK();
                 })
@@ -126,21 +124,28 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
     }
 
     private Status<ArticleResponseDto> articleBuilder(Article article){
-        ArticleResponseDto body = ArticleResponseDto.builder()
-                .id(article.getId())
-                .title(article.getTitle())
-                .content(article.getContent())
-                .createdId(article.getCreatedId())
-                .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
-                .categoryName(article.getCategory().getName())
-                .categoryId(article.getCategory().getId())
-                .visitCnt(article.getVisitCnt())
-                .comment(commentService.getList(article))
-                .files(fileService.getList(article))
-                .build();
+        try{
+            ArticleResponseDto body  = ArticleResponseDto.builder()
+                    .id(article.getId())
+                    .title(article.getTitle())
+                    .content(article.getContent())
+                    .createdId(article.getCreatedId())
+                    .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
+                    .categoryName(article.getCategory().getName())
+                    .categoryId(article.getCategory().getId())
+                    .visitCnt(article.getVisitCnt())
+                    .finalEditDate(article.getFinalEditDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
+                    .comment(commentService.getList(article))
+                    .files(fileService.getList(article))
+                    .build();
 
-        return Status.OK(body);
+            return Status.OK(body);
+        }catch (NullPointerException e){
+            log.warn("Edit time is null");
+            return null;
+        }
     }
+
     private ArticleListResponseDto listResponseBuilder(Article article) {
         ArticleListResponseDto addBody = ArticleListResponseDto.builder()
             .id(article.getId())
@@ -166,7 +171,6 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
 
 	public List<ArticleListResponseDto> getSearchResults(String keyword) {
         List<ArticleListResponseDto> searchResults = new ArrayList<>();
-        // 먼저 내용부터 찾기
         for(Article article: articleRepository.findAll()){
             if(article.getContent().contains(keyword) || article.getTitle().contains(keyword)){
                 searchResults.add(listResponseBuilder(article));
@@ -174,8 +178,4 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
         }
         return searchResults;
 	}
-
-    public void decreaseVisitCnt(int id) {
-        articleRepository.decreaseVisitCnt(id);
-    }
 }

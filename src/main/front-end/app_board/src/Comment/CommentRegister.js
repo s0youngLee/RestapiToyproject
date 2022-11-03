@@ -27,15 +27,11 @@ function CommentRegister({user}){
     }
 
     return(
-        <form onSubmit={addComment} style={{marginLeft: "10px"}}>
-            <div style={{height: "160px"}}>
-                <b> Add Comment</b> <br/>
-                    User ID : {user?.nick_name} <br/>
-                <textarea className="text-box" placeholder="Add a comment" required
-                          onChange={addContent}></textarea> 
-                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > Add </button>
-            </div>
-            <br/>
+        <form onSubmit={addComment} style={{marginLeft: "10px", height: "160px"}}>
+            <b> Add Comment</b> <br/>
+            <textarea className="text-box" placeholder="Add a comment" required
+                        onChange={addContent}></textarea> 
+            <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > Add </button>
         </form>
     )
 }

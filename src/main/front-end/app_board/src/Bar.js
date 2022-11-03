@@ -19,8 +19,7 @@ function Bar({isLogin, user}) {
         if(!_.isEmpty(searchParam)){
             setSearchParam(searchParam);
         }
-
-        window.location.replace(`/search/${searchParam}`);
+        window.location.href = `/search/${searchParam}`;
     }
 
     function Logout() {
@@ -42,7 +41,7 @@ function Bar({isLogin, user}) {
                         <div className="w3-dropdown-content w3-bar-block w3-border">
                             {categoryList?.map((category, index) => (
                                 <button key={index} className="w3-bar-item w3-button"
-                                        onClick={() => {window.location.replace(`/board/category/${category.id}`)}}> {category.name} </button>
+                                        onClick={() => {window.location.href = `/board/category/${category.id}`}}> {category.name} </button>
                                 ))}
                         </div>
                     </div>
@@ -50,10 +49,10 @@ function Bar({isLogin, user}) {
                         <Link to={"/category"} className="none"><button className="w3-bar-item w3-button w3-hover-red">Setting</button></Link>
                     }
 
-                    <form onSubmit={searchArticle} style={{width: "30vh", display: "inline-block"}}>
-                        <input type="text" style={{width: "25vh", margin: "0", marginRight: "5px"}} 
+                    <form onSubmit={searchArticle} style={{width: "45vh", display: "inline-block"}}>
+                        <input type="text" style={{width: "90%", margin: "0", marginRight: "5px"}} 
                                placeholder="Please enter your keyword(s) to search." name="search" onChange={handleParam} required/>
-                        <input type={"image"} src={require("./searchIcon.png").default} alt={"icon"}
+                        <input type={"image"} src={require("./search.png").default} alt={"icon"}
                             style={{width:"30px", height:"30px", objectFit: "fill", verticalAlign: "middle"}} />
                     </form>
                     {!isLogin && <Link to={'/login'} className="none"><button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">Login</button></Link>}
@@ -61,7 +60,7 @@ function Bar({isLogin, user}) {
                     {isLogin && <button className="w3-bar-item w3-button w3-hover-red w3-right"
                         onClick={() => Logout()}>Logout</button>}
                 </div>
-            </div><br/><br/>
+            </div>
         </>
     );
 }

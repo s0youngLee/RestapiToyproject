@@ -53,7 +53,6 @@ function EditUser({userinfo}){
             alert("User's auth edited.");
         }).catch((e) => {
             alert("Failed to edit auth.\nPlease try again.");
-            window.location.replace("/manage");
             console.log(e.response);
         })
     }

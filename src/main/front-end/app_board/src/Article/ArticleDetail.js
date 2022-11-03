@@ -19,33 +19,30 @@ function ArticleDetailData({data, user, isLogin}) {
     if(!data?.created_id){ return <div> Loading ... </div> }
     else {
         return (
-            <><div style={{padding: "10px", overflow: "auto"}}>
-                    <div style={{float: "left", width: "500px", marginRight: "20px", padding: "10px", overflow: "auto"}}>
-                        <h1>Article Detail</h1> <br/>
-                        <b> ID : </b> <span> {data?.id} </span> <br/>
-                        <b> Title : </b> <span> {data?.title} </span> <br/>
-                        <b> Category : </b> <span> {data?.category_name} </span> <br/>
-                        <b> Content : </b> <span> {data?.content} </span> <br/>
-                        <b> Created By : </b> <span> {data?.created_id} </span> <br/>
-                        <b> Created At : </b> <span> {data?.created_at} </span> <br/>
-                        <b> Visit : </b> <span> {data?.visit_cnt} </span> <br/>
+            <><div className='div-box' style={{padding: "10px", overflow: "auto", marginLeft: "20px", textAlign: "left", height: "45vh"}}>
+                    <b style={{fontSize: "30px"}}>{data?.title}</b><br/>
+                    <span style={{fontSize: "17px", color: "gray"}}> {data?.created_at} </span><br/>
+                    <span style={{fontSize: "17px"}}> Posted in <b>{data?.category_name} </b> by <b>{data?.created_id} </b> / visit : <b>{data?.visit_cnt}</b></span>
+                    <div className='div-box' style={{overflow: "auto", height: "60%", marginTop: "5px", textAlign: "left"}}>
+                        <div className='content-box'> {data?.content} </div> <span style={{fontSize:"17px", color:"gray"}}> Finally edited : {data?.final_edit_date} </span><br/>
+                        <b style={{fontSize: "17px"}}> File list </b><br/>
                         <Files files={data?.files} user={user} createdId={data?.id}/>
-                        <div style={{float: "right"}}>
-                            { _.isEqual(data?.created_id, user?.nick_name) &&
-                                <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                                        onClick={() => setIsOpen(true)}>Edit</button>
-                            }
-                            <Modal isOpen={isOpen} onRequestClose={handleClose}>
-                                <ArticleEditForm user={user} articleDetail={data} handleClose={handleClose} />
-                            </Modal>
-                            {canChange(user, data?.created_id) &&
-                                <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
-                                        onClick={() => { Delete("board", data.id) }}>Delete</button>
-                            }
-                        </div>
+                        
                     </div>
+                    { _.isEqual(data?.created_id, user?.nick_name) &&
+                        <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
+                                onClick={() => setIsOpen(true)}>Edit</button>
+                    }
+                    <Modal isOpen={isOpen} onRequestClose={handleClose}>
+                        <ArticleEditForm user={user} articleDetail={data} handleClose={handleClose} />
+                    </Modal>
+                    {canChange(user, data?.created_id) &&
+                        <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
+                                onClick={() => { Delete("board", data.id) }}>Delete</button>
+                    }
                 </div><hr/>
-                <Comment article={data} user={user} isLogin={isLogin}/></>
+                <Comment article={data} user={user} isLogin={isLogin}/>
+            </>
         )
     }
 }

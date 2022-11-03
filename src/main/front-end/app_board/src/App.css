@@ -21,7 +21,7 @@ input[type=text], input[type=password] {
 
 .upload-name {
   display: inline-block;
-  height: 6%;
+  height:10%;
   padding: 0 10px;
   vertical-align: middle;
   border: 1px solid #dddddd;
@@ -33,7 +33,7 @@ input[type=text], input[type=password] {
 .upload {
   display: inline-block;
   width: 10%;
-  height: 6%;
+  height: 10%;
   vertical-align: middle;
   border: 1px solid gainsboro;
   font-weight: bold;
@@ -113,9 +113,48 @@ button{
 /* Box CSS */
 .div-box{
   text-align: center;
+  margin-top: 50px;
   margin-bottom: 10px;
-  position: relative;
   height: 50vh;
+}
+
+/* media css */
+@media screen and (max-width: 1010px) {
+  .div-box {
+    margin-top: 100px;
+  }
+}
+
+@media screen and (max-width: 802px){
+  
+}
+
+@media screen and (max-width: 620px){
+  .div-box {
+    margin-top: 150px;
+  }
+}
+
+.content-box {
+  border: 1px solid gainsboro;
+  border-radius: 5px;
+  word-break: break-all;
+  text-align: left;
+  height: 60%;
+  margin-bottom: 10px;
+  padding: 10px;
+  overflow: auto;
+}
+
+.info-box {
+  display: inline-block;
+  word-break: break-all;
+  width: 80%;
+  border: 1px solid gainsboro;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  padding: 5px;
+  overflow: auto;
 }
 
 .box {
@@ -138,4 +177,16 @@ button{
 }.page-bar:hover{
   cursor: pointer;
   background-color: gainsboro;
+}
+
+.filelist{
+  border: none;
+  padding: 0;
+  margin: 0;
+  margin-left: 10px;
+}
+.filelink:hover{
+  cursor: pointer;
+  font-weight: bold;
+  color: mediumslateblue;
 }

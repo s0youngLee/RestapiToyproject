@@ -63,10 +63,7 @@ function ArticleEditForm({user, articleDetail, handleClose}){
             alert("Article Edited");
             window.location.reload(`/board/${articleDetail?.id}`);
         }).catch((e) => {
-            console.log(formData.get("article"))
-            console.log(formData.get("file"))
             alert("Failed to edit article.\nPlease try again.");
-            window.location.replace(`/board/${articleDetail?.id}`);
         });
     }
     if(_.isEmpty(articleDetail)) {return <div> Loading ... </div>}
@@ -75,7 +72,7 @@ function ArticleEditForm({user, articleDetail, handleClose}){
             <>
                 <b style={{fontSize: "25px", textAlign: "left"}}>Edit article</b><hr/>
                 <form onSubmit={editArticle}>
-                    <div className="div-box" style={{textAlign: "left"}}>
+                    <div className="div-box" style={{textAlign: "left", marginTop: "10px"}}>
                         <b style={{fontSize: "20px"}}>User ID : {user?.nick_name} </b><br/>
                         <b style={{fontSize: "17px"}}> Category : </b>
                         <select onChange={handleSelect} value={selected}>
@@ -101,6 +98,11 @@ function ArticleEditForm({user, articleDetail, handleClose}){
                     <b style={{fontSize: "25px", marginLeft: "10px"}}> File List </b>
                     <Files files={articleDetail?.files} user={user} createdId={articleDetail?.id}/>
                 </div>
+                {/* <div>
+                    {articleDetail?.files.map((file, index) => {
+                        <img key={index} src={file.save_name} alt="preview-img" />
+                    })}
+                </div> */}
             </>
         )
     }

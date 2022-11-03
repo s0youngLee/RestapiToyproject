@@ -60,7 +60,6 @@ function ArticleRegister({user}){
             window.location.href=`/board/category/${selected}`;
         }).catch((e) => {
             alert("Failed to register an article.\nPlease try again.");
-            window.location.replace(`/board/add/${urlId}`);
         });
     }
 
@@ -86,7 +85,7 @@ function ArticleRegister({user}){
 
                 <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > Add </button>
                 <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
-                        onClick={() => {window.location.replace("/board")}}> Back </button>
+                        onClick={() => {window.location.href = "/board"}}> Back </button>
             </div>
         </form>
     )

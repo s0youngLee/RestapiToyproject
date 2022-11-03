@@ -31,6 +31,7 @@ public class Article {
     private String createdId;
     private LocalDateTime createdAt;
     private Integer visitCnt;
+    private LocalDateTime finalEditDate;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -42,21 +43,30 @@ public class Article {
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
     private List<Filedata> files;
 
-
-    public Article() {
-
-    }
-
-    public Article(Integer id, String title, String content, String createdId, LocalDateTime createdAt, Integer visitCnt, Category category, List<Comment> comment, List<Filedata> files) {
+    public Article(Integer id, String title, String content, String createdId, LocalDateTime createdAt, Integer visitCnt,
+        LocalDateTime finalEditDate, Category category, List<Comment> comment, List<Filedata> files) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.createdId = createdId;
         this.createdAt = createdAt;
         this.visitCnt = visitCnt;
+        this.finalEditDate = finalEditDate;
         this.category = category;
         this.comment = comment;
         this.files = files;
+    }
+
+    public Article() {
+
+    }
+
+    public LocalDateTime getFinalEditDate() {
+        return finalEditDate;
+    }
+
+    public void setFinalEditDate(LocalDateTime finalEditDate) {
+        this.finalEditDate = finalEditDate;
     }
 
     public List<Filedata> getFiles() {
