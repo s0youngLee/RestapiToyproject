@@ -1,11 +1,15 @@
 import { useState } from "react";
 import PasswordEditForm from "../Login/PasswordEditForm";
-import { isAdmin } from "../func";
+import { isAdmin, FetchWithoutId } from "../func";
 import MyArticles from "./MyArticles";
 import MyComments from "./MyComments";
 import UserManage from "./ManageUser";
 
 function MyPage({user}){
+    const articles = Array.from(FetchWithoutId("board/user"));
+    const comments = Array.from(FetchWithoutId("comment/user"));
+    const manage = Array.from(FetchWithoutId("user/manage").data);
+
     const [visible, setVisible] = useState(false);
     
     const [visibleArticle, setVisibleArticle] = useState(true);
@@ -54,9 +58,9 @@ function MyPage({user}){
                             setVisibleUser(true);
                             }}> Manage Users </div>}
                 </div><hr/>
-                {visibleArticle && <MyArticles />}
-                {visibleComment && <MyComments />}
-                {visibleUser && <UserManage />}
+                {visibleArticle && <MyArticles articles={articles}/>}
+                {visibleComment && <MyComments comments={comments}/>}
+                {visibleUser && <UserManage manage={manage}/>}
             </div>
         )
     }

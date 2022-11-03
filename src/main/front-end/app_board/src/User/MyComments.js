@@ -1,8 +1,7 @@
-import { FetchWithoutId } from "../func";
 import { Link } from "react-router-dom";
 
-function MyComments(){
-    const comments = Array.from(FetchWithoutId("comment/user"));
+function MyComments({comments}){
+    
     if(!comments){ return <div> Loading ... </div>}
     else {
         return (

@@ -60,7 +60,11 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
             .build();
 
         articleRepository.save(article);
-        article.setFiles(fileService.upload(uploadFiles, article.getId())); // file upload
+        try{
+            article.setFiles(fileService.upload(uploadFiles, article.getId())); // file upload
+        }catch (NullPointerException e){
+            log.warn("File not selected");
+        }
     }
 
     @Override
@@ -83,6 +87,8 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
                     article.setCreatedAt(LocalDateTime.now());
                     try {
                         article.setFiles(fileService.upload(uploadFiles, id));
+                    } catch (NullPointerException e){
+                        log.warn("File not selected");
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
