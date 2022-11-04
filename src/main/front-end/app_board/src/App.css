@@ -190,3 +190,9 @@ button{
   font-weight: bold;
   color: mediumslateblue;
 }
+
+.image-preview {
+  margin: 10px;
+  width: 45%;
+  height: 45%;
+}

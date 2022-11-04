@@ -25,7 +25,7 @@ function MyPage({user}){
 
     let resource = useMemo(() => { return new Blob(); },[])
     function downloadExcel(dataName){
-        axios.get(`/excel/download/${dataName}`, {responseType: "blob"})
+        axios.get(`/${dataName}/excel/download`, {responseType: "blob"})
         .then((res) => {
             resource = res.data;
             const downloadUrl = window.URL.createObjectURL(resource);            

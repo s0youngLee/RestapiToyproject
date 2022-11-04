@@ -31,7 +31,7 @@ public class FileController {
 	public ResponseEntity<Resource> downloadFile(@PathVariable Integer id) throws IOException {
 		return fileService.downloadFile(id);
 	}
-	@GetMapping("/excel/download/board")
+	@GetMapping("/board/excel/download")
 	public void downloadExcelBoard(HttpServletRequest request, HttpServletResponse response){
 		try{
 			fileService.downloadExcelBoard(response);
@@ -39,16 +39,6 @@ public class FileController {
 			log.error(e.getMessage());
 		}
 	}
-
-	@GetMapping("/excel/download/user")
-	public void downloadExcelUser(HttpServletRequest request, HttpServletResponse response){
-		try{
-			fileService.downloadExcelUser(response);
-		}catch (Exception e){
-			log.error(e.getMessage());
-		}
-	}
-
 
 	@DeleteMapping("/delete/{id}")
 	public void deleteFile(@PathVariable Integer id){

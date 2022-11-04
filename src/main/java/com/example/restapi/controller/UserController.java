@@ -23,6 +23,9 @@ import com.example.restapi.model.network.request.UserRequest;
 import com.example.restapi.model.network.response.UserResponseDto;
 import com.example.restapi.service.UserService;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @RestController
 @SessionAttributes("user")
 @RequestMapping("/user")
@@ -65,4 +68,14 @@ public class UserController {
 	public Status deleteUser(@PathVariable Integer code){
 		return userService.deleteUser(code);
 	}
+
+	@GetMapping("/excel/download")
+	public void downloadExcelUser(HttpServletResponse response){
+		try{
+			userService.downloadExcelUser(response);
+		}catch (Exception e){
+			log.error(e.getMessage());
+		}
+	}
+
 }

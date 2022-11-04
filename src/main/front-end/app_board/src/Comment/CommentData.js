@@ -12,13 +12,13 @@ function CommentData({index, data, user}){
                 {data?.content} 
                 {canChange(user, data?.user_id) && 
                     <input type={"image"} src={require("../remove.png").default} alt={"icon"}
-                        style={{float: "right", width:"20px", height:"20px", objectFit: "fill", verticalAlign: "middle", marginLeft: "10px"}}
+                        style={{float: "right", width:"20px"}}
                         onClick={() => {Delete("comment", data.id)}} />
                 }
             </div>
             {_.isEqual(user.nick_name, data?.user_id) &&
                 <input type={"image"} src={require("../edit.png").default} alt={"icon"}
-                    style={{width:"40px", height:"40px", objectFit: "fill", verticalAlign: "middle"}}
+                    style={{width:"40px", verticalAlign: "top"}}
                     onClick={() => {setVisible(!visible)}} />
             }
             
