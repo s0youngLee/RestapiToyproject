@@ -2,6 +2,7 @@ package com.example.restapi.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -11,13 +12,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.Filedata;
+import com.example.restapi.model.network.response.ArticleExcelResponseDto;
 import com.example.restapi.model.network.response.FileResponseDto;
 import com.example.restapi.repository.ArticleRepository;
 import com.example.restapi.repository.FileRepository;
@@ -29,16 +39,16 @@ import lombok.extern.log4j.Log4j2;
 public class FileService {
 	private final FileRepository fileRepository;
 	private final ArticleRepository articleRepository;
+	private final ExcelSetting<ArticleExcelResponseDto> excelSetting;
 
 	@Value("${upload.path}")
 	private String uploadPath;
 
-	@Value("${download.path}")
-	private String downPath;
 
-	public FileService(@Lazy FileRepository fileRepository, ArticleRepository articleRepository) {
+	public FileService(@Lazy FileRepository fileRepository, ArticleRepository articleRepository, ExcelSetting<ArticleExcelResponseDto> excelSetting) {
 		this.fileRepository = fileRepository;
 		this.articleRepository = articleRepository;
+		this.excelSetting = excelSetting;
 	}
 
 	public List<FileResponseDto> getList(Article article){
@@ -52,8 +62,8 @@ public class FileService {
 	public List<Filedata> upload(List<MultipartFile> uploadFiles, Integer articleId) throws IOException {
 		List<Filedata> fileList = new ArrayList<>();
 		for (MultipartFile uploadFile : uploadFiles) {
-			if(!uploadFile.getContentType().startsWith("image")) {
-				log.warn("Not image type file");
+			if(!uploadFile.getContentType().startsWith("image") && !uploadFile.getContentType().startsWith("application")) {
+				log.warn("Invalid file type");
 				return null;
 			}
 
@@ -103,7 +113,6 @@ public class FileService {
 
 	private String makeFolder(){
 		String folderPath = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
-
 		File uploadPathFolder = new File(uploadPath, folderPath);
 
 		if(!uploadPathFolder.exists()){
@@ -112,29 +121,76 @@ public class FileService {
 		return folderPath;
 	}
 
-	// public ResponseEntity<?> downloadFile(String fileCode) throws IOException {
-	// 	FileDownloadUtil downloadUtil = new FileDownloadUtil(fileRepository);
-	//
-	// 	Resource resource = null;
-	// 	try {
-	// 		resource = downloadUtil.getFileAsResource(uploadPath, fileCode);
-	// 		log.info(resource.getFile());
-	// 	} catch (IOException e) {
-	// 		return ResponseEntity.internalServerError().build();
-	// 	}
-	//
-	// 	if (resource == null) {
-	// 		return new ResponseEntity<>("File not found", HttpStatus.NOT_FOUND);
-	// 	}
-	//
-	// 	String contentType = "application/octet-stream";
-	// 	String headerValue = "attachment; filename=\"" + resource.getFilename() + "\"";
-	//
-	// 	return ResponseEntity.ok()
-	// 		.contentLength(resource.contentLength())
-	// 		.contentType(MediaType.parseMediaType(contentType))
-	// 		.header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
-	// 		.body(resource);
-	// }
+	@Transactional
+	public ResponseEntity<Resource> downloadFile(Integer id) {
+		Filedata file = fileRepository.getReferenceById(id);
+
+		Resource resource = new FileSystemResource(file.getSaveName());
+		log.info("Download file : " + resource.getFilename());
+
+		if(!resource.exists()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}else{
+			String resourceName = resource.getFilename();
+
+			return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename="
+					+ new String(resourceName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1))
+				.body(resource);
+		}
+	}
+
+	/**
+	 * GetMapping("/board/excel/download")
+	 * Write an Excel file with article table
+	 *
+	 * @param response to download written Excel file
+	 */
+	public void downloadExcelBoard(HttpServletResponse response) {
+		List<ArticleExcelResponseDto> dtoData = new ArrayList<>();
+		for(Article article: articleRepository.findAll()){
+			ArticleExcelResponseDto body = ArticleExcelResponseDto.builder()
+				.id(article.getId())
+				.title(article.getTitle())
+				.createdId(article.getCreatedId())
+				.createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
+				.finalEditDate(article.getFinalEditDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
+				.build();
+			dtoData.add(body);
+		}
+
+		List<List<String>> dataList = new ArrayList<>();
+		for(ArticleExcelResponseDto data : dtoData){
+			dataList.add(data.getData());
+		}
+		excelSetting.writeWorkbook(response, ArticleExcelResponseDto.class.getRecordComponents() , dtoData, dataList);
+	}
+
+	/**
+	 * Delete Mapping("/board/{id}")
+	 * 각 article에 연결된 file을 찾아 삭제함
+	 *
+	 * @param articleId id in table article
+	 * @return X
+	**/
+	public void deleteFileByArticleId(int articleId){
+		List<Filedata> fileList = fileRepository.findAllByArticleId(articleId);
+		for(Filedata filedata: fileList) {
+			File file = new File(filedata.getSaveName());
+			file.delete();
+		}
+	}
+
+	@Transactional
+	public void deleteFile(Integer id) {
+		try{
+			File file = new File(fileRepository.getReferenceById(id).getSaveName());
+			file.delete();
+			fileRepository.deleteById(id);
+		}catch (Exception e){
+			log.error(e.getMessage());
+		}
+	}
+
 
 }

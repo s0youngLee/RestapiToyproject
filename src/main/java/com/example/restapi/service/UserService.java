@@ -24,10 +24,12 @@ import com.example.restapi.security.MadeLogoutHandler;
 @Service
 public class UserService {
 	private final UserRepository userRepository;
+	private final ExcelSetting<UserResponseDto> excelSetting;
 	Logger logger = LoggerFactory.getLogger(MadeLogoutHandler.class);
 	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-	public UserService(@Lazy UserRepository userRepository) {
+	public UserService(@Lazy UserRepository userRepository, ExcelSetting<UserResponseDto> excelSetting) {
 		this.userRepository = userRepository;
+		this.excelSetting = excelSetting;
 	}
 
 	public String phone_format(String number) {
@@ -68,7 +70,6 @@ public class UserService {
 			response.setStatus(451);
 			return Status.ERROR("Existing User. Please Try again.");
 		}
-		// return Status.ERROR();
 	}
 
 	public Status<UserInfo> changePassword(Integer code, Status<UserRequest> request) {
@@ -93,7 +94,6 @@ public class UserService {
 		}
 	}
 
-
 	public Status deleteUser(int code) {
 		return userRepository.findById(code)
 			.map(delUser -> {
@@ -112,6 +112,20 @@ public class UserService {
 			.phone(user.getPhone())
 			.auth(user.getAuth())
 			.build();
+	}
+
+	public void downloadExcelUser(HttpServletResponse response) {
+		List<UserResponseDto> dtoData = new ArrayList<>();
+		for(UserInfo user : userRepository.findAll()){
+			dtoData.add(buildUser(user));
+		}
+
+		List<List<String>> dataList = new ArrayList<>();
+		for(UserResponseDto data : dtoData){
+			dataList.add(data.getData());
+		}
+
+		excelSetting.writeWorkbook(response, UserResponseDto.class.getRecordComponents(), dtoData, dataList);
 	}
 
 }

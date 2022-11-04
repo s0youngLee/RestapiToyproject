@@ -1,12 +1,11 @@
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import ArticleList from './ArticleList';
 import '../App.css'
 import { FetchWithoutId } from '../func';
 import _ from 'lodash';
 
 function Board({user, isLogin}){
-    const article = FetchWithoutId("board");
-    const articleList = Array.from(article.data);
+    const articleList = Array.from(FetchWithoutId("board").data);
     
     if(_.isEmpty(articleList)){ return <div> Loading... </div> }
     else {

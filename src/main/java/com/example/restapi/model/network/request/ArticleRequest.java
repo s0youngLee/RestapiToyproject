@@ -15,9 +15,20 @@ public class ArticleRequest {
 	private String createdId;
 	private LocalDateTime createdAt;
 	private Integer categoryId;
-	// private List<Files> files;
-
+	private LocalDateTime finalEditDate;
 	private List<MultipartFile> files;
+
+	public LocalDateTime getFinalEditDate() {
+		return finalEditDate;
+	}
+
+	public void setFinalEditDate(LocalDateTime finalEditDate) {
+		this.finalEditDate = finalEditDate;
+	}
+
+	public void setFiles(List<MultipartFile> files) {
+		this.files = files;
+	}
 
 	public Integer getId() {
 		return id;

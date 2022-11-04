@@ -21,19 +21,20 @@ input[type=text], input[type=password] {
 
 .upload-name {
   display: inline-block;
-  height: 4%;
+  height:8%;
   padding: 0 10px;
   vertical-align: middle;
   border: 1px solid #dddddd;
   border-radius: 5px;
   width: 50%;
   color: #999999;
+  margin-bottom: 1%;
 }
 
 .upload {
   display: inline-block;
   width: 10%;
-  height: 4%;
+  height: 8%;
   vertical-align: middle;
   border: 1px solid gainsboro;
   font-weight: bold;
@@ -42,6 +43,7 @@ input[type=text], input[type=password] {
   text-align: center;
   padding-top: 0.9%;
   padding-bottom: 0.9%;
+  margin-bottom: 1%;
 }.upload:hover{
   cursor: pointer;
   color: aliceblue;
@@ -51,7 +53,7 @@ input[type=text], input[type=password] {
 
 textarea {
   width: 60%;
-  height: 40%;
+  height: 68%;
   resize: none!important;
   vertical-align: middle;
   border: 1px solid gainsboro;
@@ -113,9 +115,48 @@ button{
 /* Box CSS */
 .div-box{
   text-align: center;
+  margin-top: 50px;
   margin-bottom: 10px;
-  position: relative;
-  height: 80vh;
+  height: 50vh;
+}
+
+/* media css */
+@media screen and (max-width: 1010px) {
+  .div-box {
+    margin-top: 100px;
+  }
+}
+
+@media screen and (max-width: 802px){
+  
+}
+
+@media screen and (max-width: 620px){
+  .div-box {
+    margin-top: 150px;
+  }
+}
+
+.content-box {
+  border: 1px solid gainsboro;
+  border-radius: 5px;
+  word-break: break-all;
+  text-align: left;
+  height: 60%;
+  margin-bottom: 10px;
+  padding: 10px;
+  overflow: auto;
+}
+
+.info-box {
+  display: inline-block;
+  word-break: break-all;
+  width: 80%;
+  border: 1px solid gainsboro;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  padding: 5px;
+  overflow: auto;
 }
 
 .box {
@@ -124,12 +165,6 @@ button{
   position: absolute;
   width: 47%;
 }
-
-/* .search-container {
-  position: absolute;
-  left: 400px;
-  top: -6px;
-} */
 
 .page-bar {
   display: inline-block;
@@ -144,4 +179,43 @@ button{
 }.page-bar:hover{
   cursor: pointer;
   background-color: gainsboro;
+}
+
+.filelist{
+  border: none;
+  padding: 0;
+  margin: 0;
+  margin-left: 10px;
+}
+.filelink:hover{
+  cursor: pointer;
+  font-weight: bold;
+  color: mediumslateblue;
+}
+
+#preview-zone {
+  border: 1px solid gainsboro;
+  border-radius: 5px;
+  text-align: center;
+}
+#preview-img {
+  display: inline-block;
+  border-right: 1px solid gainsboro;
+  margin-bottom: 10px;
+  width: 65%;
+}
+#preview-file {
+  display: inline-block;
+  vertical-align: top;
+  width: 35%;
+}
+
+.image-preview {
+  margin: 5px;
+  width: 46%;
+}
+
+.application-preview {
+  margin: 5px;
+  font-weight: 600;
 }

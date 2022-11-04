@@ -58,13 +58,13 @@ function SignupForm(){
         }).catch((e) => {
             if(e.response.status === 451){
                 if (window.confirm("Existing User ID.\nWanna login with this id?")){
-                    window.location.replace("/login");
+                    window.location.href =  "/login";
                 }else{
                     alert("Please register with other ID");
                 }
             }else{
                 alert("Error. Please try again.\n" + e.response);
-                window.location.replace("/login/signup");
+                // window.location.replace("/login/signup");
             }
         });
     }

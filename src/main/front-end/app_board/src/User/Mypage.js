@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import PasswordEditForm from "../Login/PasswordEditForm";
-import { isAdmin } from "../func";
+import { isAdmin, FetchWithoutId } from "../func";
 import MyArticles from "./MyArticles";
 import MyComments from "./MyComments";
 import UserManage from "./ManageUser";
+import axios from "axios";
 
 function MyPage({user}){
+    const articles = Array.from(FetchWithoutId("board/user"));
+    const comments = Array.from(FetchWithoutId("comment/user"));
+    const manage = Array.from(FetchWithoutId("user/manage").data);
+
     const [visible, setVisible] = useState(false);
     
     const [visibleArticle, setVisibleArticle] = useState(true);
@@ -18,6 +23,27 @@ function MyPage({user}){
         setVisibleUser(false);    
     }
 
+    let resource = useMemo(() => { return new Blob(); },[])
+    function downloadExcel(dataName){
+        axios.get(`/${dataName}/excel/download`, {responseType: "blob"})
+        .then((res) => {
+            resource = res.data;
+            const downloadUrl = window.URL.createObjectURL(resource);            
+            const fileName = res.headers['content-disposition'].split('=', -1)[1];
+            const anchor = document.createElement('a');
+
+            document.body.appendChild(anchor);
+            anchor.download = fileName;
+            anchor.href = downloadUrl;
+            anchor.click();
+    
+            document.body.removeChild(anchor);
+            window.URL.revokeObjectURL(downloadUrl);
+        }).catch((e) => {
+            console.log(e);
+        })
+    }
+
     if(!user) { return <div> Loading ... </div> }
     else {
         return (
@@ -28,8 +54,11 @@ function MyPage({user}){
                     <b> Email : </b><span> {user.email} </span><br/>
                     <b> Nickname : </b><span> {user.nick_name} </span><br/>
                     <b> PhoneNumber : </b><span> {user.phone} </span><br/><br/>
+                    {isAdmin(user?.auth) && <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
+                            onClick={() => downloadExcel("board")}> Download board </button>}
+                    {isAdmin(user?.auth) && <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
+                            onClick={() => downloadExcel("user")}> Download Users </button>}
                     <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" 
-                            style={{position: "absolute", top: "115px", right: "30px"}}
                             onClick={() => setVisible(!visible)}> {visible ? "Cancel" : "Change PW"} </button>
                     {visible && <PasswordEditForm user={user}/>}
                 </div><hr/>
@@ -54,9 +83,9 @@ function MyPage({user}){
                             setVisibleUser(true);
                             }}> Manage Users </div>}
                 </div><hr/>
-                {visibleArticle && <MyArticles />}
-                {visibleComment && <MyComments />}
-                {visibleUser && <UserManage />}
+                {visibleArticle && <MyArticles articles={articles}/>}
+                {visibleComment && <MyComments comments={comments}/>}
+                {visibleUser && <UserManage manage={manage}/>}
             </div>
         )
     }

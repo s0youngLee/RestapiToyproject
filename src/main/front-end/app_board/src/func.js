@@ -113,6 +113,6 @@ export function ifError(e){
         </div>
     }else{
         alert("Error : " + e.response.status + " " + e.response.statusText + "\nReturn to Home.");
-        window.location.replace("/");
+        window.location.href="/";
     }
 }

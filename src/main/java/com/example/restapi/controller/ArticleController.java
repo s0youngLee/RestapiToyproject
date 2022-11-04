@@ -68,13 +68,13 @@ public class ArticleController extends AbstractCrudMethod<ArticleRequest, Articl
     }
 
     @PostMapping(value = "/withfile", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public void register(@RequestPart("article") Status<ArticleRequest> request, @RequestPart("file") List<MultipartFile> upfile)
+    public void register(@RequestPart("article") Status<ArticleRequest> request, @RequestPart(value = "file", required = false) List<MultipartFile> upfile)
         throws Exception {
         articleService.register(upfile, request);
     }
 
     @PutMapping(value = "/withfile/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public void edit(@RequestPart("file") List<MultipartFile> uploadFiles, @RequestPart("article") Status<ArticleRequest> request, @PathVariable int id)
+    public void edit(@RequestPart(value = "file", required = false) List<MultipartFile> uploadFiles, @RequestPart("article") Status<ArticleRequest> request, @PathVariable int id)
         throws MissingServletRequestPartException {
         articleService.edit(uploadFiles, request, id);
     }

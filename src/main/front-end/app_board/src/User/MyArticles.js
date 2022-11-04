@@ -1,8 +1,6 @@
-import { FetchWithoutId } from "../func";
 import { Link } from "react-router-dom";
 
-function MyArticles(){
-    const articles = Array.from(FetchWithoutId("board/user"));
+function MyArticles({articles}){
     if(!articles){ return <div> Loading... </div>}
     else {
         return (

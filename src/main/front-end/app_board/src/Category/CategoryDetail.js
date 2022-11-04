@@ -9,7 +9,7 @@ function CategoryDeatil () {
     if(_.isEmpty(categoryList)){ return <div> Loading ... </div>}
     else {
         return (
-            <div style={{margin: "10px"}}>
+            <div className='div-box'>
                 <b style={{ fontSize: "40px"}}> Category Setting </b>
                 <Link to={`/category/add`} className="none">
                     <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> Add Category </button>
@@ -28,25 +28,19 @@ function CategoryDeatil () {
 
 function CategoryDeatilData({data}) {
     return (
-        <>
-            <div>
-                <b> ID : </b> <span> {data.id} </span><br/>
-                <b> Name : </b><span> {data.name} </span><br/>
-                <b> Article : {data.article_cnt} ea </b><br/>
-            </div>
-            <div>
-                
-                <Link to={`/board/category/${data.id}`} className="none">
-                    <button className='w3-button w3-border w3-round-xlarge w3-small  w3-hover-deep-purple'> Go to {data.name} </button>
-                </Link>
-                <Link to={`/category/edit/${data.id}`} className="none">
-                    <button className="w3-button w3-border w3-round-xlarge w3-small  w3-hover-teal"> Edit</button>
-                </Link>
-                <button className="w3-button w3-border w3-round-xlarge w3-small  w3-hover-red" 
-                        onClick={() => { Delete("category", data.id) }}> Delete </button>
-            
-            </div>
-        </>
+        <div style={{textAlign: "left"}}>
+            <b> ID : </b> <span> {data.id} </span><br/>
+            <b> Name : </b><span> {data.name} </span><br/>
+            <b> Article : {data.article_cnt} ea </b>
+            <Link to={`/board/category/${data.id}`} className="none">
+                <button className='w3-button w3-border w3-round-xlarge w3-small  w3-hover-deep-purple'> Go to {data.name} </button>
+            </Link>
+            <Link to={`/category/edit/${data.id}`} className="none">
+                <button className="w3-button w3-border w3-round-xlarge w3-small  w3-hover-teal"> Edit</button>
+            </Link>
+            <button className="w3-button w3-border w3-round-xlarge w3-small  w3-hover-red" 
+                    onClick={() => { Delete("category", data.id) }}> Delete </button>
+        </div>
     )
 }
 

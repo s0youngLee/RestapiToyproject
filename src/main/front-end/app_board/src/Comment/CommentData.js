@@ -6,26 +6,28 @@ import {canChange, Delete} from "../func";
 function CommentData({index, data, user}){
     const [visible, setVisible] = useState(false);
     return(
-        <><li  key={index}>
-            <b> User ID : </b> <span> {data?.user_id} </span> <br/>
-            <b> Content : </b> <span> {data?.content} </span> <br/>
-            <b> Created At : </b> <span> {data?.created_at} </span>
-            
-            
-            {_.isEqual(user.nick_name, data?.user_id) && 
-                <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" 
-                    onClick={() => setVisible(!visible)}> {visible ? "Cancel" : "Edit" } </button>
+        <><li className="filelist" key={index}>
+            <span> <b> {data?.user_id} </b> / <span style={{color: "gray"}}> {data?.created_at} </span> </span><br/>
+            <div className="info-box"> 
+                {data?.content} 
+                {canChange(user, data?.user_id) && 
+                    <input type={"image"} src={require("../remove.png").default} alt={"icon"}
+                        style={{float: "right", width:"20px"}}
+                        onClick={() => {Delete("comment", data.id)}} />
+                }
+            </div>
+            {_.isEqual(user.nick_name, data?.user_id) &&
+                <input type={"image"} src={require("../edit.png").default} alt={"icon"}
+                    style={{width:"40px", verticalAlign: "top"}}
+                    onClick={() => {setVisible(!visible)}} />
             }
-            {canChange(user, data?.user_id) &&
-            <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
-                    onClick={() => { Delete("comment", data.id) }}>Delete</button>
-            }
-            {visible && <CommentEditForm data={data}/>} 
+            
+            {visible && <CommentEditForm data={data} visible={visible} setVisible={setVisible}/>} 
         </li> <br/></>
     );
 }
 
-function CommentEditForm({data}){
+function CommentEditForm({data, visible, setVisible}){
     const [content, setContent] = useState(data?.content);
     
     const editcontent = useCallback( e => {
@@ -50,16 +52,13 @@ function CommentEditForm({data}){
     }
 
     return (
-        <>
-        <br/><br/>
-        <form onSubmit={editComment}>
-            <div className="div-box" style={{textAlign: "left"}}>
-                <b style={{textAlign: "center"}}> Edit comment </b> <br/>
-                <b> User ID : {data?.user_id}</b><br/>
-                <input type={"text"} value={content} onChange={editcontent}></input>
-                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> Save </button>
-            </div>
-        </form></>
+        <form onSubmit={editComment} className="div-box" style={{textAlign: "left", height: "10%", marginTop: "0", border: "1px solid mediumslateblue", borderRadius: "5px", padding: "10px", width: "80%"}}>
+            <b style={{textAlign: "center", color: "mediumslateblue"}}> Edit comment </b> <br/>
+            <input type={"text"} value={content} onChange={editcontent} style={{borderColor: "#b6a9ff"}}/>
+            <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red"
+                    onClick={() => {setVisible(!visible)}}> Cancel </button>
+            <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> Save </button>
+        </form>
     )
 }
 

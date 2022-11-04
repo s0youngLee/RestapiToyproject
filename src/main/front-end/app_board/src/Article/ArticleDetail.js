@@ -1,10 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { FetchWithId, Delete, canChange } from '../func';
 import _ from 'lodash';
 import * as Modal from 'react-modal';
-import ModalForm from './ArticleEdit';
 import Comment from "../Comment/Comment";
-import axios from 'axios';
+import Files from './FileForm';
+import ArticleEditForm from './ArticleEdit';
 
 function ArticleDeatil({user, isLogin}){
     const articleDetail = FetchWithId("board", 1).data;
@@ -19,87 +19,32 @@ function ArticleDetailData({data, user, isLogin}) {
     if(!data?.created_id){ return <div> Loading ... </div> }
     else {
         return (
-            <><div style={{padding: "10px", overflow: "auto"}}>
-                    <div style={{float: "left", width: "500px", marginRight: "20px", padding: "10px", overflow: "auto"}}>
-                        <h1>Article Detail</h1> <br/>
-                        <b> ID : </b> <span> {data?.id} </span> <br/>
-                        <b> Title : </b> <span> {data?.title} </span> <br/>
-                        <b> Category : </b> <span> {data?.category_name} </span> <br/>
-                        <b> Content : </b> <span> {data?.content} </span> <br/>
-                        <b> Created By : </b> <span> {data?.created_id} </span> <br/>
-                        <b> Created At : </b> <span> {data?.created_at} </span> <br/>
-                        <b> Visit : </b> <span> {data?.visit_cnt} </span> <br/>
+            <><div className='div-box' style={{padding: "10px", overflow: "auto", marginLeft: "20px", textAlign: "left", height: "45vh"}}>
+                    <b style={{fontSize: "30px"}}>{data?.title}</b><br/>
+                    <span style={{fontSize: "17px", color: "gray"}}> {data?.created_at} </span><br/>
+                    <span style={{fontSize: "17px"}}> Posted in <b>{data?.category_name} </b> by <b>{data?.created_id} </b> / visit : <b>{data?.visit_cnt}</b></span>
+                    <div className='div-box' style={{overflow: "auto", height: "60%", marginTop: "5px", textAlign: "left"}}>
+                        <div className='content-box'> {data?.content} </div> <span style={{fontSize:"17px", color:"gray"}}> Finally edited : {data?.final_edit_date} </span><br/>
+                        <b style={{fontSize: "17px"}}> File list </b><br/>
                         <Files files={data?.files} user={user} createdId={data?.id}/>
-                        <div style={{float: "right"}}>
-                            { _.isEqual(data?.created_id, user?.nick_name) &&
-                                <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                                        onClick={() => setIsOpen(true)}>Edit</button>
-                            }
-                            <Modal isOpen={isOpen} onRequestClose={handleClose}>
-                                <ModalForm user={user} articleDetail={data} handleClose={handleClose} />
-                            </Modal>
-                            {canChange(user, data?.created_id) &&
-                                <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
-                                        onClick={() => { Delete("board", data.id) }}>Delete</button>
-                            }
-                        </div>
+                        
                     </div>
+                    { _.isEqual(data?.created_id, user?.nick_name) &&
+                        <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
+                                onClick={() => setIsOpen(true)}>Edit</button>
+                    }
+                    <Modal isOpen={isOpen} onRequestClose={handleClose}>
+                        <ArticleEditForm user={user} articleDetail={data} handleClose={handleClose} />
+                    </Modal>
+                    {canChange(user, data?.created_id) &&
+                        <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
+                                onClick={() => { Delete("board", data.id) }}>Delete</button>
+                    }
                 </div><hr/>
-                <Comment article={data} user={user} isLogin={isLogin}/></>
+                <Comment article={data} user={user} isLogin={isLogin}/>
+            </>
         )
     }
-}
-
-function Files({files, user, createdId}) {
-    let resource = useMemo(() => { return new Blob(); },[])
-
-    function downloadFile(file){
-        axios.get(`/download/${file.id}`, {responseType: "blob"})
-        .then((res)=>{
-            resource = res.data;
-            // console.log("downloading "+ file.origin_name + " ...");
-            const downloadUrl = window.URL.createObjectURL(resource);
-            const anchor = document.createElement('a');
-
-            document.body.appendChild(anchor);
-            anchor.download = file.origin_name;
-            anchor.href = downloadUrl;
-            anchor.click();
-    
-            document.body.removeChild(anchor);
-            window.URL.revokeObjectURL(downloadUrl);
-        }).catch((e) => {
-            console.log(e);
-        })
-    }
-
-    function deleteFile(id, filename){
-        if(window.confirm("Delete file " + filename + " ? ")){
-            axios.delete(`/delete/${id}`).catch((e) => {
-                console.log(e.response.status + " : " + e.response.statusText);
-            })
-            window.location.reload();
-        }
-    }
-
-    return(
-        <>
-            {Array.from(files).map((file, index) => {
-                return (
-                    <li key={index}>
-                        fileName : {file.origin_name} <br/>
-                        fileSize : {Number(file.file_size).toFixed(2)} MB <br/>
-                        date : {file.date} 
-                        <button className='w3-button w3-border w3-round-xlarge w3-small w3-hover-cyan' id='download' value={"download"}
-                                onClick={() => {downloadFile(file)}} >Download</button>
-                        {canChange(user, createdId) && <button className='w3-button w3-border w3-round-xlarge w3-small w3-hover-red'
-                                onClick={() => {deleteFile(file.id, file.origin_name)}}>Delete</button>
-                        }
-                    </li>
-                )
-            })}
-        </>
-    )
 }
 
 export default ArticleDeatil;

@@ -34,7 +34,7 @@ function CategoryEditForm({categoryId, nameOrigin}){
             }
         }).then(() => {
             alert("Category edited. Move to " + categoryName);
-            window.location.replace(`/board/category/${categoryId}`);
+            window.location.href = `/board/category/${categoryId}`;
         }).catch((e) => {
             alert("Failed to edit category.\nError : " + e.response.statusText);
             window.location.reload();

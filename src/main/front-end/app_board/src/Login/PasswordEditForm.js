@@ -44,15 +44,12 @@ function PasswordEditForm({user}) {
     if(!user){ return <div> Loading ... </div>}
     else{
         return (
-            <><br/>
-            <form onSubmit={changePW}>
-                <div className="div-box">
-                    <b> Change password </b><br/>
-                    <input type={"password"} placeholder="New Password" onChange={inputPassword} required autoFocus></input><br/>
-                    <input type={"password"} placeholder="Check Password" onChange={checkNewPassword} required></input><br/>
-                    <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> Change </button>
-                </div>
-            </form> </>
+            <form onSubmit={changePW} className="div-box" style={{marginTop: "0", height:"20%"}}>
+                <b> Change password </b><br/>
+                <input type={"password"} placeholder="New Password" onChange={inputPassword} required autoFocus></input><br/>
+                <input type={"password"} placeholder="Check Password" onChange={checkNewPassword} required></input><br/>
+                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> Change </button>
+            </form>
         )
     }
 }

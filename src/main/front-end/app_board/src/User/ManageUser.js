@@ -1,11 +1,9 @@
 import React, { useCallback, useState } from "react";
 import _ from "lodash";
-import { Delete, FetchWithoutId } from "../func";
+import { Delete } from "../func";
 import axios from "axios";
 
-function UserManage(){
-    const manage = Array.from(FetchWithoutId("user/manage").data);
-
+function UserManage({manage}){
     if(!manage){ return <div> Loading ... </div>}
     else{
         return (
@@ -55,7 +53,6 @@ function EditUser({userinfo}){
             alert("User's auth edited.");
         }).catch((e) => {
             alert("Failed to edit auth.\nPlease try again.");
-            window.location.replace("/manage");
             console.log(e.response);
         })
     }
