@@ -22,6 +22,7 @@ import PageNotFound from "./PageNotFound";
 
 import './App.css';
 import 'w3-css';
+import UserManage from "./User/ManageUser";
 
 function App() {
     const login = sessionStorage.getItem("isLogin");
@@ -47,6 +48,7 @@ function App() {
                 <Route path="/login/signup" element={<SignupForm />} />
                 
                 <Route path="/mypage" element={<MyPage user={user}/>} />
+                <Route path="/user/manage" element={<UserManage />} />
 
                 <Route path="*" element={<PageNotFound />} /> {/* No route match location Handle */}
             </Routes>

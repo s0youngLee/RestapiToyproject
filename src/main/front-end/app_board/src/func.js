@@ -64,24 +64,18 @@ export function FetchWithoutId(dataName){
 
 export function FetchWithId(dataName, n){
     const [data, setData] = useState({ data : {} });
-    const [param, setParam] = useState("");
+    const id = getUrlId(n);
     useEffect(() => {
-        if(isNaN(Number(n))){
-            setParam(n);
-        }else{
-            setParam(getUrlId(n));
-        }
-        console.log(param);
-        axios.get(`/${dataName}/${param}`)
+        axios.get(`/${dataName}/${id}`)
         .then((res) => {
             setData(res?.data);
         })
         .catch((e) => {
             ifError(e);
         });
-    }, [dataName, n, param]);
+    }, [dataName, id]);
     if(_.isEmpty(data)){ return <div> Loading ... </div>}
-    else{ return data;}
+    else{ return data;} 
 }
 
 export function Delete(dataName, dataId){
@@ -122,3 +116,59 @@ export function ifError(e){
         window.location.href="/";
     }
 }
+
+export function autoHypenTel(str) {
+    let phone = str.replace(/[^0-9]/g, '');
+    // str = phone.replace(/[^0-9]/g, '');
+    var tmp = '';
+  
+    if (_.isEqual(phone.substring(0, 2), "02")) {
+      // 서울 전화번호일 경우 10자리까지만 나타나고 그 이상의 자리수는 자동삭제
+      if (phone.length < 3) {
+        return str;
+      } else if (phone.length < 6) {
+        tmp += phone.substr(0, 2);
+        tmp += '-';
+        tmp += phone.substr(2);
+        return tmp;
+      } else if (phone.length < 10) {
+        tmp += phone.substr(0, 2);
+        tmp += '-';
+        tmp += phone.substr(2, 3);
+        tmp += '-';
+        tmp += phone.substr(5);
+        return tmp;
+      } else {
+        tmp += phone.substr(0, 2);
+        tmp += '-';
+        tmp += phone.substr(2, 4);
+        tmp += '-';
+        tmp += phone.substr(6, 4);
+        return tmp;
+      }
+    } else {
+      // 핸드폰 및 다른 지역 전화번호 일 경우
+      if (phone.length < 4) {
+        return str;
+      } else if (phone.length < 7) {
+        tmp += phone.substr(0, 3);
+        tmp += '-';
+        tmp += phone.substr(3);
+        return tmp;
+      } else if (phone.length < 11) {
+        tmp += phone.substr(0, 3);
+        tmp += '-';
+        tmp += phone.substr(3, 3);
+        tmp += '-';
+        tmp += phone.substr(6);
+        return tmp;
+      } else {
+        tmp += phone.substr(0, 3);
+        tmp += '-';
+        tmp += phone.substr(3, 4);
+        tmp += '-';
+        tmp += phone.substr(7);
+        return tmp;
+      }
+    }
+  }

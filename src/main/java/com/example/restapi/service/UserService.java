@@ -1,5 +1,7 @@
 package com.example.restapi.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.example.restapi.model.entity.UserInfo;
 import com.example.restapi.model.network.Status;
 import com.example.restapi.model.network.request.UserRequest;
+import com.example.restapi.model.network.response.UserExcelResponseDto;
 import com.example.restapi.model.network.response.UserResponseDto;
 import com.example.restapi.repository.UserRepository;
 import com.example.restapi.security.MadeLogoutHandler;
@@ -24,17 +27,12 @@ import com.example.restapi.security.MadeLogoutHandler;
 @Service
 public class UserService {
 	private final UserRepository userRepository;
-	private final ExcelSetting<UserResponseDto> excelSetting;
+	private final ExcelSetting<UserExcelResponseDto> excelSetting;
 	Logger logger = LoggerFactory.getLogger(MadeLogoutHandler.class);
 	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-	public UserService(@Lazy UserRepository userRepository, ExcelSetting<UserResponseDto> excelSetting) {
+	public UserService(@Lazy UserRepository userRepository, ExcelSetting<UserExcelResponseDto> excelSetting) {
 		this.userRepository = userRepository;
 		this.excelSetting = excelSetting;
-	}
-
-	public String phone_format(String number) {
-		String regEx = "(\\d{3})(\\d{3,4})(\\d{4})";
-		return number.replaceAll(regEx, "$1-$2-$3");
 	}
 
 	public Status<UserResponseDto> userPage(UserInfo user) {
@@ -61,7 +59,8 @@ public class UserService {
 				.auth(body.getAuth())
 				.nickName(body.getNickName())
 				.name(body.getName())
-				.phone(phone_format(body.getPhone()))
+				.phone(body.getPhone())
+				.lastAccess(LocalDateTime.now())
 				.build();
 		try{
 			return Status.OK(userRepository.save(user));
@@ -72,11 +71,15 @@ public class UserService {
 		}
 	}
 
-	public Status<UserInfo> changePassword(Integer code, Status<UserRequest> request) {
+	public Status<UserInfo> userInfoEdit(Integer code, Status<UserRequest> request) {
 		UserRequest body = request.getData();
 		UserInfo user = userRepository.getReferenceById(code);
 
-		user.setPassword(encoder.encode(body.getPassword()));
+		user.setNickName(body.getNickName());
+		if(!Objects.equals(body.getPassword(), "")){
+			user.setPassword(encoder.encode(body.getPassword()));
+		}
+		user.setPhone(body.getPhone());
 		return Status.OK(userRepository.save(user));
 	}
 
@@ -93,6 +96,14 @@ public class UserService {
 			throw new PermissionDeniedDataAccessException("Permission Denied.", new Throwable(auth));
 		}
 	}
+
+	public Status<UserInfo> updateAccessDate(Integer code) {
+		UserInfo user = userRepository.getReferenceById(code);
+
+		user.setLastAccess(LocalDateTime.now());
+		return Status.OK(userRepository.save(user));
+	}
+
 
 	public Status deleteUser(int code) {
 		return userRepository.findById(code)
@@ -111,21 +122,31 @@ public class UserService {
 			.nickName(user.getNickName())
 			.phone(user.getPhone())
 			.auth(user.getAuth())
+			.lastAccess(user.getLastAccess().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
 			.build();
 	}
 
 	public void downloadExcelUser(HttpServletResponse response) {
-		List<UserResponseDto> dtoData = new ArrayList<>();
+		List<UserExcelResponseDto> dtoData = new ArrayList<>();
 		for(UserInfo user : userRepository.findAll()){
-			dtoData.add(buildUser(user));
+			UserExcelResponseDto body = UserExcelResponseDto.builder()
+				.code(user.getCode())
+				.email(user.getEmail())
+				.name(user.getName())
+				.nickName(user.getNickName())
+				.phone(user.getPhone())
+				.auth(user.getAuth())
+				.lastAccess(user.getLastAccess())
+				.build();
+			dtoData.add(body);
 		}
 
 		List<List<String>> dataList = new ArrayList<>();
-		for(UserResponseDto data : dtoData){
+		for(UserExcelResponseDto data : dtoData){
 			dataList.add(data.getData());
 		}
 
-		excelSetting.writeWorkbook(response, UserResponseDto.class.getRecordComponents(), dtoData, dataList);
+		excelSetting.writeWorkbook(response, UserExcelResponseDto.class.getRecordComponents(), dtoData, dataList);
 	}
 
 }

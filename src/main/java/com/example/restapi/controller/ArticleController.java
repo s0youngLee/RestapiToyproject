@@ -64,6 +64,7 @@ public class ArticleController extends AbstractCrudMethod<ArticleRequest, Articl
 
     @GetMapping("/search/{type}/{keyword}")
     public List<ArticleListResponseDto> getSearchResults(@PathVariable String type, @PathVariable String keyword){
+        log.info(type);
         return articleService.getSearchResults(type, keyword);
     }
 

@@ -15,7 +15,7 @@ function ArticleList({user, articleList}){
     const articleCntPerPage = 10; // article cnt per pages
     const [currentPage, setCurrentPage] = useState(1);
     const offset = (currentPage - 1) * articleCntPerPage;
-    const articlesPerPage = articleList.slice(offset, offset + articleCntPerPage);
+    const articlesPerPage = articleList?.slice(offset, offset + articleCntPerPage);
 
     const checkedItemHandler = (id, isChecked) => {
         if(isChecked) {
@@ -68,10 +68,10 @@ function ArticleList({user, articleList}){
     
     return(
         <>
-        <SearchForm /><br/>
         {isAdmin(user.auth) && 
             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
-                    onClick={() => DeleteArticles()}>  Delete </button>}
+            onClick={() => DeleteArticles()}>  Delete </button>}
+        <SearchForm />
 
         <table>
             <thead style={{backgroundColor: "#bdb5f6"}}>

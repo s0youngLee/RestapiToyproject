@@ -5,8 +5,8 @@ import { FetchWithId, getUrlId } from "../func";
 
 
 function ArticlesByCategory({user, isLogin}){
-    const category = FetchWithId("category", 1).data;
-    const articleByCategory = Array.from(FetchWithId("board/category", 1).data);
+    const category = FetchWithId("category", 1)?.data;
+    const articleByCategory = Array.from(FetchWithId("board/category", 1)?.data);
     
     if(_.isEmpty(category)) { return <div> Loading ... </div> }
     else {

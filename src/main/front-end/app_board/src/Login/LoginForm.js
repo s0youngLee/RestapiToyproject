@@ -27,14 +27,14 @@ function LoginForm(){
         .then((res) => {
             if(res.status===200){
                 sessionStorage.setItem("isLogin", true);
-                alert("Login successful.\nMove to board.");
+                alert("Login successful.");
                 window.location.replace("/board");
             }else {
                 ifError(res);
             }
         })
         .catch((err) => {
-            if(err.response.withCredentials===false){
+            if(err.response?.withCredentials===false){
                 alert("Insufficient ID or Password.\nPlease try again.");
             }else{
                 alert(err + "\nFailed to login. Try again.");

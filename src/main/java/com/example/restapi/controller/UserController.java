@@ -56,12 +56,17 @@ public class UserController {
 	}
 
 	@PutMapping("")
-	public Status<UserInfo> changePassword(@SessionAttribute("user") UserInfo user, @RequestBody Status<UserRequest> request) {
-		return userService.changePassword(user.getCode(), request);
+	public Status<UserInfo> userInfoEdit(@SessionAttribute("user") UserInfo user, @RequestBody Status<UserRequest> request) {
+		return userService.userInfoEdit(user.getCode(), request);
 	}
-	@PutMapping("/{code}")
-	public Status<UserInfo> changeAuth(@ModelAttribute("user") UserInfo user,@PathVariable Integer code, @RequestBody Status<UserRequest> request){
+	@PutMapping("/manage/{code}")
+	public Status<UserInfo> changeAuth(@ModelAttribute("user") UserInfo user, @PathVariable int code, @RequestBody Status<UserRequest> request){
 		return userService.changeAuth(user.getAuth(), request, code);
+	}
+
+	@PutMapping("/lastaccess")
+	public Status<UserInfo> updateAccessDate(@ModelAttribute("user") UserInfo user){
+		return userService.updateAccessDate(user.getCode());
 	}
 
 	@DeleteMapping("/{code}")

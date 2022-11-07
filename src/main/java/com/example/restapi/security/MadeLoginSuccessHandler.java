@@ -33,9 +33,7 @@ public class MadeLoginSuccessHandler implements AuthenticationSuccessHandler {
 	@Transactional
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 		Authentication authentication) throws IOException, ServletException {
-		// CorsConfiguration configuration = new CorsConfiguration();
-		// configuration.setAllowCredentials(true);
-		// response.setHeader("Access-Control-Allow-Origin", "*");
+
 		request.getSession().setAttribute("user", userSecurityService.loadUserByUsername(authentication.getName()));
 		logger.info("Authenticated with " + authentication.getName());
 		response.sendRedirect("http://localhost:3000/board");

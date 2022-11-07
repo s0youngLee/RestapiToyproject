@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record UserResponseDto(Integer code, String email, String auth, String nickName, String name, String phone) {
+public record UserResponseDto(Integer code, String email, String auth, String nickName, String name, String phone, String lastAccess) {
 	public List<String> getData(){
 		List<String> data = new ArrayList<>();
 			data.add(code.toString());

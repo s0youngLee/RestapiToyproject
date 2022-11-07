@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import "../App.css";
+import { autoHypenTel } from "../func";
 
 
 function SignupForm(){
@@ -29,7 +30,7 @@ function SignupForm(){
     }, [])
 
     const inputPhoneNumber = useCallback(e => {
-        setPhoneNumber(e.target.value);
+        setPhoneNumber(autoHypenTel(e.target.value));
     }, [])
     
     const setAdmin = useCallback(e => {
@@ -64,7 +65,6 @@ function SignupForm(){
                 }
             }else{
                 alert("Error. Please try again.\n" + e.response);
-                // window.location.replace("/login/signup");
             }
         });
     }
@@ -79,7 +79,8 @@ function SignupForm(){
                 <input type="text" name="email" placeholder="E-Mail ( ID )" onChange={inputEmail} required/> <br/>
                 <input type="password" name="password" placeholder="Password" onChange={inputPassword} required/> <br/>
                 <input type="text" name="nickname" placeholder="nickname" onChange={inputNickName} required/> <br/>
-                <input type="text" maxLength={'11'} name="phone" placeholder="phone number" onChange={inputPhoneNumber}/> <br/>
+                <input type={"text"} placeholder="phone number (ex: 010-1234-1234)" onChange={inputPhoneNumber} value={phoneNumber} 
+                       maxLength="13" pattern="[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}"></input><br/>
                 <p> ROLE : &nbsp;&nbsp;
                     <input type="radio" className="w3-radio" name="auth" value="ROLE_USER" defaultChecked="checked" onChange={setUser}/> User&nbsp;&nbsp;
                     <input type="radio" className="w3-radio" name="auth" value="ROLE_ADMIN" onChange={setAdmin}/> Admin<br/>

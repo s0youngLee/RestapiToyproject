@@ -169,29 +169,38 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
         return newList;
     }
 
+    public List<ArticleListResponseDto> getSearchResults(String type, String keyword){
+        String searchType = type.split("-")[1];
+        String categoryId = type.split("-")[0];
+        if(categoryId.equals("")){
+            return search(articleRepository.findAll(), searchType, keyword);
+        }else{
+            return search(articleRepository.findAllByCategoryId(Integer.parseInt(categoryId)), searchType, keyword);
+        }
+    }
 
-	public List<ArticleListResponseDto> getSearchResults(String type, String keyword) {
+    public List<ArticleListResponseDto> search(List<Article> findFromList, String type, String keyword){
         List<ArticleListResponseDto> searchResults = new ArrayList<>();
-        for(Article article: articleRepository.findAll()){
-            switch (type){
+        for(Article article: findFromList){
+            switch (type) {
                 case "Title":
-                    if(article.getTitle().contains(keyword)){
+                    if (article.getTitle().contains(keyword)) {
                         searchResults.add(listResponseBuilder(article));
                     }
                     break;
                 case "Content":
-                    if(article.getContent().contains(keyword)){
+                    if (article.getContent().contains(keyword)) {
                         searchResults.add(listResponseBuilder(article));
                     }
                     break;
                 case "Title+Content":
-                    if(article.getTitle().contains(keyword) || article.getContent().contains(keyword)){
+                    if (article.getTitle().contains(keyword) || article.getContent().contains(keyword)) {
                         searchResults.add(listResponseBuilder(article));
                     }
                     break;
                 case "Nickname":
                     // 수정 -> nickname으로 찾을 수 있게 해야함 현재는 id 기준
-                    if(article.getCreatedId().contains(keyword)){
+                    if (article.getCreatedId().contains(keyword)) {
                         searchResults.add(listResponseBuilder(article));
                     }
                     break;
@@ -200,5 +209,7 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
             }
         }
         return searchResults;
-	}
+    }
+
+
 }
