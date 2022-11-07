@@ -9,4 +9,5 @@ public record ArticleListResponseDto(Integer id,
                                      String createdId,
                                      String createdAt,
                                      Integer visitCnt,
+									 String finalEditDate,
                                      Integer commentCnt){ }

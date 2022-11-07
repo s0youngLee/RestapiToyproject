@@ -27,7 +27,7 @@ public class Filedata {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String originName;
-	private String saveFile;
+	// private String saveFile;
 	private String saveName;
 	private Long fileSize;
 	private LocalDateTime date;
@@ -44,11 +44,10 @@ public class Filedata {
 
 	}
 
-	public Filedata(Integer id, String originName, String saveFile, String saveName, Long fileSize, LocalDateTime date,
+	public Filedata(Integer id, String originName, String saveName, Long fileSize, LocalDateTime date,
 		Integer articleId, Article article) {
 		this.id = id;
 		this.originName = originName;
-		this.saveFile = saveFile;
 		this.saveName = saveName;
 		this.fileSize = fileSize;
 		this.date = date;
@@ -111,13 +110,5 @@ public class Filedata {
 
 	public void setDate(LocalDateTime date) {
 		this.date = date;
-	}
-
-	public String getSaveFile() {
-		return saveFile;
-	}
-
-	public void setSaveFile(String saveFile) {
-		this.saveFile = saveFile;
 	}
 }

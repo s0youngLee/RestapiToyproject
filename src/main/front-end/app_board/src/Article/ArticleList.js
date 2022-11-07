@@ -4,6 +4,7 @@ import { isAdmin } from "../func";
 import Pagination from "react-js-pagination";
 import axios from "axios";
 import "../App.css";
+import SearchForm from "./SearchForm";
 
 
 function ArticleList({user, articleList}){
@@ -67,6 +68,7 @@ function ArticleList({user, articleList}){
     
     return(
         <>
+        <SearchForm /><br/>
         {isAdmin(user.auth) && 
             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
                     onClick={() => DeleteArticles()}>  Delete </button>}

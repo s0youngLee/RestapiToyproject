@@ -8,11 +8,11 @@ function MyComments({comments}){
             <>
                 {comments?.map((comment, index) => {
                     return (
-                    <Link key={index} className="none" to={`/board/${comment?.article_id}`}>
-                        <li style={{textAlign: "left"}}>
-                            <b>Content : </b> {comment?.content} &nbsp;&nbsp;
-                            <b>Created At : </b> {comment?.created_at} &nbsp;&nbsp;<br/>
-                            <b>In article "{comment?.article_title}" </b> &nbsp;&nbsp;
+                    <Link  key={index} style={{textDecorationLine: "none", color: "inherit"}} to={`/board/${comment?.article_id}`}>
+                        <li className="mypage-none">
+                            <span style={{color: "gray"}}> In article <b style={{fontSize: "20px", color: "black"}}>{comment.article_title}</b> / </span>
+                            <b style={{color: "gray"}}>{comment.created_at}</b><br/>
+                            <span> {comment.content} </span>
                         </li>
                     </Link> )
                 })}

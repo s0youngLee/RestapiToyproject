@@ -51,19 +51,19 @@ public class FileService {
 		this.excelSetting = excelSetting;
 	}
 
-	public List<FileResponseDto> getList(Article article){
-		List<FileResponseDto> fileList = new ArrayList<>();
-		for(Filedata file : fileRepository.findAllByArticleId(article.getId())){
-			fileList.add(buildFile(file));
-		}
-		return fileList;
-	}
-
 	public List<Filedata> upload(List<MultipartFile> uploadFiles, Integer articleId) throws IOException {
 		List<Filedata> fileList = new ArrayList<>();
+		final String[] acceptFileType = new String[]{
+			"image", "video", "audio", "text/plain",
+			"application/vnd.openxmlformats-officedocument.presentationml.presentation",
+			"application/vnd.ms-powerpoint", "application/vnd.ms-excel",
+			"application/pdf", "application/zip", "application/x-hwp", "application/haansofthwp"
+		};
+
 		for (MultipartFile uploadFile : uploadFiles) {
-			if(!uploadFile.getContentType().startsWith("image") && !uploadFile.getContentType().startsWith("application")) {
-				log.warn("Invalid file type");
+			if(!validFileType(acceptFileType, uploadFile)) {
+				log.warn("Invalid file type : " + uploadFile.getOriginalFilename());
+				log.warn(uploadFile.getContentType());
 				return null;
 			}
 
@@ -75,18 +75,14 @@ public class FileService {
 			String folderPath = makeFolder();
 			//UUID - 파일 덮어쓰기 방지
 			String uuid = UUID.randomUUID().toString();
-			String saveFile = uploadPath + File.separator + folderPath + File.separator;
 			String saveName = uploadPath + File.separator + folderPath + File.separator + uuid + "_" + fileName;
-			log.info("saveName : " + saveName);
 
 			Path savePath = Paths.get(saveName);
 
-			log.info(articleId);
 			try{
 				uploadFile.transferTo(savePath);
 				Filedata newFile = Filedata.builder()
 					.article(articleRepository.getReferenceById(articleId))
-					.saveFile(saveFile)
 					.date(LocalDateTime.now())
 					.fileSize(uploadFile.getSize())
 					.originName(originalName)
@@ -102,13 +98,21 @@ public class FileService {
 		return fileList;
 	}
 
+	public List<FileResponseDto> getList(Article article){
+		List<FileResponseDto> fileList = new ArrayList<>();
+		for(Filedata file : fileRepository.findAllByArticleId(article.getId())){
+			fileList.add(buildFile(file));
+		}
+		return fileList;
+	}
+
 	public FileResponseDto buildFile(Filedata file){
 		return FileResponseDto.builder()
-				.id(file.getId())
-				.originName(file.getOriginName())
-				.fileSize(file.getFileSize()/(1000000.0))
-				.date(file.getDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-				.build();
+			.id(file.getId())
+			.originName(file.getOriginName())
+			.fileSize(file.getFileSize()/(1000000.0))
+			.date(file.getDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+			.build();
 	}
 
 	private String makeFolder(){
@@ -120,6 +124,23 @@ public class FileService {
 		}
 		return folderPath;
 	}
+
+	public boolean validFileType(String[] acceptList, MultipartFile file){
+		boolean valid = false;
+		for(int i=0;i<acceptList.length;i++){
+			if(file.getContentType().startsWith(acceptList[i])){
+				valid = true;
+			}
+		}
+		if(valid) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+
+
+
 
 	@Transactional
 	public ResponseEntity<Resource> downloadFile(Integer id) {
@@ -146,6 +167,7 @@ public class FileService {
 	 *
 	 * @param response to download written Excel file
 	 */
+	@Transactional
 	public void downloadExcelBoard(HttpServletResponse response) {
 		List<ArticleExcelResponseDto> dtoData = new ArrayList<>();
 		for(Article article: articleRepository.findAll()){

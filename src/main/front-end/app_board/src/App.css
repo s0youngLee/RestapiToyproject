@@ -97,6 +97,12 @@ button{
   color: slateblue;
 }
 
+.mypage-none {
+  text-align: left;
+}.mypage-none:hover {
+  background-color: gainsboro;
+}
+
 .clickable:hover{
   background-color: lightsteelblue;
   cursor: pointer;
@@ -127,8 +133,10 @@ button{
   }
 }
 
-@media screen and (max-width: 802px){
-  
+@media screen and (max-width: 820px){
+  .div-box {
+    margin-top: 150px;
+  }
 }
 
 @media screen and (max-width: 620px){

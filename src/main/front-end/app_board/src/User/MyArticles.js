@@ -7,13 +7,13 @@ function MyArticles({articles}){
             <>
                 {articles?.map((article, index) => {
                     return (
-                    <Link  key={index} className="none" to={`/board/${article.id}`}>
-                        <li style={{textAlign: "left"}}>
-                            <b>Title : </b> {article.title} &nbsp;&nbsp;
-                            <b>Category : </b> {article.category_name} <br/>
-                            <b>Created At : </b> {article.created_at} &nbsp;&nbsp;
-                            <b>Visit : </b> {article.visit_cnt} <br/>
-                            <b>Comment : </b> {article.comment_cnt} 
+                    <Link  key={index} style={{textDecorationLine: "none", color: "inherit"}} to={`/board/${article.id}`}>
+                        <li className="mypage-none" >
+                            <b style={{fontSize: "20px"}}>{article.title}</b><br/>
+                            <span style={{color: "gray"}}>Posted in <b style={{color: "black"}}>{article.category_name}</b> / {article.created_at} </span><br/>
+                            <span style={{color: "gray"}}> Last Edited on <b>{article.final_edit_date}</b></span><br/>
+                            <span style={{color: "gray"}}> comment <b style={{color: "black"}}>{article.comment_cnt}</b> ea 
+                            / visit <b style={{color: "black"}}>{article.visit_cnt}</b></span>
                         </li>
                     </Link> )
                 })}

@@ -62,9 +62,9 @@ public class ArticleController extends AbstractCrudMethod<ArticleRequest, Articl
         return articleService.getUserArticles(user.getNickName());
     }
 
-    @GetMapping("/search/{keyword}")
-    public List<ArticleListResponseDto> getSearchResults(@PathVariable String keyword){
-        return articleService.getSearchResults(keyword);
+    @GetMapping("/search/{type}/{keyword}")
+    public List<ArticleListResponseDto> getSearchResults(@PathVariable String type, @PathVariable String keyword){
+        return articleService.getSearchResults(type, keyword);
     }
 
     @PostMapping(value = "/withfile", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})

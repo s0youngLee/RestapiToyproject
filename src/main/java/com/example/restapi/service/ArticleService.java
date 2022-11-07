@@ -151,6 +151,7 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
             .id(article.getId())
             .title(article.getTitle())
             .createdId(article.getCreatedId())
+            .finalEditDate(article.getFinalEditDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
             .categoryName(article.getCategory().getName())
             .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
             .visitCnt(article.getVisitCnt())
@@ -169,11 +170,33 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
     }
 
 
-	public List<ArticleListResponseDto> getSearchResults(String keyword) {
+	public List<ArticleListResponseDto> getSearchResults(String type, String keyword) {
         List<ArticleListResponseDto> searchResults = new ArrayList<>();
         for(Article article: articleRepository.findAll()){
-            if(article.getContent().contains(keyword) || article.getTitle().contains(keyword)){
-                searchResults.add(listResponseBuilder(article));
+            switch (type){
+                case "Title":
+                    if(article.getTitle().contains(keyword)){
+                        searchResults.add(listResponseBuilder(article));
+                    }
+                    break;
+                case "Content":
+                    if(article.getContent().contains(keyword)){
+                        searchResults.add(listResponseBuilder(article));
+                    }
+                    break;
+                case "Title+Content":
+                    if(article.getTitle().contains(keyword) || article.getContent().contains(keyword)){
+                        searchResults.add(listResponseBuilder(article));
+                    }
+                    break;
+                case "Nickname":
+                    // 수정 -> nickname으로 찾을 수 있게 해야함 현재는 id 기준
+                    if(article.getCreatedId().contains(keyword)){
+                        searchResults.add(listResponseBuilder(article));
+                    }
+                    break;
+                default:
+                    break;
             }
         }
         return searchResults;

@@ -11,5 +11,4 @@ import com.example.restapi.model.entity.Filedata;
 public interface FileRepository extends JpaRepository<Filedata, Integer> {
 	List<Filedata> findAllByArticleId(Integer articleId);
 
-	Filedata findBySaveFile(String saveFile);
 }

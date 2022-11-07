@@ -64,16 +64,22 @@ export function FetchWithoutId(dataName){
 
 export function FetchWithId(dataName, n){
     const [data, setData] = useState({ data : {} });
-    const id = getUrlId(n);
+    const [param, setParam] = useState("");
     useEffect(() => {
-        axios.get(`/${dataName}/${id}`)
+        if(isNaN(Number(n))){
+            setParam(n);
+        }else{
+            setParam(getUrlId(n));
+        }
+        console.log(param);
+        axios.get(`/${dataName}/${param}`)
         .then((res) => {
             setData(res?.data);
         })
         .catch((e) => {
             ifError(e);
         });
-    }, [dataName, id]);
+    }, [dataName, n, param]);
     if(_.isEmpty(data)){ return <div> Loading ... </div>}
     else{ return data;}
 }
