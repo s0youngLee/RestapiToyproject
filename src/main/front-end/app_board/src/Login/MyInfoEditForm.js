@@ -64,8 +64,7 @@ function MyInfoEditForm({user}) {
             console.log(newNickname);
             console.log(newPhone);
             alert("User Information Changed.\nPlease re-login.");
-            sessionStorage.removeItem("isLogin");
-            sessionStorage.removeItem("dateAlert");
+            sessionStorage.clear();
             axios.post("/logout");
             window.location.replace(`/login`);
         }).catch((e) => {

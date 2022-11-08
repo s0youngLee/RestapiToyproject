@@ -1,7 +1,6 @@
 package com.example.restapi.service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -122,7 +121,7 @@ public class UserService {
 			.nickName(user.getNickName())
 			.phone(user.getPhone())
 			.auth(user.getAuth())
-			.lastAccess(user.getLastAccess().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+			.lastAccess(user.getLastAccess())
 			.build();
 	}
 

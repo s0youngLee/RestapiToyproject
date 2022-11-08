@@ -10,9 +10,9 @@ function Bar({isLogin, user}) {
         if (window.confirm("Wanna logout?")){
             axios.put("/user/lastaccess")
             .then(() => {
-                sessionStorage.removeItem("dateAlert");
-                sessionStorage.removeItem("isLogin");
+                sessionStorage.clear();
                 axios.post('/logout');
+                alert("Logout successful. Return to home.");
                 window.location.replace('/');
             })
             .catch((e) => {
@@ -22,7 +22,7 @@ function Bar({isLogin, user}) {
     };
     return ( 
         <>
-        <div className="w3-top">
+        <div className="w3-top" style={{minWidth: "665px"}}>
             <div className="w3-bar w3-large" style={{backgroundColor:"#cab6ff"}}>
                 <Link to={'/'} className="none"><button className="w3-bar-item w3-button w3-hover-deep-purple" >Home</button></Link>
                 <Link to={'/board'} className="none"><button className="w3-bar-item w3-button w3-hover-deep-purple">Board</button></Link>
@@ -31,8 +31,10 @@ function Bar({isLogin, user}) {
                     <button className="w3-button w3-hover-deep-purple">Category</button>
                     <div className="w3-dropdown-content w3-bar-block w3-border">
                         {categoryList?.map((category, index) => (
-                            <button key={index} className="w3-bar-item w3-button"
-                                    onClick={() => {window.location.href = `/board/category/${category.id}`}}> {category.name} </button>
+                            // <Link className="none" key={index} to={`/board/category/${category.id}`}>
+                            //     <button className="w3-bar-item w3-button"> {category.name} </button></Link>
+                                <button key={index} className="w3-bar-item w3-button"
+                                        onClick={() => {window.location.href=`/board/category/${category.id}`}}> {category.name} </button>
                             ))}
                     </div>
                 </div>

@@ -9,12 +9,11 @@ function Board({user, isLogin}){
     
     function checkUserAccessDate(){
         const lastAccess = new Date(user.last_access);
-        const today = new Date((new Date().toISOString().substring(0,10)));
+        const today = new Date();
 
-        const getMatch = today.getTime() - lastAccess.getTime();
-        const checkDay = getMatch / (1000 * 60 * 60 * 24);
-        console.log("user last logged in " + checkDay + "days ago.");
-
+        const compare = today.getTime() - lastAccess.getTime();
+        const checkDay = compare / (1000 * 60 * 60 * 24);
+        
         if(checkDay > 7){
             if(window.confirm("Suggest to change your password.\nYour password wasn't changed from " + lastAccess.toISOString().substring(0,10) + ".")){
                 window.location.href = "/mypage";

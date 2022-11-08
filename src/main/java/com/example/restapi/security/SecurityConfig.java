@@ -25,39 +25,52 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http
-			.cors().and()
-			.csrf().disable()
-			.httpBasic().disable()
+		// session 만료 시 컨트롤 시도...? 수정 ****
+		try{
+			http
+				.cors().and()
+				.csrf().disable()
+				.httpBasic().disable()
 
-			.sessionManagement()
-			.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+				.sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
 
-			.and()
+				.and()
 
-			.authorizeRequests()
-			.antMatchers(HttpMethod.GET, Constants.permitAllArrayGET).permitAll()
-			.antMatchers(HttpMethod.POST, Constants.permitAllArrayPOST).permitAll()
-			.antMatchers(Constants.authenticatedArray).authenticated()
-			.antMatchers(Constants.adminArray).hasRole("ADMIN")
-			.anyRequest().permitAll()
+				.authorizeRequests()
+				.antMatchers(HttpMethod.GET, Constants.permitAllArrayGET).permitAll()
+				.antMatchers(HttpMethod.POST, Constants.permitAllArrayPOST).permitAll()
+				.antMatchers(Constants.authenticatedArray).authenticated()
+				.antMatchers(Constants.adminArray).hasRole("ADMIN")
+				.anyRequest().permitAll()
 
-			.and()
+				.and()
 
-			.formLogin()
+				.formLogin()
 				.loginPage("/userlogin")
 				.successHandler(new MadeLoginSuccessHandler(userSecurityService, logger))
 				.failureHandler(new MadeLoginFailureHandler(logger))
 
-			.and()
+				.and()
 
-			.logout()
+				.logout()
 				.logoutUrl("/logout")
 				.addLogoutHandler(new MadeLogoutHandler(logger))
-				.deleteCookies("JSESSIONID")
 				.clearAuthentication(true)
 				.invalidateHttpSession(true)
+				.deleteCookies("JSESSIONID")
 				.logoutSuccessUrl("http://localhost:3000");
+
+		}catch (Exception e){
+			logger.error(e.getMessage());
+			http.logout()
+				.logoutUrl("/logout")
+				.addLogoutHandler(new MadeLogoutHandler(logger))
+				.clearAuthentication(true)
+				.invalidateHttpSession(true)
+				.deleteCookies("JSESSIONID")
+				.logoutSuccessUrl("http://localhost:3000");
+		}
 
 		return http.build();
 	}

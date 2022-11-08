@@ -24,11 +24,11 @@ function ArticleSearchList({user}) {
     
     if(_.isEmpty(searchResults)){ 
         return (
-            <div style={{ margin: "20px" }}>
-                <b style={{ fontSize: "30px" }}> Keyword : {decodeParam} </b>
-                <pre style={{ fontSize: "20px" }}> 
-                    Cannot find any article contains "{decodeParam}". <br/> 
-                    Please return to board. 
+            <div className="div-box" style={{ margin: "20px" , marginTop: "80px"}}>
+                <pre style={{ fontSize: "17px" }}> 
+                    
+                    <b style={{fontSize: "25px"}}>Sorry, We cannot find any result. <br/> Please return to board. </b> <br/><br/>
+                    There's no article contains <b>"{decodeParam}"</b> in it's <b>{searchParam[1]}</b>. <br/> 
                 </pre>
             </div> 
         )
@@ -36,8 +36,8 @@ function ArticleSearchList({user}) {
     else {
         return (
             <div className='div-box'>
-                <b style={{ fontSize: "30px"}}> Keyword : {decodeParam} </b>
-                <ArticleList user={user} articleList={Array.from(searchResults)} />
+                <b style={{ fontSize: "30px"}}> Search results for keyword "{decodeParam}"</b>
+                <ArticleList user={user} articleList={Array.from(searchResults)} keyword={searchParam[2]} />
             </div>
         )
     }

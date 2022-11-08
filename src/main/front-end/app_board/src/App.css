@@ -126,25 +126,6 @@ button{
   height: 50vh;
 }
 
-/* media css */
-/* @media screen and (max-width: 1010px) {
-  .div-box {
-    margin-top: 100px;
-  }
-} */
-
-@media screen and (max-width: 591px){
-  .div-box {
-    margin-top: 100px;
-  }
-}
-
-/* @media screen and (max-width: 620px){
-  .div-box {
-    margin-top: 150px;
-  }
-} */
-
 .content-box {
   border: 1px solid gainsboro;
   border-radius: 5px;

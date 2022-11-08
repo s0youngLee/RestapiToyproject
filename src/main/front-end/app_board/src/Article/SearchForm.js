@@ -36,7 +36,7 @@ function SearchForm({isLogin}){
                     return <option key={index} value={type}>{type}</option>;
                 })}
             </select>
-            <input type="text" style={{width: "60%", margin: "0", marginRight: "5px"}} 
+            <input type="text" style={{width: "60%", margin: "0", marginRight: "5px"}}
                     placeholder="Please enter your keyword(s) to search." name="search" onChange={handleParam} required/>
             <input type={"image"} src={require("../search.png").default} alt={"icon"}
                 style={{width:"30px", height:"30px", objectFit: "fill", verticalAlign: "middle"}} />

@@ -15,6 +15,8 @@ public class MadeLogoutHandler implements LogoutHandler {
 	@Override
 	public void logout(HttpServletRequest req, HttpServletResponse res,
 		Authentication authentication) {
+		req.getSession().invalidate();
 		logger.info("Logout successful.");
+		req.getSession(true);
 	}
 }

@@ -27,6 +27,7 @@ function LoginForm(){
         .then((res) => {
             if(res.status===200){
                 sessionStorage.setItem("isLogin", true);
+                sessionStorage.setItem("loginTime", new Date());
                 alert("Login successful.");
                 window.location.replace("/board");
             }else {

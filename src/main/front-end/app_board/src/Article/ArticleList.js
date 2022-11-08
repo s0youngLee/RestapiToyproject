@@ -94,11 +94,13 @@ function ArticleList({user, articleList}){
                 {articlesPerPage.map((article, index) => {
                    return (
                     <tr className="clickable" key={index}>
-                        {isAdmin(user.auth) && 
-                            <input  type={'checkbox'} onChange={(e) => {checkHandler(e, article.id);}}
-                            name="check" value={article.id}
-                            className="w3-check"/>
-                        }
+                            {isAdmin(user.auth) && 
+                                <td>
+                                <input  type={'checkbox'} onChange={(e) => {checkHandler(e, article.id);}}
+                                name="check" value={article.id}
+                                className="w3-check"/>
+                                </td>
+                            }
                         <Article data={article} auth={user?.auth}/>
                     </tr>
                 )})}
