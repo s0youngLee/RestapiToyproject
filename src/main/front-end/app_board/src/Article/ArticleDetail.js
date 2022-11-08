@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { FetchWithId, Delete, canChange } from '../func';
+import { useState, useMemo } from 'react';
+import { FetchWithId, Delete, canChange, Download } from '../func';
 import _ from 'lodash';
 import * as Modal from 'react-modal';
 import Comment from "../Comment/Comment";
 import Files from './FileForm';
 import ArticleEditForm from './ArticleEdit';
+import axios from 'axios';
 
 function ArticleDeatil({user, isLogin}){
     const articleDetail = FetchWithId("board", 1).data;
@@ -15,6 +16,12 @@ function ArticleDeatil({user, isLogin}){
 function ArticleDetailData({data, user, isLogin}) {
     const [isOpen, setIsOpen] = useState(false);
     const handleClose = () => {setIsOpen(false);}
+    let resource = useMemo(() => { return new Blob(); },[])
+
+    function downloadAll(){
+        Download(resource, "download/zip", data.id, data.title);
+        axios.get(`/download/complete/${data.id}`);
+    }
 
     if(!data?.created_id){ return <div> Loading ... </div> }
     else {
@@ -25,7 +32,10 @@ function ArticleDetailData({data, user, isLogin}) {
                     <span style={{fontSize: "17px"}}> Posted in <b>{data?.category_name} </b> by <b>{data?.created_id} </b> / visit : <b>{data?.visit_cnt}</b></span>
                     <div className='div-box' style={{overflow: "auto", height: "60%", marginTop: "5px", textAlign: "left"}}>
                         <div className='content-box'> {data?.content} </div> <span style={{fontSize:"17px", color:"gray"}}> Finally edited : {data?.final_edit_date} </span><br/>
-                        <b style={{fontSize: "17px"}}> File list </b><br/>
+                        <b style={{fontSize: "17px"}}> File list </b>
+                        <button onClick={() => { downloadAll() }}
+                                className="w3-button w3-border w3-round-xlarge w3-small w3-hover-light-blue"> Download All </button>
+                        <br/>
                         <Files files={data?.files} user={user} createdId={data?.id}/>
                         
                     </div>

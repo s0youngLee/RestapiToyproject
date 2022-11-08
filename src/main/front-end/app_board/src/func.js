@@ -94,6 +94,28 @@ export function Delete(dataName, dataId){
     }
 }
 
+export function Download(resource, dataname, id, filename){
+    axios.get(`/${dataname}/${id}`, {responseType: "blob"})
+    .then((res)=>{
+        resource = res.data;
+        const downloadUrl = window.URL.createObjectURL(resource);
+        const anchor = document.createElement('a');
+
+        document.body.appendChild(anchor);
+        anchor.download = filename;
+        anchor.href = downloadUrl;
+        anchor.click();
+
+        document.body.removeChild(anchor);
+        window.URL.revokeObjectURL(downloadUrl);
+    }).catch((e) => {
+        console.log(e);
+    })
+    if(_.isEmpty(resource)){ return <div> Loading ... </div>}
+    else{ return resource;} 
+}
+
+
 
 export function ifError(e){
     if(e.response.status === 400){

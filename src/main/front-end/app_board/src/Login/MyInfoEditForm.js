@@ -78,7 +78,7 @@ function MyInfoEditForm({user}) {
     else{
         return (
             <form onSubmit={changePW} className="div-box" style={{marginTop: "0", height:"20%"}}>
-                <b> Change password </b><br/>
+                <b> Edit My Information </b><br/>
                 <input type={"text"} placeholder="New Nickname" onChange={inputNickname} value={newNickname} autoFocus></input><br/>
                 <input type={"password"} placeholder="New Password" onChange={inputPassword} ></input><br/>
                 <input type={"password"} placeholder="Check Password" onChange={checkNewPassword} ></input><br/>

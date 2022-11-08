@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 import org.springframework.context.annotation.Lazy;
@@ -17,6 +18,7 @@ import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.Category;
 import com.example.restapi.model.network.Status;
 import com.example.restapi.model.network.request.ArticleRequest;
+import com.example.restapi.model.network.response.ArticleExcelResponseDto;
 import com.example.restapi.model.network.response.ArticleListResponseDto;
 import com.example.restapi.model.network.response.ArticleResponseDto;
 import com.example.restapi.repository.ArticleRepository;
@@ -31,13 +33,16 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
     private final ArticleRepository articleRepository;
     private final CommentService commentService;
     private final FileService fileService;
+    private final ExcelSetting<ArticleExcelResponseDto> excelSetting;
 
     public ArticleService(@Lazy CategoryRepository categoryRepository, @Lazy ArticleRepository articleRepository,
-        @Lazy CommentService commentService,@Lazy FileService fileService) {
+        @Lazy CommentService commentService,@Lazy FileService fileService,
+        ExcelSetting<ArticleExcelResponseDto> excelSetting) {
         this.categoryRepository = categoryRepository;
         this.articleRepository = articleRepository;
         this.fileService = fileService;
         this.commentService = commentService;
+        this.excelSetting = excelSetting;
     }
 
     @Transactional
@@ -212,4 +217,30 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
     }
 
 
+    /**
+     * GetMapping("/board/excel/download")
+     * Write an Excel file with article table
+     *
+     * @param response to download written Excel file
+     */
+    @Transactional
+    public void downloadExcelBoard(HttpServletResponse response) {
+        List<ArticleExcelResponseDto> dtoData = new ArrayList<>();
+        for(Article article: articleRepository.findAll()){
+            ArticleExcelResponseDto body = ArticleExcelResponseDto.builder()
+                .id(article.getId())
+                .title(article.getTitle())
+                .createdId(article.getCreatedId())
+                .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
+                .finalEditDate(article.getFinalEditDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
+                .build();
+            dtoData.add(body);
+        }
+
+        List<List<String>> dataList = new ArrayList<>();
+        for(ArticleExcelResponseDto data : dtoData){
+            dataList.add(data.getData());
+        }
+        excelSetting.writeWorkbook(response, ArticleExcelResponseDto.class.getRecordComponents() , dtoData, dataList);
+    }
 }

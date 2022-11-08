@@ -3,6 +3,8 @@ package com.example.restapi.controller;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.MediaType;
@@ -78,6 +80,15 @@ public class ArticleController extends AbstractCrudMethod<ArticleRequest, Articl
     public void edit(@RequestPart(value = "file", required = false) List<MultipartFile> uploadFiles, @RequestPart("article") Status<ArticleRequest> request, @PathVariable int id)
         throws MissingServletRequestPartException {
         articleService.edit(uploadFiles, request, id);
+    }
+
+    @GetMapping("/excel/download")
+    public void downloadExcelBoard(HttpServletRequest request, HttpServletResponse response){
+        try{
+            articleService.downloadExcelBoard(response);
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
     }
 
 }

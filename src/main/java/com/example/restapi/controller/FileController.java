@@ -2,9 +2,6 @@ package com.example.restapi.controller;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -31,13 +28,15 @@ public class FileController {
 	public ResponseEntity<Resource> downloadFile(@PathVariable Integer id) throws IOException {
 		return fileService.downloadFile(id);
 	}
-	@GetMapping("/board/excel/download")
-	public void downloadExcelBoard(HttpServletRequest request, HttpServletResponse response){
-		try{
-			fileService.downloadExcelBoard(response);
-		}catch (Exception e){
-			log.error(e.getMessage());
-		}
+
+	@GetMapping(value = "/download/zip/{articleId}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public ResponseEntity<Resource> downloadZipFile(@PathVariable Integer articleId) throws IOException {
+		return fileService.downloadZipFile(articleId);
+	}
+
+	@GetMapping("/download/complete/{articleId}")
+	public void deleteZipFile(@PathVariable Integer articleId) throws IOException {
+		fileService.deleteZipFile(articleId);
 	}
 
 	@DeleteMapping("/delete/{id}")
