@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import axios from "axios";
 import { canChange, Download } from "../func";
+import _ from "lodash";
 
 function Files({files, user, createdId}) {
     let resource = useMemo(() => { return new Blob(); },[])
@@ -18,14 +19,18 @@ function Files({files, user, createdId}) {
         <div style={{textAlign: "left"}}>
             {Array.from(files).map((file, index) => {
                 return (<div key={index}>
+                    <span>  &nbsp;&nbsp; {file.origin_name}  &nbsp;&nbsp; {Number(file.file_size).toFixed(2)} MB </span>
                     {canChange(user, createdId) && 
                         <input type={"image"} src={require("../remove.png").default} alt={"icon"}
                                 style={{width:"20px", height:"20px", objectFit: "fill", verticalAlign: "middle", marginLeft: "10px"}}
                                 onClick={() => {deleteFile(file.id, file.origin_name)}} />
                     }
-                    <span className="filelink" onClick={() => {Download(resource, "download", file.id, file.origin_name)}}> 
-                        &nbsp;&nbsp; {file.origin_name}  &nbsp;&nbsp; {Number(file.file_size).toFixed(2)} MB <br/>
-                    </span>
+                    {!_.isEmpty(user) && 
+                        <input type={"image"} src={require("../download.png").default} alt={"icon"}
+                        style={{width:"20px", height:"20px", objectFit: "fill", verticalAlign: "middle", marginLeft: "10px"}}
+                        onClick={() => {Download(resource, "download", file.id, file.origin_name)}} />
+                    }
+                     <br/> 
                 </div>)
             })}
         </div>

@@ -74,7 +74,6 @@ function App() {
     return(
         <Router>
             <Bar isLogin={login} user={user}/>
-            {/* {forceLogout &&  } */}
             <Routes>
                 <Route path="/" exact element={<Home isLogin={login}/>} />
 
