@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import ArticleList from './ArticleList';
 import '../App.css'
 import { FetchWithoutId } from '../func';
@@ -21,18 +20,26 @@ function Board({user, isLogin}){
         }
         sessionStorage.setItem("dateAlert", true);
     }
+
+    function suggestLogin(){
+        if(isLogin){
+            window.location.href=`/board/add/0`;
+        }else{
+            if(window.confirm("You should login to write an article.\nIf click confirm, redirect to login page.")){
+                window.location.href=`/login`;
+            }
+        }
+    }
     
     if(_.isEmpty(articleList)){ return <div> Loading... </div> }
     else {
         return (
         <>
-            {!sessionStorage.getItem("dateAlert") && checkUserAccessDate()}
+            {!_.isEqual(sessionStorage.getItem("dateAlert"),"true") && checkUserAccessDate()}
             <div className='div-box'> 
                 <b style={{ fontSize: "30px", margin : "10px"}}> Article List </b>
-                {isLogin && 
-                    <Link to={`/board/add/0`} className="none"> 
-                        <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> 
-                                Write article </button></Link>}
+                <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
+                        onClick={() => { suggestLogin() }}> Write article </button>
                 <ArticleList user={user} articleList={articleList}/>
             </div>
         </>

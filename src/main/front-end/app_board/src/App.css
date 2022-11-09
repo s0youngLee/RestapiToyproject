@@ -192,6 +192,7 @@ button{
   border-right: 1px solid gainsboro;
   margin-bottom: 10px;
   width: 65%;
+  height: auto;
 }
 #preview-file {
   display: inline-block;
@@ -199,14 +200,42 @@ button{
   width: 35%;
 }
 
-.image-preview {
+/* width-height 정사각형으로 잘라서 구현 : 나중에 */
+.image-preview-infile{
+  display: inline-flex;
+  border-radius: 5px;
+  padding: 5px;
   margin: 5px;
   width: 46%;
+  height: auto;
+}
+
+.application-preview-infile{
+  border-radius: 5px;
+  padding: 5px;
+  margin: 5px;
+  font-weight: 600;
+}
+
+.image-preview {
+  border-radius: 5px;
+  padding: 5px;
+  background-color: cornflowerblue;
+  margin: 5px;
+  width: 46%;
+  height: auto;
 }
 
 .application-preview {
-  margin: 5px;
+  padding: 1px;
   font-weight: 600;
+  vertical-align: middle;
+}
+
+.new {
+  color: cornflowerblue;
+  padding: 1px;
+  vertical-align: middle;
 }
 
 .manage {

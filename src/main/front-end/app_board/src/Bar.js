@@ -6,20 +6,6 @@ import { FetchWithoutId, ifError, isAdmin } from "./func";
 function Bar({isLogin, user}) {
     const categoryList = Array.from(FetchWithoutId("category").data);
     
-    function Logout() {
-        if (window.confirm("Wanna logout?")){
-            axios.put("/user/lastaccess")
-            .then(() => {
-                sessionStorage.clear();
-                axios.post('/logout');
-                alert("Logout successful. Return to home.");
-                window.location.replace('/');
-            })
-            .catch((e) => {
-                ifError(e);
-            });
-        }
-    };
     return ( 
         <>
         <div className="w3-top" style={{minWidth: "665px"}}>
@@ -31,19 +17,20 @@ function Bar({isLogin, user}) {
                     <button className="w3-button w3-hover-deep-purple">Category</button>
                     <div className="w3-dropdown-content w3-bar-block w3-border">
                         {categoryList?.map((category, index) => (
-                            // <Link className="none" key={index} to={`/board/category/${category.id}`}>
-                            //     <button className="w3-bar-item w3-button"> {category.name} </button></Link>
-                                <button key={index} className="w3-bar-item w3-button"
-                                        onClick={() => {window.location.href=`/board/category/${category.id}`}}> {category.name} </button>
-                            ))}
+                            <button key={index} className="w3-bar-item w3-button"
+                                    onClick={() => {window.location.href=`/board/category/${category.id}`}}> {category.name} </button>
+                        ))}
                     </div>
                 </div>
-                {isAdmin(user?.auth) &&
-                    <Link to={"/category"} className="none"><button className="w3-bar-item w3-button w3-hover-red">Setting</button></Link>
-                }
+                {isAdmin(user?.auth) && <Link to={"/category"} className="none">
+                    <button className="w3-bar-item w3-button w3-hover-red">Setting</button></Link>}
                 
-                {!isLogin && <Link to={'/login'} className="none"><button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">Login</button></Link>}
-                {isLogin && <Link to={'/mypage'} className="none"><button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">MyPage</button></Link>}
+                {!isLogin && <Link to={'/login/signup'} className="none">
+                    <button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">Register</button></Link>}
+                {!isLogin && <Link to={'/login'} className="none">
+                    <button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">Login</button></Link>}
+                {isLogin && <Link to={'/mypage'} className="none">
+                    <button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">MyPage</button></Link>}
                 {isLogin && <button className="w3-bar-item w3-button w3-hover-red w3-right"
                     onClick={() => Logout()}>Logout</button>}
             </div>
@@ -51,5 +38,18 @@ function Bar({isLogin, user}) {
         </>
     );
 }
+
+export function Logout() {
+    axios.put("/user/lastaccess")
+    .then(() => {
+        sessionStorage.clear();
+        axios.post('/logout');
+        alert("Logout successful. Return to login page.");
+        window.location.replace('/login');
+    })
+    .catch((e) => {
+        ifError(e);
+    });
+};
 
 export default Bar;

@@ -40,7 +40,7 @@ function ArticleDetailData({data, user, isLogin}) {
                     <span style={{fontSize: "17px", color: "gray"}}> {data?.created_at} </span><br/>
                     <span style={{fontSize: "17px"}}> Posted in <b>{data?.category_name} </b> by <b>{data?.created_id} </b> / visit : <b>{data?.visit_cnt}</b></span>
                     <div className='content-box'> 
-                        <input type={"image"} src={require("../copy.png").default} alt={"icon"}
+                        <input type={"image"} src={require("../Icon/copy.png").default} alt={"icon"}
                             style={{width:"20px", height:"20px", objectFit: "fill", verticalAlign: "bottom", float: 'right', marginLeft: "10px"}}
                             onClick={() => { copyToClipboard() }} />
                         <br/>{data.content}

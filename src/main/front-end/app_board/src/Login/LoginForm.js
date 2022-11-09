@@ -5,6 +5,7 @@ import "../App.css";
 import { ifError } from "../func";
 
 function LoginForm(){
+    sessionStorage.setItem("dateAlert", false);
     const [account, setAccount] = useState({
         username: "",
         password: "",
@@ -54,7 +55,7 @@ function LoginForm(){
             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" type="submit" 
                     onClick={userlogin} >Login</button>
             <Link className="none" to="/login/signup">
-                <button className="w3-button w3-round-xlarge w3-small w3-hover-deep-purple w3-border">Sign up</button>
+                <button className="w3-button w3-round-xlarge w3-small w3-hover-deep-purple w3-border">Register</button>
             </Link>
         </form> 
     </div>

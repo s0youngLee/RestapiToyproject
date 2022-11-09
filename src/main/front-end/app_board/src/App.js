@@ -4,7 +4,7 @@ import { User, ifError } from "./func";
 import _ from "lodash";
 
 import Home from "./Home";
-import Bar from "./Bar";
+import Bar, { Logout } from "./Bar";
 
 import Board from "./Article/Board";
 import ArticleDetail from "./Article/ArticleDetail";
@@ -44,10 +44,12 @@ function App() {
                 .then(() => {
                     if(window.confirm("Session timeout. Do you want to extend your session?")){
                         // 알림창을 띄운 지 3분 이상 지난 경우(20분이 된 경우) confirm 되더라도 로그아웃(session이 이미 만료된 상태라 연장 불가)
-                        if(((new Date().getTime()) -time.getTime())/(1000 * 60) >= 20){ 
+                        if(((new Date().getTime()) - time.getTime())/(1000 * 60) >= 20){ 
                             // 이 경우 사용자는 세션 연장을 원했지만 이미 세션이 만료된 상태일 것이므로 바로 로그인 페이지로 이동
+                            const overTimeout = Number(((new Date().getTime()) -time.getTime())/(1000 * 60));
+                            const expired = overTimeout - 20;
                             sessionStorage.clear();
-                            alert("Session Expired. Please re-login");
+                            alert("Sorry, Session Expired about " + expired.toFixed(2) + " minutes before.\nPlease re-login");
                             window.location.replace("/login");
                         }else{
                             sessionStorage.setItem("loginTime", new Date());
@@ -55,17 +57,14 @@ function App() {
                         }
                     }else{
                         // session 연장을 선택하지 않은 경우 바로 로그아웃 처리 후 홈으로 이동
-                        sessionStorage.clear();
-                        axios.post('/logout');
-                        alert("Logout Success. Move to board");
-                        window.location.replace('/');
+                        Logout();
                     }
                 })
                 .catch((e) => {
                     ifError(e);
                 })
             }
-            console.log(compare);
+            console.log(compare.toFixed(2));
         }
     }, []);
     

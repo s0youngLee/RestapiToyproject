@@ -1,8 +1,7 @@
-import {useState, useCallback, useMemo} from "react";
+import {useState, useCallback, useMemo, useEffect} from "react";
 import { FetchWithoutId } from "../func";
 import axios from "axios";
 import _ from "lodash";
-import Files from "./FileForm";
 
 function ArticleEditForm({user, articleDetail, handleClose}){
     const categoryList = Array.from(FetchWithoutId("category").data);
@@ -16,10 +15,42 @@ function ArticleEditForm({user, articleDetail, handleClose}){
     const fileName = useMemo(() => {return new Array("Selected Files")},[]);
     const [files, setFiles] = useState({data : {}});
     const [visible, setVisible] = useState(false);
+    
+    useEffect(() => {
+        if(!_.isEmpty(articleDetail.files)){
+            setVisible(true);
+            Array.from(articleDetail.files).forEach(file => {
+                const name = file.origin_name.split(".");
+                const fileType = name[name.length-1];
+                
+                if(_.isEqual(fileType, ("jpg" || "jpeg" || "png"))){
+                    axios.get(`/download/${file.id}`, {responseType: "blob"})
+                    .then((res)=>{
+                        const image = document.createElement('img');
+                        image.setAttribute("name", "preview-infile");
+                        image.className = "image-preview-infile";
+                        image.setAttribute("alt", file.name);
+                        image.src = URL.createObjectURL(res.data);
+                        image.title = file.origin_name;
+                        document.getElementById('preview-img').appendChild(image);
+                    });
+                }else {
+                    const doc = document.createElement('span');
+                    const br = document.createElement('br');
+                    br.setAttribute("name", "br");
+                    doc.setAttribute("name", "preview-infile");
+                    doc.className = "application-preview-infile";
+                    doc.textContent = file.origin_name;
+                    document.getElementById('preview-file').appendChild(doc);
+                    document.getElementById('preview-file').appendChild(br);
+                }
+            })
+        }
+    }, [articleDetail.files])
+    
 
     const editTitle = useCallback(e => {
         setTitle(e.target.value);
-        
     }, [])
     
     const editContent = useCallback(e => {
@@ -34,14 +65,14 @@ function ArticleEditForm({user, articleDetail, handleClose}){
         const previewImg = document.getElementById('preview-img');
         const previewFile = document.getElementById('preview-file');
         const child = Array.from(document.getElementsByName('preview'));
-        const brs = Array.from(document.getElementsByName('br'));
+        const els = Array.from(document.getElementsByName('el'));
         
         if(!_.isEmpty(inputFile[0].files)){
             setVisible(false);        
             fileName.length = 0;
-            if(!_.isEmpty(brs)){
-                brs.forEach(br => {
-                    previewFile.removeChild(br);
+            if(!_.isEmpty(els)){
+                els.forEach(el => {
+                    previewFile.removeChild(el);
                 })
             }
             if(!_.isEmpty(child)){
@@ -68,16 +99,25 @@ function ArticleEditForm({user, articleDetail, handleClose}){
                     image.setAttribute("alt", file.name);
                     image.style = visible ? {display: "table-cell"} : {display: "none"};
                     image.src = URL.createObjectURL(file);
+                    
                     image.title = file.name;
                     previewImg.appendChild(image);
-                }else if(_.isEqual(fileType, "application")){
+                }else if(_.isEqual(fileType, "application") || _.isEqual(fileType, "video")){
+                    const b = document.createElement('b'); // 새로 업로드된 파일임을 표시
+                    b.textContent = "NEW!";
+                    b.className = "new";
+                    b.setAttribute("name", "el");
+
+                    const br = document.createElement('br'); // 파일 목록 한 줄씩 출력(줄바꿈)
+                    br.setAttribute("name", "el");
+
                     const doc = document.createElement('span');
-                    const br = document.createElement('br');
-                    br.setAttribute("name", "br");
                     doc.setAttribute("name", "preview");
                     doc.className = "application-preview";
                     doc.style = visible ? {display: "table-cell"} : {display: "none"};
                     doc.textContent = file.name;
+
+                    previewFile.appendChild(b);
                     previewFile.appendChild(doc);
                     previewFile.appendChild(br);
                 }
@@ -141,17 +181,13 @@ function ArticleEditForm({user, articleDetail, handleClose}){
                         </div>
                     </div>
                 </form>
-                <div>
-                    <b style={{fontSize: "25px", marginLeft: "10px"}}> File List </b>
-                    <Files files={articleDetail?.files} user={user} createdId={articleDetail?.id}/>
-                </div>
                 <div id='preview-zone'>
-                    <b style={{fontSize: "30px"}}> Upload File Preview </b><br/>
+                    <b style={{fontSize: "30px"}}> File Preview </b><br/>
                     <div id='preview-img' style={visible ? {} : {display: "none"}}>
-                        <b style={{fontSize: "20px"}}> &lt; Image &gt; </b><br/>
+                        <b style={{fontSize: "20px"}}> [ Image ] </b><br/>
                     </div>
                     <div id='preview-file' style={visible ? {} : {display: "none"}}>
-                        <b style={{fontSize: "20px"}}> &lt; File &gt; </b><br/>
+                        <b style={{fontSize: "20px"}}> [ File ] </b><br/>
                     </div>
                 </div>
             </>

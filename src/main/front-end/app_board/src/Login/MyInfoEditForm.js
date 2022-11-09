@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import _ from "lodash";
 import axios from "axios";
 import { autoHypenTel } from "../func";
+import { Logout } from "../Bar";
 
 function MyInfoEditForm({user}) {
     const [newPhone, setNewPhone] = useState(user.phone);
@@ -60,12 +61,8 @@ function MyInfoEditForm({user}) {
                 phone : newPhone
             }
         }).then(() => {
-            console.log(checkPassword);
-            console.log(newNickname);
-            console.log(newPhone);
             alert("User Information Changed.\nPlease re-login.");
-            sessionStorage.clear();
-            axios.post("/logout");
+            Logout();
             window.location.replace(`/login`);
         }).catch((e) => {
             alert("Failed to change password.\n" + e.response.statusText);
