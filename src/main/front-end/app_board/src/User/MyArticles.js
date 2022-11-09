@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
+import _ from "lodash";
 
 function MyArticles({articles}){
-    if(!articles){ return <div> Loading... </div>}
+    if(_.isEmpty(articles)){ return <div> Loading... </div>}
     else {
         return (
             <>

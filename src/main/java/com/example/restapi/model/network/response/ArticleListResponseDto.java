@@ -6,8 +6,9 @@ import lombok.Builder;
 public record ArticleListResponseDto(Integer id,
                                      String title,
                                      String categoryName,
-                                     String createdId,
+                                     // Integer createdId,
                                      String createdAt,
                                      Integer visitCnt,
 									 String finalEditDate,
-                                     Integer commentCnt){ }
+                                     Integer commentCnt,
+                                     String userNickname){ }

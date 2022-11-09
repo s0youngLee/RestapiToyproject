@@ -1,8 +1,9 @@
+import _ from "lodash";
 import { Link } from "react-router-dom";
 
 function MyComments({comments}){
     
-    if(!comments){ return <div> Loading ... </div>}
+    if(_.isEmpty(comments)){ return <div> Loading ... </div>}
     else {
         return (
             <>

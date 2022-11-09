@@ -45,11 +45,6 @@ public class UserController {
 		return userService.userPage(user);
 	}
 
-	@GetMapping("/{id}")
-	public Status<String> loadNickname(@PathVariable int id){
-		return userService.loadNickname(id);
-	}
-
 	@GetMapping("/manage")
 	public Status<List<UserResponseDto>> manageUser(@ModelAttribute("user") UserInfo user){
 		return Status.OK(userService.userList(user.getAuth()));
@@ -71,7 +66,7 @@ public class UserController {
 
 	@PutMapping("/lastaccess")
 	public Status<UserInfo> updateAccessDate(@ModelAttribute("user") UserInfo user){
-		return userService.updateAccessDate(user.getCode());
+		return userService.updateAccessDate(user);
 	}
 
 	@DeleteMapping("/{code}")

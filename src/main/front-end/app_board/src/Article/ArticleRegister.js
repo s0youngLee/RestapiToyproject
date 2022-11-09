@@ -87,15 +87,6 @@ function ArticleRegister({user}){
                 <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
                         onClick={() => {window.location.href = "/board"}}> Back </button><br/>
             </div>
-            {/* <div id='preview-zone'>
-                <b style={{fontSize: "30px"}}> Upload File Preview </b><br/>
-                <div id='preview-img' style={visible ? {} : {display: "none"}}>
-                    <b style={{fontSize: "20px"}}> &lt; Image &gt; </b><br/>
-                </div>
-                <div id='preview-file' style={visible ? {} : {display: "none"}}>
-                    <b style={{fontSize: "20px"}}> &lt; File &gt; </b><br/>
-                </div>
-            </div> */}
         </form>
     )
 }

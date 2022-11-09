@@ -17,13 +17,14 @@ function ArticleEditForm({user, articleDetail, handleClose}){
     const [visible, setVisible] = useState(false);
     
     useEffect(() => {
+        // 이부분 아래 겹치는 거 덜어내든지 다시 구조 짜기
         if(!_.isEmpty(articleDetail.files)){
             setVisible(true);
             Array.from(articleDetail.files).forEach(file => {
                 const name = file.origin_name.split(".");
                 const fileType = name[name.length-1];
                 
-                if(_.isEqual(fileType, ("jpg" || "jpeg" || "png"))){
+                if(isImage(fileType)){
                     axios.get(`/download/${file.id}`, {responseType: "blob"})
                     .then((res)=>{
                         const image = document.createElement('img');
@@ -141,7 +142,7 @@ function ArticleEditForm({user, articleDetail, handleClose}){
             data: {
                 title : title,
                 content : content,
-                created_id : user?.nick_name,
+                created_id : user?.code,
                 category_id : selected
             }
         }
@@ -194,6 +195,14 @@ function ArticleEditForm({user, articleDetail, handleClose}){
                 </div>
             </>
         )
+    }
+}
+
+export  function isImage(dataType){
+    if(_.isEqual(dataType, "jpg") || _.isEqual(dataType, "jpeg") || _.isEqual(dataType, "png")){
+        return true;
+    }else{
+        return false;
     }
 }
 

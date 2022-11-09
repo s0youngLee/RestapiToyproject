@@ -82,7 +82,7 @@ export function Delete(dataName, dataId){
     if (window.confirm("Do you really want to delete?")){
         axios.delete(`/${dataName}/${dataId}`).then(() => {
             alert("Successfully deleted.");
-            if(_.isEqual(dataName, "comment")){
+            if(_.isEqual(dataName, "comment") || _.isEqual(dataName, "user")){
                 window.location.reload();
             }else {
                 window.location.replace(`/${dataName}`);

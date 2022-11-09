@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import _ from "lodash";
-import { FetchWithoutId } from "../func";
+import { Delete, FetchWithoutId } from "../func";
 import axios from "axios";
 
 function UserManage(){
@@ -121,14 +121,17 @@ function EditUser({index, userinfo, editList}){
                 <td>{userinfo.email}</td>
                 <td>{userinfo.name}</td>
                 <td>{userinfo.nick_name}</td>
-                <td>{userinfo.phone}</td>
+                <td style={{minWidth: "150px"}}>{userinfo.phone}</td>
                 <td>{userAuth} &nbsp; 
                     <input type={"image"} src={require("../Icon/change.png").default} alt={"icon"}
                         style={{width:"20px", verticalAlign: "middle"}}
                         onClick={() => {changeAuth()}} />
                 </td>
-                <td>
+                <td style={{textAlign: "left", width: "50px"}}>
                     <button onClick={() => {editAuth()}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> Save </button>
+                </td>
+                <td style={{width: "50px"}}>
+                    <button onClick={() => {Delete("user",userinfo.code)}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red"> Remove </button>
                 </td>
             </tr>
         </>

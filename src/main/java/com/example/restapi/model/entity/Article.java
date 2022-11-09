@@ -28,13 +28,13 @@ public class Article {
     private Integer id;
     private String title;
     private String content;
-    private String createdId;
+    // private Integer createdId;
     private LocalDateTime createdAt;
     private Integer visitCnt;
     private LocalDateTime finalEditDate;
     @ManyToOne
-    @JoinColumn(name="email")
-    private UserInfo user; // userinfo email 과 fk 설정
+    @JoinColumn(name="created_id")
+    private UserInfo user;
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
@@ -49,13 +49,12 @@ public class Article {
 
     }
 
-    public Article(Integer id, String title, String content, String createdId, LocalDateTime createdAt,
+    public Article(Integer id, String title, String content, LocalDateTime createdAt,
         Integer visitCnt,
         LocalDateTime finalEditDate, UserInfo user, Category category, List<Comment> comment, List<Filedata> files) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.createdId = createdId;
         this.createdAt = createdAt;
         this.visitCnt = visitCnt;
         this.finalEditDate = finalEditDate;
@@ -113,13 +112,13 @@ public class Article {
         this.content = content;
     }
 
-    public String getCreatedId() {
-        return createdId;
-    }
-
-    public void setCreatedId(String createdId) {
-        this.createdId = createdId;
-    }
+    // public Integer getCreatedId() {
+    //     return createdId;
+    // }
+    //
+    // public void setCreatedId(Integer createdId) {
+    //     this.createdId = createdId;
+    // }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;

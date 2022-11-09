@@ -5,8 +5,8 @@ import { getUrlId } from "../func";
 
 function SearchForm({isLogin}){
     const categoryId = isNaN(Number(getUrlId(1))) ? "" : getUrlId(1);
-    // const searchType = ["Title", "Content", "Title+Content", "Nickname"];
-    const searchType = ["Title", "Content", "Title+Content"];
+    const searchType = ["Title", "Content", "Title+Content", "Nickname"];
+    // const searchType = ["Title", "Content", "Title+Content"];
     const [searchTypeParam, setSearchTypeParam] = useState("Title+Content");
     const [searchParam, setSearchParam] = useState("");
 

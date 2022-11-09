@@ -15,22 +15,31 @@ import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.UserInfo;
 import com.example.restapi.model.network.Status;
 import com.example.restapi.model.network.request.UserRequest;
 import com.example.restapi.model.network.response.UserExcelResponseDto;
 import com.example.restapi.model.network.response.UserResponseDto;
+import com.example.restapi.repository.ArticleRepository;
 import com.example.restapi.repository.UserRepository;
 import com.example.restapi.security.MadeLogoutHandler;
 
 @Service
 public class UserService {
 	private final UserRepository userRepository;
+
+	//임시
+	private final ArticleRepository articleRepository;
+	private final ArticleService articleService;
 	private final ExcelSetting<UserExcelResponseDto> excelSetting;
 	Logger logger = LoggerFactory.getLogger(MadeLogoutHandler.class);
 	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-	public UserService(@Lazy UserRepository userRepository, ExcelSetting<UserExcelResponseDto> excelSetting) {
+	public UserService(@Lazy UserRepository userRepository, ArticleRepository articleRepository,
+		ArticleService articleService, ExcelSetting<UserExcelResponseDto> excelSetting) {
 		this.userRepository = userRepository;
+		this.articleRepository = articleRepository;
+		this.articleService = articleService;
 		this.excelSetting = excelSetting;
 	}
 
@@ -96,15 +105,19 @@ public class UserService {
 		}
 	}
 
-	public Status<UserInfo> updateAccessDate(Integer code) {
-		UserInfo user = userRepository.getReferenceById(code);
-
+	public Status<UserInfo> updateAccessDate(UserInfo user) {
 		user.setLastAccess(LocalDateTime.now());
 		return Status.OK(userRepository.save(user));
 	}
 
 
 	public Status deleteUser(int code) {
+		// 임시 처리
+		List<Article> toDelete = articleRepository.findAllByUser(userRepository.getReferenceById(code));
+		for(Article article : toDelete){
+			articleService.delete(article.getId());
+		}
+
 		return userRepository.findById(code)
 			.map(delUser -> {
 				userRepository.delete(delUser);
@@ -148,7 +161,4 @@ public class UserService {
 		excelSetting.writeWorkbook(response, UserExcelResponseDto.class.getRecordComponents(), dtoData, dataList);
 	}
 
-	public Status<String> loadNickname(int id) {
-		return Status.OK(userRepository.getReferenceById(id).getNickName());
-	}
 }

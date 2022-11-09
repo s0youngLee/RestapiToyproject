@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Article from "./Article";
-import { ifError, isAdmin } from "../func";
+import { isAdmin } from "../func";
 import Pagination from "react-js-pagination";
 import axios from "axios";
 import "../App.css";
@@ -65,17 +65,6 @@ function ArticleList({user, articleList}){
             window.location.replace(`/board`);
         }
     }
-
-    function Nickname(id){
-        const [nickname, setNickname] = useState("");
-        axios.get(`/user/${id}`)
-        .then((res) => {
-            setNickname(res.data.data);
-        }).catch((e) => {
-            ifError(e);
-        })
-        return nickname;
-    }
     
     return(
         <>
@@ -112,7 +101,7 @@ function ArticleList({user, articleList}){
                                 className="w3-check"/>
                                 </td>
                             }
-                        <Article data={article} nickname={Nickname(article.created_id)}/>
+                        <Article data={article} />
                     </tr>
                 )})}
             </tbody>

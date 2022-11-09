@@ -36,7 +36,7 @@ function LoginForm(){
             }
         })
         .catch((err) => {
-            if(err.response?.withCredentials===false){
+            if(err.response.status === 404){
                 alert("Insufficient ID or Password.\nPlease try again.");
             }else{
                 alert(err + "\nFailed to login. Try again.");

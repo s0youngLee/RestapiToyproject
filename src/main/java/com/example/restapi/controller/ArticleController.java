@@ -61,7 +61,7 @@ public class ArticleController extends AbstractCrudMethod<ArticleRequest, Articl
 
     @GetMapping("/user")
     public List<ArticleListResponseDto> getMyArticles(@SessionAttribute("user") UserInfo user){
-        return articleService.getUserArticles(user.getNickName());
+        return articleService.getUserArticles(user);
     }
 
     @GetMapping("/search/{type}/{keyword}")

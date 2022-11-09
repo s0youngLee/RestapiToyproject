@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.restapi.controller.AbstractCrudMethod;
 import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.Category;
+import com.example.restapi.model.entity.UserInfo;
 import com.example.restapi.model.network.Status;
 import com.example.restapi.model.network.request.ArticleRequest;
 import com.example.restapi.model.network.response.ArticleExcelResponseDto;
@@ -23,6 +24,7 @@ import com.example.restapi.model.network.response.ArticleListResponseDto;
 import com.example.restapi.model.network.response.ArticleResponseDto;
 import com.example.restapi.repository.ArticleRepository;
 import com.example.restapi.repository.CategoryRepository;
+import com.example.restapi.repository.UserRepository;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -31,15 +33,17 @@ import lombok.extern.log4j.Log4j2;
 public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleResponseDto> {
     private final CategoryRepository categoryRepository;
     private final ArticleRepository articleRepository;
+    private final UserRepository userRepository;
     private final CommentService commentService;
     private final FileService fileService;
     private final ExcelSetting<ArticleExcelResponseDto> excelSetting;
 
     public ArticleService(@Lazy CategoryRepository categoryRepository, @Lazy ArticleRepository articleRepository,
-        @Lazy CommentService commentService,@Lazy FileService fileService,
+        UserRepository userRepository, @Lazy CommentService commentService,@Lazy FileService fileService,
         ExcelSetting<ArticleExcelResponseDto> excelSetting) {
         this.categoryRepository = categoryRepository;
         this.articleRepository = articleRepository;
+        this.userRepository = userRepository;
         this.fileService = fileService;
         this.commentService = commentService;
         this.excelSetting = excelSetting;
@@ -51,13 +55,13 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
         Article article = Article.builder()
             .title(body.getTitle())
             .content(body.getContent())
-            .createdId(body.getCreatedId())
             .createdAt(LocalDateTime.now())
             .finalEditDate(LocalDateTime.now())
             .category(categoryRepository.getReferenceById(body.getCategoryId()))
             .visitCnt(0)
             .comment(new ArrayList<>())
             .files(new ArrayList<>())
+            .user(userRepository.getReferenceById(body.getCreatedId()))
             .build();
 
         articleRepository.save(article);
@@ -84,7 +88,6 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
                 .map(article -> {
                     article.setTitle(body.getTitle());
                     article.setContent(body.getContent());
-                    article.setCreatedId(body.getCreatedId());
                     article.setFinalEditDate(LocalDateTime.now());
                     try {
                         article.setFiles(fileService.upload(uploadFiles, id));
@@ -124,8 +127,8 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
         return listResponse(articleRepository.findAllByCategoryId(categoryId));
     }
 
-    public List<ArticleListResponseDto> getUserArticles(String nickName){
-        return listResponse(articleRepository.findAllByCreatedId(nickName));
+    public List<ArticleListResponseDto> getUserArticles(UserInfo user){
+        return listResponse(articleRepository.findAllByUser(user));
     }
 
     private Status<ArticleResponseDto> articleBuilder(Article article){
@@ -134,7 +137,6 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
                     .id(article.getId())
                     .title(article.getTitle())
                     .content(article.getContent())
-                    .createdId(article.getCreatedId())
                     .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
                     .categoryName(article.getCategory().getName())
                     .categoryId(article.getCategory().getId())
@@ -142,6 +144,7 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
                     .finalEditDate(article.getFinalEditDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
                     .comment(commentService.getList(article))
                     .files(fileService.getList(article))
+                    .userNickname(article.getUser().getNickName())
                     .build();
 
             return Status.OK(body);
@@ -155,12 +158,12 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
         ArticleListResponseDto addBody = ArticleListResponseDto.builder()
             .id(article.getId())
             .title(article.getTitle())
-            .createdId(article.getCreatedId())
             .finalEditDate(article.getFinalEditDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
             .categoryName(article.getCategory().getName())
             .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
             .visitCnt(article.getVisitCnt())
             .commentCnt(article.getComment().size())
+            .userNickname(article.getUser().getNickName())
             .build();
         return addBody;
     }
@@ -204,8 +207,7 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
                     }
                     break;
                 case "Nickname":
-                    // 수정 -> nickname으로 찾을 수 있게 해야함 현재는 id 기준
-                    if (article.getCreatedId().contains(keyword)) {
+                    if (article.getUser().getNickName().contains(keyword)) {
                         searchResults.add(listResponseBuilder(article));
                     }
                     break;
@@ -230,7 +232,7 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
             ArticleExcelResponseDto body = ArticleExcelResponseDto.builder()
                 .id(article.getId())
                 .title(article.getTitle())
-                .createdId(article.getCreatedId())
+                .createdBy(article.getUser().getNickName())
                 .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
                 .finalEditDate(article.getFinalEditDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
                 .build();
