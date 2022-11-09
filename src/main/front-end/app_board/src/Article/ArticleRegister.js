@@ -48,7 +48,7 @@ function ArticleRegister({user}){
             data: {
                 title : title,
                 content : content,
-                created_id : user?.nick_name,
+                created_id : user?.code,
                 category_id : selected
             }
         }

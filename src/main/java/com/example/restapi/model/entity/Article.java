@@ -32,7 +32,9 @@ public class Article {
     private LocalDateTime createdAt;
     private Integer visitCnt;
     private LocalDateTime finalEditDate;
-
+    @ManyToOne
+    @JoinColumn(name="email")
+    private UserInfo user; // userinfo email 과 fk 설정
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
@@ -43,8 +45,13 @@ public class Article {
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
     private List<Filedata> files;
 
-    public Article(Integer id, String title, String content, String createdId, LocalDateTime createdAt, Integer visitCnt,
-        LocalDateTime finalEditDate, Category category, List<Comment> comment, List<Filedata> files) {
+    public Article() {
+
+    }
+
+    public Article(Integer id, String title, String content, String createdId, LocalDateTime createdAt,
+        Integer visitCnt,
+        LocalDateTime finalEditDate, UserInfo user, Category category, List<Comment> comment, List<Filedata> files) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -52,13 +59,18 @@ public class Article {
         this.createdAt = createdAt;
         this.visitCnt = visitCnt;
         this.finalEditDate = finalEditDate;
+        this.user = user;
         this.category = category;
         this.comment = comment;
         this.files = files;
     }
 
-    public Article() {
+    public UserInfo getUser() {
+        return user;
+    }
 
+    public void setUser(UserInfo user) {
+        this.user = user;
     }
 
     public LocalDateTime getFinalEditDate() {

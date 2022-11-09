@@ -1,12 +1,12 @@
 import '../App.css'
 
-function Article({data}) {
+function Article({data, nickname}) {
     return (
         <>
             <td onClick={() => {window.location.href=`/board/${data.id}`}}> {data.id} </td>
             <td onClick={() => {window.location.href=`/board/${data.id}`}}> {data.title} </td>
             <td onClick={() => {window.location.href=`/board/${data.id}`}}> {data.category_name} </td>
-            <td onClick={() => {window.location.href=`/board/${data.id}`}}> {data.created_id} </td>
+            <td onClick={() => {window.location.href=`/board/${data.id}`}}> {nickname} </td>
             <td onClick={() => {window.location.href=`/board/${data.id}`}}> {data.created_at} </td>
             <td onClick={() => {window.location.href=`/board/${data.id}`}}> {data.visit_cnt} </td>
             <td onClick={() => {window.location.href=`/board/${data.id}`}}> {data.comment_cnt} </td>

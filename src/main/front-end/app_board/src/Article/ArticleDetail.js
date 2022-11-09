@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { FetchWithId, Delete, canChange, Download } from '../func';
+import { useState, useMemo, useEffect } from 'react';
+import { FetchWithId, Delete, canChange, Download, ifError } from '../func';
 import _ from 'lodash';
 import * as Modal from 'react-modal';
 import Comment from "../Comment/Comment";
@@ -14,6 +14,7 @@ function ArticleDeatil({user, isLogin}){
 }
 
 function ArticleDetailData({data, user, isLogin}) {
+    const [nickname, setNickname] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const handleClose = () => {setIsOpen(false);}
     let resource = useMemo(() => { return new Blob(); },[])
@@ -31,6 +32,18 @@ function ArticleDetailData({data, user, isLogin}) {
             alert("Copy content failed");
         }
     }
+    
+    useEffect(() => {
+        if(!_.isEmpty(data.created_id)){
+            axios.get(`/user/${data.created_id}`)
+            .then((res) => {
+                setNickname(res.data.data);
+            }).catch((e) => {
+                ifError(e);
+            });
+        }
+    }, [data?.created_id]);
+
 
     if(!data?.created_id){ return <div> Loading ... </div> }
     else {
@@ -38,7 +51,7 @@ function ArticleDetailData({data, user, isLogin}) {
             <><div className='div-box' style={{padding: "10px", overflow: "auto", marginLeft: "20px", textAlign: "left", height: "57vh"}}>
                     <b style={{fontSize: "30px"}}>{data?.title}</b><br/>
                     <span style={{fontSize: "17px", color: "gray"}}> {data?.created_at} </span><br/>
-                    <span style={{fontSize: "17px"}}> Posted in <b>{data?.category_name} </b> by <b>{data?.created_id} </b> / visit : <b>{data?.visit_cnt}</b></span>
+                    <span style={{fontSize: "17px"}}> Posted in <b>{data?.category_name} </b> by <b> {nickname} </b> / visit : <b>{data?.visit_cnt}</b></span>
                     <div className='content-box'> 
                         <input type={"image"} src={require("../Icon/copy.png").default} alt={"icon"}
                             style={{width:"20px", height:"20px", objectFit: "fill", verticalAlign: "bottom", float: 'right', marginLeft: "10px"}}

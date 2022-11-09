@@ -45,6 +45,11 @@ public class UserController {
 		return userService.userPage(user);
 	}
 
+	@GetMapping("/{id}")
+	public Status<String> loadNickname(@PathVariable int id){
+		return userService.loadNickname(id);
+	}
+
 	@GetMapping("/manage")
 	public Status<List<UserResponseDto>> manageUser(@ModelAttribute("user") UserInfo user){
 		return Status.OK(userService.userList(user.getAuth()));

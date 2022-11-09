@@ -148,4 +148,7 @@ public class UserService {
 		excelSetting.writeWorkbook(response, UserExcelResponseDto.class.getRecordComponents(), dtoData, dataList);
 	}
 
+	public Status<String> loadNickname(int id) {
+		return Status.OK(userRepository.getReferenceById(id).getNickName());
+	}
 }

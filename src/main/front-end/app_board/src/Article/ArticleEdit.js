@@ -35,12 +35,14 @@ function ArticleEditForm({user, articleDetail, handleClose}){
                         document.getElementById('preview-img').appendChild(image);
                     });
                 }else {
-                    const doc = document.createElement('span');
                     const br = document.createElement('br');
                     br.setAttribute("name", "br");
+
+                    const doc = document.createElement('span');
                     doc.setAttribute("name", "preview-infile");
                     doc.className = "application-preview-infile";
                     doc.textContent = file.origin_name;
+                    
                     document.getElementById('preview-file').appendChild(doc);
                     document.getElementById('preview-file').appendChild(br);
                 }
