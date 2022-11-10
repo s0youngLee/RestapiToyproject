@@ -29,6 +29,7 @@ import axios from "axios";
 
 function App() {
     const login = sessionStorage.getItem("isLogin");
+    // const lastAccess = axios.get("/session-info");
     const user = User(login);
     
     useEffect(() => {

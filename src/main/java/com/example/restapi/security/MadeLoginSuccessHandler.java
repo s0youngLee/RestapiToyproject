@@ -36,7 +36,7 @@ public class MadeLoginSuccessHandler implements AuthenticationSuccessHandler {
 		Authentication authentication) throws IOException, ServletException {
 		HttpSession session = request.getSession();
 
-		session.setMaxInactiveInterval(1200);
+		// session.setMaxInactiveInterval(1200);
 
 		session.setAttribute("user", userSecurityService.loadUserByUsername(authentication.getName()));
 		logger.info("Authenticated with " + authentication.getName());

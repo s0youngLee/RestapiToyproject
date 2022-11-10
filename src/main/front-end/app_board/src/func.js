@@ -21,7 +21,8 @@ export function User(Login){
                 setUser(res?.data)
             })
             .catch((e) => {
-                ifError(e);
+                // ifError(e);
+                console.log(e.response);
             });
         }
     }, [Login]);
@@ -127,12 +128,6 @@ export function ifError(e){
     }else if(e.response.status === 403){
         alert("Response rejected.");
         window.location.replace("/");
-    }else if(e.response.status === 404){
-        <div>
-            <h1> SORRY <br/> Page Not Found </h1><hr/>
-            <b>We can't found this page.</b>
-            <Link className="none" to={`/`}><button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red">HOME</button></Link>
-        </div>
     }else{
         alert("Error : " + e.response.status + " " + e.response.statusText + "\nReturn to Home.");
         window.location.href="/";
@@ -194,3 +189,15 @@ export function autoHypenTel(str) {
       }
     }
   }
+
+
+  // session expired check
+//   function checkSessionExpired(){
+// 	var isExpired = isSessionExpired(-5*1000);	//세션만료예정시간을 5초 앞당겨서 검사
+// 	if(isExpired === true){
+// 		alert('Session Expired. Please login.');
+// 		goLogin();
+// 	}else{
+// 		setTimeout('checkSessionExpired()', 10*1000);	//10초에 한번씩 티이머 반복
+// 	}
+// }

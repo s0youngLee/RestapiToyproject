@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,8 +45,14 @@ public class UserService {
 		this.excelSetting = excelSetting;
 	}
 
-	public Status<UserResponseDto> userPage(UserInfo user) {
-		return Status.OK(buildUser(user));
+	public Status<UserResponseDto> userPage(UserInfo user, HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		if(session == null || !request.isRequestedSessionIdValid()){
+			logger.warn("Session condition : Invalid");
+			return Status.OK();
+		}else{
+			return Status.OK(buildUser(user));
+		}
 	}
 
 	public List<UserResponseDto> userList(String auth) {

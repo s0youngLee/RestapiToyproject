@@ -2,6 +2,7 @@ package com.example.restapi.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Lazy;
@@ -41,8 +42,8 @@ public class UserController {
 	}
 
 	@GetMapping("")
-	public Status<UserResponseDto> loadUserInfo(@ModelAttribute("user") UserInfo user){
-		return userService.userPage(user);
+	public Status<UserResponseDto> loadUserInfo(@ModelAttribute("user") UserInfo user, HttpServletRequest request){
+		return userService.userPage(user, request);
 	}
 
 	@GetMapping("/manage")

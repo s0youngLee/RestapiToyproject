@@ -24,16 +24,15 @@ function LoginForm(){
 
     const userlogin = (e) => {
         e.preventDefault();
-        axios.post('/userlogin', form)
+        axios.post('/login', form)
         .then((res) => {
-            if(res.status===200){
-                sessionStorage.setItem("isLogin", true);
-                sessionStorage.setItem("loginTime", new Date());
-                alert("Login successful.");
-                window.location.replace("/board");
-            }else {
-                ifError(res);
-            }
+            console.log(res);
+            console.log(res.data);
+            console.log(res.status);
+            sessionStorage.setItem("isLogin", true);
+            sessionStorage.setItem("loginTime", new Date());
+            // alert("Login successful.");
+            // window.location.replace("/board");
         })
         .catch((err) => {
             if(err.response.status === 404){

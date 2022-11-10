@@ -1,7 +1,9 @@
+import _ from 'lodash';
+import axios from 'axios';
+import { FetchWithoutId } from '../func';
+import { Logout } from '../Bar';
 import ArticleList from './ArticleList';
 import '../App.css'
-import { FetchWithoutId } from '../func';
-import _ from 'lodash';
 
 function Board({user, isLogin}){
     const articleList = Array.from(FetchWithoutId("board").data);
@@ -30,6 +32,32 @@ function Board({user, isLogin}){
             }
         }
     }
+
+    function LastAccess(){
+        axios.get("/session-info")
+        .then((res) => {
+            console.log("LOCAL TIME : " + new Date());
+            console.log("LASTACCESS : " + new Date(res.data));
+            console.log("Compare : " + ((new Date().getTime()) - Number(res.data))/(1000));
+            if((new Date().getTime() - Number(res.data))/(1000) > 30){
+                if(window.confirm("Do you want to extends your login?\nElse you'll be logoout.")){
+                    if((new Date().getTime() - Number(res.data))/1000 > 50){
+                        alert("Session Expired. Please login again");
+                        sessionStorage.clear();
+                        window.location.replace("/login");
+                    }else{
+                        window.location.reload();
+                    }
+                }else{
+                    alert("Session Expired. Please login again");
+                    Logout();
+                    window.location.replace("/login");
+                }
+            }
+        }).catch((e) => {
+            console.log(e.response);
+        });
+    }
     
     if(_.isEmpty(articleList)){ return <div> Loading... </div> }
     else {
@@ -42,6 +70,7 @@ function Board({user, isLogin}){
                         onClick={() => { suggestLogin() }}> Write article </button>
                 <ArticleList user={user} articleList={articleList}/>
             </div>
+            <button onClick={() => { LastAccess() }}> session info </button>
         </>
         )
     }

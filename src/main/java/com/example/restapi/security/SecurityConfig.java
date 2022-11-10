@@ -28,12 +28,26 @@ public class SecurityConfig {
 		// session 만료 시 컨트롤 시도...? 수정 ****
 		try{
 			http
-				.cors().and()
+				.cors()
+				.and()
+
 				.csrf().disable()
 				.httpBasic().disable()
 
+				.sessionManagement(session -> {
+					session.maximumSessions(1)
+							.maxSessionsPreventsLogin(true)
+							.expiredSessionStrategy(event -> {
+								new SessionListener();
+								logger.warn(event.getSource().toString());
+								logger.warn("" + event.getSessionInformation().isExpired());
+							});
+				})
 				.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+				.sessionFixation().migrateSession()
+				.maximumSessions(30)
+				.and()
 
 				.and()
 
@@ -47,7 +61,7 @@ public class SecurityConfig {
 				.and()
 
 				.formLogin()
-				.loginPage("/userlogin")
+				.loginPage("/login")
 				.successHandler(new MadeLoginSuccessHandler(userSecurityService, logger))
 				.failureHandler(new MadeLoginFailureHandler(logger))
 
@@ -74,6 +88,11 @@ public class SecurityConfig {
 
 		return http.build();
 	}
+	//
+	// @Bean
+	// public HttpSessionEventPublisher httpSessionEventPublisher() {
+	// 	return new HttpSessionEventPublisher();
+	// }
 
 	@Bean
 	public PasswordEncoder encoder() {
