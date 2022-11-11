@@ -2,7 +2,6 @@ import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import "../App.css";
-import { ifError } from "../func";
 
 function LoginForm(){
     sessionStorage.setItem("dateAlert", false);
@@ -27,17 +26,13 @@ function LoginForm(){
         axios.post('/login', form)
         .then((res) => {
             console.log(res);
-            console.log(res.data);
-            console.log(res.status);
-            sessionStorage.setItem("isLogin", true);
-            sessionStorage.setItem("loginTime", new Date());
-            // alert("Login successful.");
-            // window.location.replace("/board");
+            alert("Login successful.");
+            window.location.replace("/board");
         })
         .catch((err) => {
             if(err.response.status === 404){
                 alert("Insufficient ID or Password.\nPlease try again.");
-            }else{
+            }else {
                 alert(err + "\nFailed to login. Try again.");
             }
             window.location.reload();

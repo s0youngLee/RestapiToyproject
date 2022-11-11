@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+
 import _ from "lodash";
 import axios from "axios";
 
@@ -12,33 +12,19 @@ export const sliceArrayByLimit = (totalPage, limit) => {
       .map(() => totalPageArray.splice(0, limit));
   };
 
-export function User(Login){
-    const [user, setUser] = useState({ data : {} });
-    useEffect(() => {
-        if(Login){
-            axios.get(`/user`)
-            .then((res) => {
-                setUser(res?.data)
-            })
-            .catch((e) => {
-                // ifError(e);
-                console.log(e.response);
-            });
-        }
-    }, [Login]);
-    if(_.isEmpty(user)){ return <div> Loading ... </div> }
-    else{ return user.data; }
-}
-
 export function canChange(user, id){
-    return isAdmin(user?.auth) ||  _.isEqual(id, user?.nick_name);
+    if(_.isEmpty(user)){
+        return false;
+    }else{
+        return isAdmin(user.auth) ||  _.isEqual(id, user?.nick_name);
+    }
 }
 
-export function isAdmin(auth){
-    if(_.isEqual(auth, "ROLE_ADMIN")){
-        return true;
-    }else {
+export function isAdmin(user){
+    if(_.isEmpty(user)){
         return false;
+    }else if(_.isEqual(user.auth, "ROLE_ADMIN")){
+        return true;
     }
 }
 
@@ -56,7 +42,12 @@ export function FetchWithoutId(dataName){
             setData(res?.data);
         })
         .catch((e) => {
-            ifError(e);
+            if((_.isEqual(dataName, "board/user") || _.isEqual(dataName, "comment/user")) && (e.response.status === 400)){
+                alert("Session Expired. Please re-login");
+                window.location.replace("/login");
+            }else{
+                ifError(e);
+            }
         });
     }, [dataName]);
     if(_.isEmpty(data)){ return <div> Loading ... </div> }

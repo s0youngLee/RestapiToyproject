@@ -22,7 +22,7 @@ function Bar({isLogin, user}) {
                         ))}
                     </div>
                 </div>
-                {isAdmin(user?.auth) && <Link to={"/category"} className="none">
+                {isAdmin(user) && <Link to={"/category"} className="none">
                     <button className="w3-bar-item w3-button w3-hover-red">Setting</button></Link>}
                 
                 {!isLogin && <Link to={'/login/signup'} className="none">

@@ -47,9 +47,9 @@ public class UserService {
 
 	public Status<UserResponseDto> userPage(UserInfo user, HttpServletRequest request) {
 		HttpSession session = request.getSession();
-		if(session == null || !request.isRequestedSessionIdValid()){
+		if(session == null || !request.isRequestedSessionIdValid() || user == null){
 			logger.warn("Session condition : Invalid");
-			return Status.OK();
+			return null;
 		}else{
 			return Status.OK(buildUser(user));
 		}

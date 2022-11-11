@@ -15,7 +15,7 @@ function Files({files, user, createdId}) {
         }
     }
 
-    if(_.isEmpty(files)){ <div> Loading ...</div>}
+    if(_.isEmpty(files) || _.isEmpty(user)){ <div> Loading ...</div>}
     else{
         return(
             <div style={{textAlign: "left"}}>
@@ -27,10 +27,13 @@ function Files({files, user, createdId}) {
                                     style={{width:"20px", height:"20px", objectFit: "fill", verticalAlign: "middle", marginLeft: "10px"}}
                                     onClick={() => {deleteFile(file.id, file.origin_name)}} />
                         }
-                        {!_.isEmpty(user) && 
+                        {!_.isEmpty(user.code) && 
+                            <>
+                            {console.log(user.code)}
                             <input type={"image"} src={require("../Icon/download.png").default} alt={"icon"}
                             style={{width:"20px", height:"20px", objectFit: "fill", verticalAlign: "middle", marginLeft: "10px"}}
                             onClick={() => {Download(resource, "download", file.id, file.origin_name)}} />
+                            </>
                         }
                          <br/> 
                     </div>)

@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import com.example.restapi.service.UserSecurityService;
 
+
 public class MadeLoginSuccessHandler implements AuthenticationSuccessHandler {
 	private final UserSecurityService userSecurityService;
 
@@ -34,12 +35,15 @@ public class MadeLoginSuccessHandler implements AuthenticationSuccessHandler {
 	@Transactional
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 		Authentication authentication) throws IOException, ServletException {
-		HttpSession session = request.getSession();
-
+		HttpSession session = request.getSession(false);
+		if(session != null){
+			session.setAttribute("user", userSecurityService.loadUserByUsername(authentication.getName()));
+			logger.info("Authenticated with " + authentication.getName());
+			response.sendRedirect("http://localhost:3000/board");
+		}else{
+			logger.warn("No User. Login suggested.");
+		}
 		// session.setMaxInactiveInterval(1200);
 
-		session.setAttribute("user", userSecurityService.loadUserByUsername(authentication.getName()));
-		logger.info("Authenticated with " + authentication.getName());
-		response.sendRedirect("http://localhost:3000/board");
 	}
 }

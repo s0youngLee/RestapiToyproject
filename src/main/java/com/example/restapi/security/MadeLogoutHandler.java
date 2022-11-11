@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+
 public class MadeLogoutHandler implements LogoutHandler {
 	private final Logger logger;
 	public MadeLogoutHandler(Logger logger) {
@@ -17,6 +18,5 @@ public class MadeLogoutHandler implements LogoutHandler {
 		Authentication authentication) {
 		req.getSession().invalidate();
 		logger.info("Logout successful.");
-		req.getSession(true);
 	}
 }

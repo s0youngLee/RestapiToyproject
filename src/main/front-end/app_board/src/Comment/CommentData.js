@@ -15,7 +15,7 @@ function CommentData({index, data, user}){
                         style={{float: "right", width:"20px"}}
                         onClick={() => {Delete("comment", data.id)}} /> 
                 }
-                {_.isEqual(user.nick_name, data?.user_id) && 
+                {_.isEqual(user?.nick_name, data?.user_id) && 
                     <input type={"image"} src={require("../Icon/edit.png").default} alt={"icon"}
                         style={{width:"20px", float: "right", marginRight: "10px"}}
                         onClick={() => {setVisible(!visible)}} /> 

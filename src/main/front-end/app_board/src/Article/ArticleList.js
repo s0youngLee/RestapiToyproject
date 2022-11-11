@@ -5,6 +5,7 @@ import Pagination from "react-js-pagination";
 import axios from "axios";
 import "../App.css";
 import SearchForm from "./SearchForm";
+import _ from "lodash";
 
 
 function ArticleList({user, articleList}){
@@ -48,7 +49,7 @@ function ArticleList({user, articleList}){
 
     const handlePageChange = (currentPage) => {
         setCurrentPage(currentPage);
-        if(isAdmin(user.auth)){
+        if(isAdmin(user)){
             checkedItems.clear();
             changeAll(false);
         }
@@ -65,60 +66,64 @@ function ArticleList({user, articleList}){
             window.location.replace(`/board`);
         }
     }
-    
-    return(
-        <>
-        {isAdmin(user.auth) && 
-            <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
-            onClick={() => DeleteArticles()}>  Delete </button>}
-        <SearchForm />
 
-        <table>
-            <thead style={{backgroundColor: "#bdb5f6"}}>
-            <tr>
-                {isAdmin(user.auth) && 
-                    <th> <input type={'checkbox'} className="w3-check" checked={allChecked} 
-                                onChange={() => { 
-                                    changeAll(!allChecked); }}/></th>
-                }
-                <th> ID </th>
-                <th> Title </th>
-                <th> Category </th>
-                <th> Created By </th>
-                <th> Created At </th>
-                <th> Visit </th>
-                <th> Comment </th>
-            </tr>
-            </thead>
-            <tbody>
-                {articlesPerPage.map((article, index) => {
-                   return (
-                    <tr className="clickable" key={index}>
-                            {isAdmin(user.auth) && 
-                                <td>
-                                <input  type={'checkbox'} onChange={(e) => {checkHandler(e, article.id);}}
-                                name="check" value={article.id}
-                                className="w3-check"/>
-                                </td>
-                            }
-                        <Article data={article} />
-                    </tr>
-                )})}
-            </tbody>
-        </table> <hr/>
-        <Pagination
-            activePage={currentPage} 
-            itemsCountPerPage={articleCntPerPage} 
-            totalItemsCount={articleList.length} 
-            pageRangeDisplayed={pageLimit} 
-            onChange={handlePageChange}
-            innerClass={""}
-            activeClass={"w3-button w3-round-xxlarge w3-small w3-deep-purple"}
-            itemClass={"w3-button w3-round-xxlarge w3-small w3-hover-deep-purple"}
-            linkClass={"none"}
-        />
-        </>
-    )
+    
+    if(_.isEmpty(articleList)){ return <div> Loading ... </div>}
+    else{
+        return(
+            <>
+            {isAdmin(user) && 
+                <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
+                onClick={() => DeleteArticles()}>  Delete </button>}
+            <SearchForm />
+    
+            <table>
+                <thead style={{backgroundColor: "#bdb5f6"}}>
+                <tr>
+                    {isAdmin(user) && 
+                        <th> <input type={'checkbox'} className="w3-check" checked={allChecked} 
+                                    onChange={() => { 
+                                        changeAll(!allChecked); }}/></th>
+                    }
+                    <th> ID </th>
+                    <th> Title </th>
+                    <th> Category </th>
+                    <th> Created By </th>
+                    <th> Created At </th>
+                    <th> Visit </th>
+                    <th> Comment </th>
+                </tr>
+                </thead>
+                <tbody>
+                    {articlesPerPage.map((article, index) => {
+                       return (
+                        <tr className="clickable" key={index}>
+                                {isAdmin(user) && 
+                                    <td>
+                                    <input  type={'checkbox'} onChange={(e) => {checkHandler(e, article.id);}}
+                                    name="check" value={article.id}
+                                    className="w3-check"/>
+                                    </td>
+                                }
+                            <Article data={article} />
+                        </tr>
+                    )})}
+                </tbody>
+            </table> <hr/>
+            <Pagination
+                activePage={currentPage} 
+                itemsCountPerPage={articleCntPerPage} 
+                totalItemsCount={articleList.length} 
+                pageRangeDisplayed={pageLimit} 
+                onChange={handlePageChange}
+                innerClass={""}
+                activeClass={"w3-button w3-round-xxlarge w3-small w3-deep-purple"}
+                itemClass={"w3-button w3-round-xxlarge w3-small w3-hover-deep-purple"}
+                linkClass={"none"}
+            />
+            </>
+        )
+    }
 }
 
 export default ArticleList;

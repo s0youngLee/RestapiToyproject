@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
@@ -32,16 +30,11 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @RestController
-@SessionAttributes("user")
 @RequestMapping("/board")
 public class ArticleController extends AbstractCrudMethod<ArticleRequest, ArticleResponseDto> {
     private final ArticleService articleService;
     public ArticleController(@Lazy ArticleService articleService) {
         this.articleService = articleService;
-    }
-    @ModelAttribute("user")
-    public UserInfo userForm(){
-        return new UserInfo();
     }
 
     @PostConstruct

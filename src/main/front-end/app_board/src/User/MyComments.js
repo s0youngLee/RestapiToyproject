@@ -3,8 +3,13 @@ import { Link } from "react-router-dom";
 
 function MyComments({comments}){
     
-    if(_.isEmpty(comments)){ return <div> Loading ... </div>}
-    else {
+    if(_.isEmpty(comments)){ 
+        return (
+            <div>
+                <b style={{fontSize: "25px"}}>No Comments</b>
+            </div>
+        );
+    }else {
         return (
             <>
                 {comments?.map((comment, index) => {

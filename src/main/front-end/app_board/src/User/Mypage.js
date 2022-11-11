@@ -4,13 +4,14 @@ import { isAdmin, FetchWithoutId } from "../func";
 import MyArticles from "./MyArticles";
 import MyComments from "./MyComments";
 import axios from "axios";
+import _ from "lodash";
 
 function MyPage({user}){
     const [visible, setVisible] = useState(false);
     const [visibleArticle, setVisibleArticle] = useState(true);
     const [visibleComment, setVisibleComment] = useState(false);
     let resource = useMemo(() => { return new Blob(); },[])
-    
+
     const articles = Array.from(FetchWithoutId("board/user"));
     const comments = Array.from(FetchWithoutId("comment/user"));
 
@@ -39,9 +40,10 @@ function MyPage({user}){
             console.log(e);
         })
     }
-
-    if(!user) { return <div> Loading ... </div> }
-    else {
+    
+    if(_.isEmpty(user)) { 
+        return <div> Loading ... </div> 
+    }else {
         return (
             <div className="div-box">
                 <b style={{ fontSize: "40px"}}>MY PAGE</b> <hr/>
@@ -50,7 +52,7 @@ function MyPage({user}){
                     <b> Email : </b><span> {user.email} </span><br/>
                     <b> Nickname : </b><span> {user.nick_name} </span><br/>
                     <b> PhoneNumber : </b><span> {user.phone} </span><br/><br/>
-                    {isAdmin(user?.auth) && 
+                    {isAdmin(user) && 
                         <div>
                             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
                                 onClick={() => downloadExcel("board")}> Download board </button>
