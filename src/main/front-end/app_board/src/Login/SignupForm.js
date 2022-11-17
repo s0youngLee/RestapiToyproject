@@ -54,17 +54,21 @@ function SignupForm(){
                 phone : phoneNumber
             }
         }).then((res) => {
-            alert("Register Successed.\nPlease login.");
+            // alert("Register Successed.\nPlease login.");
+            alert("회원가입이 완료되었습니다.\n로그인 페이지로 이동합니다.");
             window.location.href="/login";
         }).catch((e) => {
             if(e.response.status === 451){
-                if (window.confirm("Existing User ID.\nWanna login with this id?")){
+                // if (window.confirm("Existing User ID.\nWanna login with this id?")){
+                if (window.confirm("이미 존재하는 아이디입니다.\n이 아이디로 로그인하시겠습니까?")){
                     window.location.href =  "/login";
                 }else{
-                    alert("Please register with other ID");
+                    // alert("Please register with other ID");
+                    alert("다른 아이디로 가입해주세요.");
                 }
             }else{
-                alert("Error. Please try again.\n" + e.response);
+                // alert("Error. Please try again.\n" + e.response);
+                alert("Error. 다시 시도해주세요.\n" + e.response);
             }
         });
     }

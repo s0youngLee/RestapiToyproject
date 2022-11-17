@@ -1,9 +1,8 @@
 import { useState, useCallback } from "react";
-import { Link } from "react-router-dom";
 import _ from "lodash";
 import { getUrlId } from "../func";
 
-function SearchForm({isLogin}){
+function SearchForm(){
     const categoryId = isNaN(Number(getUrlId(1))) ? "" : getUrlId(1);
     const searchType = ["Title", "Content", "Title+Content", "Nickname"];
     const [searchTypeParam, setSearchTypeParam] = useState("Title+Content");
@@ -40,10 +39,6 @@ function SearchForm({isLogin}){
             <input type={"image"} src={require("../Icon/search.png").default} alt={"icon"}
                 style={{width:"30px", height:"30px", objectFit: "fill", verticalAlign: "middle"}} />
         </form>
-        {isLogin && 
-            <Link to={`/board/add/0`} className="none"> 
-                <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> 
-                        Write article </button></Link>}
         </>
     )
 }

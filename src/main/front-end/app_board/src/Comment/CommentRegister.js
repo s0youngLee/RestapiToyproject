@@ -2,7 +2,7 @@ import React,{useState, useCallback} from "react";
 import { getUrlId } from "../func";
 import axios from "axios";
 
-function CommentRegister({user}){
+function CommentRegister(){
     const [content, setContent] = useState("");
     
     const addContent = useCallback(e => {
@@ -13,15 +13,17 @@ function CommentRegister({user}){
         e.preventDefault();
         axios.post(`/comment`, {
             data: {
-                user_id: user?.nick_name,
+                user_id: sessionStorage.getItem("username"),
                 content: content,
                 article_id: getUrlId(1)
             }
         }).then((res) => {
-            alert("Comment Registered.");
+            // alert("Comment Registered.");
+            alert("댓글이 등록되었습니다.");
             window.location.reload();
         }).catch((e) => {
-            alert("Failed to add comment.\nPlease try again.");
+            // alert("Failed to add comment.\nPlease try again.");
+            alert("댓글 등록에 실패했습니다.");
             window.location.reload();
         });
     }

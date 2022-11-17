@@ -32,15 +32,17 @@ function UserManage(){
             return null;
         })
         if(check){
-            alert("Failed to save all user.");
+            // alert("Failed to save all user.");
+            alert("유저 정보 변경에 실패했습니다.");
             window.location.reload();
         }else{
-            alert("User auth all changed.");
+            // alert("User auth all changed.");
+            alert("변경된 정보가 모두 저장되었습니다.");
             window.location.reload();
         }
     }
     
-    if(_.isEmpty(manage)){ return <div> Loading ... </div>}
+    if(_.isEmpty(manage)){ return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div>}
     else{
         return (
             <>

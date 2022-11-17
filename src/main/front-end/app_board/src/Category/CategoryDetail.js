@@ -6,7 +6,7 @@ function CategoryDeatil () {
     const categoryList = Array.from(FetchWithoutId("category").data);
     const defaultCategory = categoryList.splice(0,1);
 
-    if(_.isEmpty(categoryList)){ return <div> Loading ... </div>}
+    if(_.isEmpty(categoryList)){ return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div>}
     else {
         return (
             <div className='div-box'>

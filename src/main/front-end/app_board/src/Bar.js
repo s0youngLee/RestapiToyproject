@@ -2,9 +2,17 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import 'w3-css';
 import { FetchWithoutId, ifError, isAdmin } from "./func";
+import _ from "lodash";
 
-function Bar({isLogin, user}) {
+function Bar() {
     const categoryList = Array.from(FetchWithoutId("category").data);
+    function isLogin(){
+        if(_.isEqual(sessionStorage.getItem("login"), "true")){
+            return true;
+        }else{
+            return false;
+        }
+    }
     
     return ( 
         <>
@@ -22,16 +30,16 @@ function Bar({isLogin, user}) {
                         ))}
                     </div>
                 </div>
-                {isAdmin(user) && <Link to={"/category"} className="none">
+                {isAdmin() && <Link to={"/category"} className="none">
                     <button className="w3-bar-item w3-button w3-hover-red">Setting</button></Link>}
                 
-                {!isLogin && <Link to={'/login/signup'} className="none">
+                {!isLogin() && <Link to={'/login/signup'} className="none">
                     <button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">Register</button></Link>}
-                {!isLogin && <Link to={'/login'} className="none">
+                {!isLogin() && <Link to={'/login'} className="none">
                     <button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">Login</button></Link>}
-                {isLogin && <Link to={'/mypage'} className="none">
+                {isLogin() && <Link to={'/mypage'} className="none">
                     <button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">MyPage</button></Link>}
-                {isLogin && <button className="w3-bar-item w3-button w3-hover-red w3-right"
+                {isLogin() && <button className="w3-bar-item w3-button w3-hover-red w3-right"
                     onClick={() => Logout()}>Logout</button>}
             </div>
         </div>

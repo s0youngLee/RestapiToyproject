@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import MyInfoEditForm from "../Login/MyInfoEditForm";
 import { isAdmin, FetchWithoutId } from "../func";
 import MyArticles from "./MyArticles";
@@ -6,14 +6,23 @@ import MyComments from "./MyComments";
 import axios from "axios";
 import _ from "lodash";
 
-function MyPage({user}){
+function MyPage(){
     const [visible, setVisible] = useState(false);
     const [visibleArticle, setVisibleArticle] = useState(true);
     const [visibleComment, setVisibleComment] = useState(false);
+    const [user, setUser] = useState();
     let resource = useMemo(() => { return new Blob(); },[])
 
-    const articles = Array.from(FetchWithoutId("board/user"));
+    const articles = Array.from(FetchWithoutId("article/user"));
     const comments = Array.from(FetchWithoutId("comment/user"));
+    
+    useEffect(() => {
+        axios.get("/user").then((res) => {
+            setUser(res.data.data);
+        }).catch((e) => {
+            console.log(e);
+        })
+    },[]);
 
     function setClicked(){
         setVisibleArticle(false);
@@ -35,14 +44,13 @@ function MyPage({user}){
             anchor.click();
     
             document.body.removeChild(anchor);
-            window.URL.revokeObjectURL(downloadUrl);
         }).catch((e) => {
             console.log(e);
         })
     }
 
     if(_.isEmpty(user)) { 
-        return <div> User Not Found </div> 
+        return <div style={{marginTop: "100px", textAlign: "center"}}> {console.log(user)} <b style={{fontSize: "30px"}}>User Not Found</b> </div> 
     }else {
         return (
             <div className="div-box">
@@ -52,10 +60,10 @@ function MyPage({user}){
                     <b> Email : </b><span> {user.email} </span><br/>
                     <b> Nickname : </b><span> {user.nick_name} </span><br/>
                     <b> PhoneNumber : </b><span> {user.phone} </span><br/><br/>
-                    {isAdmin(user) && 
+                    {isAdmin() && 
                         <div>
                             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                                onClick={() => downloadExcel("board")}> Download board </button>
+                                onClick={() => downloadExcel("article")}> Download board </button>
                             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
                                 onClick={() => downloadExcel("user")}> Download Users </button>
                             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"

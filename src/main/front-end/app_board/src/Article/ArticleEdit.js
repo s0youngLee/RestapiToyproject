@@ -3,7 +3,7 @@ import { FetchWithoutId } from "../func";
 import axios from "axios";
 import _ from "lodash";
 
-function ArticleEditForm({user, articleDetail, handleClose}){
+function ArticleEditForm({articleDetail, handleClose}){
     const categoryList = Array.from(FetchWithoutId("category").data);
 
     const [checkedInfile, setCheckedInfile] = useState(new Set()); // db에 올라가 있는 파일 (이미 첨부된 파일 중 체크 - 삭제해야함)
@@ -17,11 +17,12 @@ function ArticleEditForm({user, articleDetail, handleClose}){
     // 파일 업로드용 formdata
     // let formData = new FormData();
     const inputFile = document.getElementsByName("upfile"); // file input
-    const fileName = useMemo(() => {return new Array("Selecte Files")},[]); // 파일 입력란에 띄울 선택된 파일 이름 리스트
+    // const fileName = useMemo(() => {return new Array("Selecte Files")},[]); // 파일 입력란에 띄울 선택된 파일 이름 리스트
+    const fileName = useMemo(() => {return new Array("파일 선택")},[]); // 파일 입력란에 띄울 선택된 파일 이름 리스트
     const [files, setFiles] = useState({data : {}}); // 파일 목록
     const [visible, setVisible] = useState(false); // 선택된 파일 또는 첨부된 파일이 없을 경우 visible false
 
-    function checkedItemHandler(id, type, isChecked){ 
+    const checkedItemHandler = useCallback((id, type, isChecked) => {
         if(isChecked) {
             if(_.isEqual(type, "infile")){
                checkedInfile.add(id);
@@ -37,19 +38,19 @@ function ArticleEditForm({user, articleDetail, handleClose}){
             checkedUpload.delete(id);
             setCheckedUpload(checkedUpload);
         }
-        console.log(checkedUpload);
-    };
+        // console.log(checkedUpload);
+    }, [checkedInfile, checkedUpload]);
 
-    const checkHandler = ({ target }, id, file, fileType, labelClass, inputType) => { 
+    const checkHandler = useCallback(({ target }, id, file, fileType, labelClass, inputType) => { 
         checkedItemHandler(id, inputType, target.checked);
         if(_.isEqual(fileType, "image")){
             file.style = target.checked ? "background-color: crimson;" : (_.isEqual(labelClass, "-uploaded") ? "background-color: cornflowerblue;" : "");
         }else{
             file.style = target.checked ? "color: crimson;" : (_.isEqual(labelClass, "-uploaded") ? "color: cornflowerblue;" : "");
         }
-    };
+    }, [checkedItemHandler]);
 
-    function previewImage(filedata, fileIndex, fileName, className, labelClass, previewDiv, inputType){
+    const previewImage = useCallback((filedata, fileIndex, fileName, className, labelClass, previewDiv, inputType) => {
         const checkbox = makeCheckbox(fileIndex, "image", className);
         const label = makeLabel(fileIndex, "image", labelClass);
         const image = makeImage(filedata, fileName, className);
@@ -60,9 +61,9 @@ function ArticleEditForm({user, articleDetail, handleClose}){
         previewDiv.appendChild(checkbox);
         previewDiv.appendChild(label);
         label.appendChild(image);
-    }
+    }, [checkHandler]);
 
-    function previewDocument(fileName, fileIndex, className, labelClass, previewDiv, inputType){
+    const previewDocument = useCallback((fileName, fileIndex, className, labelClass, previewDiv, inputType) => {
         const checkbox = makeCheckbox(fileIndex, "document", className);
         const label = makeLabel(fileIndex, "document", labelClass);
         const doc = makeDoc(fileName, className);
@@ -74,7 +75,7 @@ function ArticleEditForm({user, articleDetail, handleClose}){
         previewDiv.appendChild(label);
         label.appendChild(doc);
         previewDiv.appendChild(makeBr(className));
-    }
+    }, [checkHandler]);
     
     useEffect(() => {
         if(!_.isEmpty(articleDetail.files)){
@@ -93,7 +94,7 @@ function ArticleEditForm({user, articleDetail, handleClose}){
                 }
             })
         }
-    }, [articleDetail.files])
+    }, [articleDetail.files, previewDocument, previewImage])
     
 
     const editTitle = useCallback(e => {
@@ -147,7 +148,7 @@ function ArticleEditForm({user, articleDetail, handleClose}){
             })
         }
         
-    }, [inputFile, fileName]);
+    }, [inputFile, fileName, checkedUpload, previewDocument, previewImage]);
 
 
     const editArticle = (e) => {
@@ -167,36 +168,37 @@ function ArticleEditForm({user, articleDetail, handleClose}){
             data: {
                 title : title,
                 content : content,
-                created_id : user?.code,
+                created_id : sessionStorage.getItem("usercode"),
                 category_id : selected
             }
         }
         formData.append("article", new Blob([JSON.stringify(data)], {type: "application/json"}));
         
-        axios.put(`/board/withfile/${articleDetail?.id}`, formData)
+        axios.put(`/article/withfile/${articleDetail?.id}`, formData)
         .then((res) => {
-            alert("Article Edited");
+            Array.from(checkedInfile).map(async fileId => {
+                try {
+                    return await axios.delete(`/delete/${fileId}`);
+                } catch (e) {
+                    console.log(e.response.status + " : " + e.response.statusText);
+                }
+            })
+            // alert("Article Edited");
+            alert("게시글이 수정되었습니다.");
             window.location.reload(`/board/${articleDetail?.id}`);
         }).catch((e) => {
-            alert("Failed to edit article.\nPlease try again.");
+            // alert("Failed to edit article.\nPlease try again.");
+            alert("게시글 수정에 실패했습니다.\n다시 시도해주세요.");
         });
-
-        Array.from(checkedInfile).map(async fileId => {
-            try {
-                return await axios.delete(`/delete/${fileId}`);
-            } catch (e) {
-                console.log(e.response.status + " : " + e.response.statusText);
-            }
-        })
     }
-    if(_.isEmpty(articleDetail)) {return <div> Loading ... </div>}
+    if(_.isEmpty(articleDetail)) {return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div>}
     else { 
         return(
             <>
                 <b style={{fontSize: "25px", textAlign: "left"}}>Edit article</b><hr/>
                 <form onSubmit={editArticle}>
                     <div className="div-box" style={{textAlign: "left", marginTop: "10px", marginBottom: "30px"}}>
-                        <b style={{fontSize: "20px"}}>User ID : {user?.nick_name} </b><br/>
+                        <b style={{fontSize: "20px"}}>User ID : {articleDetail.user_nickname} </b><br/>
                         <b style={{fontSize: "17px"}}> Category : </b>
                         <select onChange={handleSelect} value={selected}>
                             {categoryList?.map((category, index) => {
@@ -207,7 +209,8 @@ function ArticleEditForm({user, articleDetail, handleClose}){
                         <textarea style={{width:"100%"}} value={content} onChange={editContent} required /> <br/>
 
                         <input className="upload-name" style={{width:"85%", marginTop: "5px"}} value={fileName} disabled/>
-                        <label className="upload" style={{width:"15%", marginTop: "5px"}} htmlFor="file"> Selecet File </label> 
+                        {/* <label className="upload" style={{width:"15%", marginTop: "5px"}} htmlFor="file"> Selecet File </label>  */}
+                        <label className="upload" style={{width:"15%", marginTop: "5px"}} htmlFor="file"> 파일 선택 </label> 
                         <input type="file" name={"upfile"} id="file" style={{display:"none"}} onChange={uploadFile} multiple/>
 
                         <div style={{textAlign: "right", marginTop: "5px"}}>

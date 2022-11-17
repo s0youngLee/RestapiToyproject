@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { FetchWithId, Delete, canChange, Download } from '../func';
+import { FetchWithId, Delete, canRemove, Download, isPublisher } from '../func';
 import _ from 'lodash';
 import * as Modal from 'react-modal';
 import Comment from "../Comment/Comment";
@@ -26,14 +26,16 @@ function ArticleDetailData({data}) {
     function copyToClipboard(){
         try{
             navigator.clipboard.writeText(data.content);
-            alert("Successfully copied.");
+            // alert("Successfully copied.");
+            alert("복사되었습니다.");
         }catch{
-            alert("Copy content failed");
+            // alert("Copy content failed");
+            alert("복사에 실패했습니다.");
         }
     }
 
 
-    if(_.isEmpty(data)){ return <div> Loading ... </div> }
+    if(_.isEmpty(data)){ return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div> }
     else {
         return (
             <><div className='div-box' style={{padding: "10px", overflow: "auto", marginLeft: "20px", textAlign: "left", height: "57vh"}}>
@@ -49,25 +51,25 @@ function ArticleDetailData({data}) {
                     <span style={{fontSize:"17px", color:"gray"}}> Finally edited : {data?.final_edit_date} </span><br/>
                    
                     <b style={{fontSize: "17px"}}> File list </b>
-                    {/* {(isLogin && !_.isEmpty(data.files)) &&
+                    {(_.isEqual(sessionStorage.getItem("login"), "true") && !_.isEmpty(data.files)) &&
                         <>
                         <button onClick={() => { downloadAll() }}
                             className="w3-button w3-border w3-round-xlarge w3-small w3-hover-light-blue"> Download All </button>
                         <br/>
                         </>
-                    } */}
-                    <Files files={data.files}  createdId={data.id}/>
-                    {/* { _.isEqual(data.user_nickname, user?.nick_name) &&
-                    } */}
-                    <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                            onClick={() => setIsOpen(true)}>Edit</button>
+                    }
+                    <Files files={data.files}  createdId={data.user_nickname}/>
+                    { isPublisher(data.user_nickname) &&
+                        <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
+                                onClick={() => setIsOpen(true)}>Edit</button>
+                    }
                     <Modal isOpen={isOpen} onRequestClose={handleClose}>
                         <ArticleEditForm articleDetail={data} handleClose={handleClose} />
                     </Modal>
-                    {/* {canChange(user, data.user_nickname) &&
-                    } */}
-                    <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
-                            onClick={() => { Delete("board", data.id) }}>Delete</button>
+                    { canRemove(data.user_nickname) &&
+                        <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
+                                onClick={() => { Delete("article", data.id) }}>Delete</button>
+                    }
                 </div><hr/>
                 <Comment article={data}/>
             </>

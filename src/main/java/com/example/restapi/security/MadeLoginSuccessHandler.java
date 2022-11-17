@@ -39,7 +39,6 @@ public class MadeLoginSuccessHandler implements AuthenticationSuccessHandler {
 			session.setAttribute("user", userSecurityService.loadUserByUsername(authentication.getName()));
 			log.info("Authenticated with " + authentication.getName());
 			session.setMaxInactiveInterval(1200);
-			// response.sendRedirect("http://192.168.1.158:3000/board");
 		}else{
 			log.warn("No User. Login suggested.");
 		}

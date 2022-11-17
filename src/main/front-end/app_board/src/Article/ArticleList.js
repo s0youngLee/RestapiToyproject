@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Article from "./Article";
 import { isAdmin } from "../func";
 import Pagination from "react-js-pagination";
 import axios from "axios";
@@ -8,7 +7,7 @@ import SearchForm from "./SearchForm";
 import _ from "lodash";
 
 
-function ArticleList({user, articleList}){
+function ArticleList({articleList}){
     const [allChecked, setAllChecked] = useState(false);
     const [checkedItems, setCheckedItems] = useState(new Set());
     
@@ -49,7 +48,7 @@ function ArticleList({user, articleList}){
 
     const handlePageChange = (currentPage) => {
         setCurrentPage(currentPage);
-        if(isAdmin(user)){
+        if(isAdmin()){
             checkedItems.clear();
             changeAll(false);
         }
@@ -57,22 +56,25 @@ function ArticleList({user, articleList}){
 
     function DeleteArticles(){
         if(checkedItems.size===0){
-            alert("Checked Items doesn't exist. \nPlease select article to delete.");
-        }else if (window.confirm("Do you really want to delete " + checkedItems.size + " articles?")){
+            // alert("Checked Items doesn't exist. \nPlease select article to delete.");
+            alert("선택된 글이 없습니다. \n삭제하고자 하는 글을 선택해주세요.");
+        // }else if (window.confirm("Do you really want to delete " + checkedItems.size + " articles?")){
+        }else if (window.confirm(checkedItems.size + " 개의 글이 선택되었습니다.\n 삭제하시겠습니까?")){
             Array.from(checkedItems).map((id, index) => {
                 return axios.delete(`/board/${id}`);
             });
-            alert("Successfully deleted.");
+            // alert("Successfully deleted.");
+            alert("삭제되었습니다.");
             window.location.replace(`/board`);
         }
     }
 
     
-    if(_.isEmpty(articleList)){ return <div> Loading ... </div>}
+    if(_.isEmpty(articleList)){ return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div>}
     else{
         return(
             <>
-            {isAdmin(user) && 
+            {isAdmin() && 
                 <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
                 onClick={() => DeleteArticles()}>  Delete </button>}
             <SearchForm />
@@ -80,7 +82,7 @@ function ArticleList({user, articleList}){
             <table>
                 <thead style={{backgroundColor: "#bdb5f6"}}>
                 <tr>
-                    {isAdmin(user) && 
+                    {isAdmin() && 
                         <th> <input type={'checkbox'} className="w3-check" checked={allChecked} 
                                     onChange={() => { 
                                         changeAll(!allChecked); }}/></th>
@@ -98,7 +100,7 @@ function ArticleList({user, articleList}){
                     {articlesPerPage.map((article, index) => {
                        return (
                        <tr className="clickable" key={index} onClick={() => {window.location.href=`/board/${article.id}`}}>
-                                {isAdmin(user) && 
+                                {isAdmin() && 
                                     <td>
                                     <input  type={'checkbox'} onChange={(e) => {checkHandler(e, article.id);}}
                                     name="check" value={article.id}

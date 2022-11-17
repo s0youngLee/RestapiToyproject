@@ -11,21 +11,17 @@ export const sliceArrayByLimit = (totalPage, limit) => {
       .fill()
       .map(() => totalPageArray.splice(0, limit));
   };
-
-export function canChange(user, id){
-    if(_.isEmpty(user)){
-        return false;
-    }else{
-        return isAdmin(user) ||  _.isEqual(id, user?.nick_name);
-    }
+  
+export function isPublisher(publisher){
+    return _.isEqual(publisher, sessionStorage.getItem("username"));
+}
+    
+export function isAdmin(){
+    return _.isEqual(sessionStorage.getItem("userauth"), "ROLE_ADMIN");
 }
 
-export function isAdmin(user){
-    if(_.isEmpty(user)){
-        return false;
-    }else if(_.isEqual(user.auth, "ROLE_ADMIN")){
-        return true;
-    }
+export function canRemove(publisher){
+    return isAdmin() || isPublisher(publisher);
 }
 
 export function getUrlId(n){
@@ -46,12 +42,7 @@ export function FetchWithoutId(dataName){
             setData(res?.data);
         })
         .catch((e) => {
-            if((_.isEqual(dataName, "board/user") || _.isEqual(dataName, "comment/user")) && (e.response.status === 400)){
-                alert("Session Expired. Please re-login");
-                window.location.replace("/login");
-            }else{
-                ifError(e);
-            }
+            ifError(e);
         });
     }, [dataName]);
     if(_.isEmpty(data)){ return <div> Loading ... </div> }
@@ -79,16 +70,21 @@ export function FetchWithId(dataName, n){
 }
 
 export function Delete(dataName, dataId){
-    if (window.confirm("Do you really want to delete?")){
+    // if (window.confirm("Do you really want to delete?")){
+    if (window.confirm("삭제하시겠습니까?")){
         axios.delete(`/${dataName}/${dataId}`).then(() => {
-            alert("Successfully deleted.");
+            // alert("Successfully deleted.");
+            alert("삭제되었습니다.");
             if(_.isEqual(dataName, "comment") || _.isEqual(dataName, "user")){
                 window.location.reload();
-            }else {
+            }else if(_.isEqual(dataName, "article")){
+                window.location.replace(`/board`);
+            }else{
                 window.location.replace(`/${dataName}`);
             }
         }).catch((e) => {
-            alert("Failed to delete.");
+            // alert("Failed to delete.");
+            alert("삭제에 실패했습니다.");
             window.location.reload();
         });
     }
@@ -107,7 +103,6 @@ export function Download(resource, dataname, id, filename){
         anchor.click();
 
         document.body.removeChild(anchor);
-        // window.URL.revokeObjectURL(downloadUrl);
     }).catch((e) => {
         console.log(e);
     })
@@ -122,13 +117,16 @@ export function ifError(e){
         alert("Bad Request");
         window.location.reload();
     }else if(e.response.status === 401){
-        alert("Don't have permission.\nPlease Login.");
+        // alert("Don't have permission.\nPlease Login.");
+        alert("권한이 없습니다.\n로그인 페이지로 이동합니다.");
         window.location.replace("/login");
     }else if(e.response.status === 403){
-        alert("Response rejected.");
+        // alert("Response rejected.");
+        alert("응답이 거부되었습니다.\n 홈으로 이동합니다.");
         window.location.replace("/");
     }else{
-        alert("Error : " + e.response.status + " " + e.response.statusText + "\nReturn to Home.");
+        // alert("Error : " + e.response.status + " " + e.response.statusText + "\nReturn to Home.");
+        alert("Error : " + e.response.status + " " + e.response.statusText + "\n홈으로 이동합니다.");
         window.location.href="/";
     }
 }

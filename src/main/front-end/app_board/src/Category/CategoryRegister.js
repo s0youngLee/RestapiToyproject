@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import _ from 'lodash';
 import axios from "axios";
 
 function CategoryRegister(){    
@@ -17,15 +16,8 @@ function CategoryRegister(){
 
     const addCategory = (e) => {
         e.preventDefault();
-        if(_.isEmpty(id)){
-            alert("You must input your ID!!!");
-            return Error;
-        }else{setId(id);}
-
-        if(_.isEmpty(name)){
-            alert("You must input Name!!!");
-            return Error;
-        }else{setName(name);}
+        setId(id);
+        setName(name);
 
         axios.post('/category', {
             data : {
@@ -33,10 +25,12 @@ function CategoryRegister(){
                 name : name
             }
         }).then(() => {
-            alert("Category registerd. Move to " + name);
+            // alert("Category registerd. Move to " + name);
+            alert("카테고리가 등록되었습니다.\n 새로 등록한 카테고리 " + name + " 로 이동합니다.");
             window.location.href=`/board/category/${id}`;
         }).catch((e) => {
-            alert("Failed to add category.\nError : " + e.response.statusText);
+            // alert("Failed to add category.\nError : " + e.response.statusText);
+            alert("카테고리 등록에 실패했습니다.\nError : " + e.response.statusText);
             window.location.reload();
         });
 
@@ -47,8 +41,8 @@ function CategoryRegister(){
         <div className="div-box">
             <form onSubmit={addCategory}>
                     <b style={{ fontSize: "40px"}}> Add Category </b> <hr/>
-                    <input type={"text"} placeholder="Category ID" onChange={addId}></input> <br/>
-                    <input type={"text"} placeholder="Category Name" onChange={addName}></input> <br/>
+                    <input type={"text"} placeholder="Category ID" onChange={addId} required></input> <br/>
+                    <input type={"text"} placeholder="Category Name" onChange={addName} required></input> <br/>
                     <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > Add </button>
                     <button onClick={() => {window.location.href='/category'}} 
                             className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red"> Back </button>

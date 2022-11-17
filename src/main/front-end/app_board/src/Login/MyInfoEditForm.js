@@ -44,7 +44,8 @@ function MyInfoEditForm({user}) {
     const changePW = (e) => {
         e.preventDefault();
         if(!_.isEmpty(checkPassword) && !_.isEqual(newPassword, checkPassword)){
-            alert("Not matching password.\nTry again.")
+            // alert("Not matching password.\nTry again.");
+            alert("비밀번호가 서로 맞지 않습니다.\n 다시 확인해주세요.");
             return Error;
         }
         if(!_.isEmpty(newNickname)){
@@ -61,16 +62,18 @@ function MyInfoEditForm({user}) {
                 phone : newPhone
             }
         }).then(() => {
-            alert("User Information Changed.\nPlease re-login.");
+            // alert("User Information Changed.\nPlease re-login.");
+            alert("사용자 정보가 수정되었습니다.\n다시 로그인하세요.");
             Logout();
             window.location.replace(`/login`);
         }).catch((e) => {
-            alert("Failed to change password.\n" + e.response.statusText);
+            // alert("Failed to change information.\n" + e.response.statusText);
+            alert("정보 수정에 실패했습니다.\n" + e.response.statusText);
             window.location.reload(); 
         })
     }
 
-    if(!user){ return <div> Loading ... </div>}
+    if(_.isEmpty(user)){ return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>UserData Not Found</b> </div>}
     else{
         return (
             <form onSubmit={changePW} className="div-box" style={{marginTop: "0", height:"20%"}}>

@@ -34,8 +34,10 @@ function App() {
         axios.get("/loginstatus")
         .then((res) => {
             if(_.isEqual(res.data, true)){
+                sessionStorage.setItem("login", "true");
                 setLogin(true);
             }else{
+                sessionStorage.setItem("login", "false");
                 setLogin(false);
             }
         }).catch((e) => {
@@ -44,21 +46,26 @@ function App() {
     }, [user])
 
     useEffect(() => {
-        if(_.isEqual(login, true)){
-            if(_.isEmpty(user)){
+        if(_.isEqual(sessionStorage.getItem("login"), "true")){
+            if(_.isEmpty(sessionStorage.getItem("username"))){
                 axios.get("/user").then((res) => {
+                    console.log(res.data.data);
                     setUser(res.data.data);
-                    sessionStorage.setItem("username", res.data.data.name);
+                    sessionStorage.setItem("username", res.data.data.nick_name);
+                    sessionStorage.setItem("userauth", res.data.data.auth);
+                    sessionStorage.setItem("usercode", res.data.data.code);
+                    sessionStorage.setItem("lastAccess", res.data.data.last_access);
                 }).catch((e) => {
                     console.log(e);
                 })
             }
         }else if(_.isEqual(login, false)){
-            console.log(login);
+            // console.log(login);
             if(_.isEqual(sessionStorage.getItem("dateAlert"), "true")){
                 // 세션 만료 또는 2번째 로그인 등
-                alert("Login status expired. Please re-login.");
-                setUser(undefined);
+                // alert("Login status expired. Please re-login.");
+                alert("로그인 정보가 만료되었습니다. 다시 로그인하세요.");
+                // setUser(undefined);
                 window.location.href = "/login";
             }
             }
@@ -66,13 +73,13 @@ function App() {
     
     return(
         <Router>
-            <Bar isLogin={login} user={user}/>
+            <Bar isLogin={sessionStorage.getItem("login")}/>
             <Routes>
                 <Route path="/" exact element={<Home />} />
 
                 <Route exact path="/board" element={<Board  />} />
                 <Route path="/board/:articleId" element={<ArticleDetail  />} /> 
-                <Route path="/board/category/:categoryId" element={<ArticlesByCategory   />} />
+                <Route path="/board/category/:categoryId" element={<ArticlesByCategory />} />
                 <Route path="/board/add/:categoryId" element={<ArticleRegister />} />
                 <Route path="/search/:keyword" element={<ArticleSearchList  />} />
 
@@ -83,7 +90,7 @@ function App() {
                 <Route exact path="/login" element={<LoginForm/>} />
                 <Route path="/login/signup" element={<SignupForm />} />
                 
-                <Route path="/mypage" element={<MyPage user={user}/>} />
+                <Route path="/mypage" element={<MyPage />} />
                 <Route path="/user/manage" element={<UserManage />} />
 
                 <Route path="*" element={<PageNotFound />} /> {/* No route match location Handle */}
