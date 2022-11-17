@@ -23,14 +23,16 @@ function ArticleDetailData({data}) {
         axios.get(`/download/complete/${data.id}`);
     }
 
-    function copyToClipboard(){
-        try{
-            navigator.clipboard.writeText(data.content);
-            // alert("Successfully copied.");
-            alert("복사되었습니다.");
-        }catch{
-            // alert("Copy content failed");
-            alert("복사에 실패했습니다.");
+    function copyToClipboard(content){
+        if(navigator.clipboard!==undefined){
+            navigator.clipboard.writeText(content).then(() => {
+                alert("복사되었습니다.");
+            }).catch((e) => {
+                console.log(e);
+                alert("복사에 실패했습니다.");
+            });
+        }else{
+            alert("navigation.clipboard == undefined");
         }
     }
 
@@ -38,14 +40,14 @@ function ArticleDetailData({data}) {
     if(_.isEmpty(data)){ return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div> }
     else {
         return (
-            <><div className='div-box' style={{padding: "10px", overflow: "auto", marginLeft: "20px", textAlign: "left", height: "57vh"}}>
+            <><div className='div-box' style={{padding: "10px", overflow: "auto", marginLeft: "20px", textAlign: "left", height: "80vh"}}>
                     <b style={{fontSize: "30px"}}>{data?.title}</b><br/>
                     <span style={{fontSize: "17px", color: "gray"}}> {data?.created_at} </span><br/>
                     <span style={{fontSize: "17px"}}> Posted in <b>{data?.category_name} </b> by <b> {data.user_nickname} </b> / visit : <b>{data?.visit_cnt}</b></span>
                     <div className='content-box'> 
                         <input type={"image"} src={require("../Icon/copy.png").default} alt={"icon"}
                             style={{width:"20px", height:"20px", objectFit: "fill", verticalAlign: "bottom", float: 'right', marginLeft: "10px"}}
-                            onClick={() => { copyToClipboard() }} />
+                            onClick={() => { copyToClipboard(data.content) }} />
                         <br/>{data.content}
                     </div>
                     <span style={{fontSize:"17px", color:"gray"}}> Finally edited : {data?.final_edit_date} </span><br/>

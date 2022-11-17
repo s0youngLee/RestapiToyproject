@@ -16,7 +16,7 @@ function Bar() {
     
     return ( 
         <>
-        <div className="w3-top" style={{minWidth: "665px"}}>
+        <div className="bar-top">
             <div className="w3-bar w3-large" style={{backgroundColor:"#cab6ff"}}>
                 <Link to={'/'} className="none"><button className="w3-bar-item w3-button w3-hover-deep-purple" >Home</button></Link>
                 <Link to={'/board'} className="none"><button className="w3-bar-item w3-button w3-hover-deep-purple">Board</button></Link>
@@ -52,7 +52,8 @@ export function Logout() {
     .then(() => {
         sessionStorage.clear();
         axios.post('/logout');
-        alert("Logout successful. Return to login page.");
+        // alert("Logout successful. Return to login page.");
+        alert("로그아웃되었습니다. 로그인 페이지로 이동합니다.");
         window.location.replace('/login');
     })
     .catch((e) => {

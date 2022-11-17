@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { isAdmin } from "../func";
+import { getUrlId, isAdmin } from "../func";
 import Pagination from "react-js-pagination";
 import axios from "axios";
 import "../App.css";
@@ -11,11 +11,12 @@ function ArticleList({articleList}){
     const [allChecked, setAllChecked] = useState(false);
     const [checkedItems, setCheckedItems] = useState(new Set());
     
+    const articles = articleList.reverse();
     const pageLimit = 5; // page display cnt limit
     const articleCntPerPage = 10; // article cnt per pages
     const [currentPage, setCurrentPage] = useState(1);
     const offset = (currentPage - 1) * articleCntPerPage;
-    const articlesPerPage = articleList?.slice(offset, offset + articleCntPerPage);
+    const articlesPerPage = articles?.slice(offset, offset + articleCntPerPage);
 
     const checkedItemHandler = (id, isChecked) => {
         if(isChecked) {
@@ -56,81 +57,103 @@ function ArticleList({articleList}){
 
     function DeleteArticles(){
         if(checkedItems.size===0){
-            // alert("Checked Items doesn't exist. \nPlease select article to delete.");
             alert("선택된 글이 없습니다. \n삭제하고자 하는 글을 선택해주세요.");
-        // }else if (window.confirm("Do you really want to delete " + checkedItems.size + " articles?")){
-        }else if (window.confirm(checkedItems.size + " 개의 글이 선택되었습니다.\n 삭제하시겠습니까?")){
+        }else if (window.confirm(checkedItems.size + " 개의 글이 선택되었습니다.\n삭제하시겠습니까?")){
             Array.from(checkedItems).map((id, index) => {
-                return axios.delete(`/board/${id}`);
+                return axios.delete(`/article/${id}`).catch((e) => {
+                    console.log(e.response);
+                });
             });
-            // alert("Successfully deleted.");
             alert("삭제되었습니다.");
             window.location.replace(`/board`);
         }
     }
 
+    function suggestLogin(){
+        if(_.isEqual(sessionStorage.getItem("login"), "true")){
+            const categoryId = getUrlId(1);
+            if(_.isEqual(Number(categoryId), NaN)){
+                window.location.href=`/board/add/0`;
+            }else{
+                window.location.href=`/board/add/${categoryId}`;
+            }
+        }else{
+            if(window.confirm("글을 작성하려면 로그인해야합니다.\n확인을 누르면 로그인 페이지로 이동합니다.")){
+                window.location.href=`/login`;
+            }
+        }
+    }
+
     
-    if(_.isEmpty(articleList)){ return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div>}
+    if(_.isEmpty(articleList)){ 
+        return (
+            <div style={{marginTop: "100px", textAlign: "center"}}> 
+                <b style={{fontSize: "30px"}}>Data Not Found</b> <br/>
+                <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
+                        onClick={() => { suggestLogin() }}> Write article </button>
+            </div>
+        )
+    }
     else{
         return(
-            <>
-            {isAdmin() && 
-                <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
-                onClick={() => DeleteArticles()}>  Delete </button>}
-            <SearchForm />
-    
-            <table>
-                <thead style={{backgroundColor: "#bdb5f6"}}>
-                <tr>
-                    {isAdmin() && 
-                        <th> <input type={'checkbox'} className="w3-check" checked={allChecked} 
-                                    onChange={() => { 
-                                        changeAll(!allChecked); }}/></th>
-                    }
-                    <th> ID </th>
-                    <th> Title </th>
-                    <th> Category </th>
-                    <th> Created By </th>
-                    <th> Created At </th>
-                    <th> Visit </th>
-                    <th> Comment </th>
-                </tr>
-                </thead>
-                <tbody>
-                    {articlesPerPage.map((article, index) => {
-                       return (
-                       <tr className="clickable" key={index} onClick={() => {window.location.href=`/board/${article.id}`}}>
+            <div className="totalPage">
+                <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
+                        onClick={() => { suggestLogin() }}> Write article </button>
+                {isAdmin() && 
+                    <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
+                    onClick={() => DeleteArticles()}>  Delete </button>}
+                <SearchForm />
+        
+                <table>
+                    <thead style={{backgroundColor: "#bdb5f6"}}>
+                    <tr>
+                        {isAdmin() && 
+                            <th> <input type={'checkbox'} checked={allChecked} 
+                                        onChange={() => { changeAll(!allChecked); }}/></th>
+                        }
+                        <th> 번호 </th>
+                        <th> 제목 </th>
+                        <th> 카테고리 </th>
+                        <th> 작성자 </th>
+                        <th> 작성일 </th>
+                        <th> 조회수 </th>
+                        <th> 댓글수 </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {articlesPerPage.map((article, index) => {
+                        return (
+                        <tr className="clickable" key={index}>
                                 {isAdmin() && 
                                     <td>
                                     <input  type={'checkbox'} onChange={(e) => {checkHandler(e, article.id);}}
-                                    name="check" value={article.id}
-                                    className="w3-check"/>
+                                    name="check" value={article.id}/>
                                     </td>
                                 }
-                                <td> {article.id} </td>
-                                <td> {article.title} </td>
-                                <td> {article.category_name} </td>
-                                <td> {article.user_nickname} </td>
-                                <td> {article.created_at} </td>
-                                <td> {article.visit_cnt} </td>
-                                <td> {article.comment_cnt} </td>
-                        </tr>
-                       )
-                    })}
-                </tbody>
-            </table> <hr/>
-            <Pagination
-                activePage={currentPage} 
-                itemsCountPerPage={articleCntPerPage} 
-                totalItemsCount={articleList.length} 
-                pageRangeDisplayed={pageLimit} 
-                onChange={handlePageChange}
-                innerClass={""}
-                activeClass={"w3-button w3-round-xxlarge w3-small w3-deep-purple"}
-                itemClass={"w3-button w3-round-xxlarge w3-small w3-hover-deep-purple"}
-                linkClass={"none"}
-            />
-            </>
+                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.id} </td>
+                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.title} </td>
+                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.category_name} </td>
+                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.user_nickname} </td>
+                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.created_at} </td>
+                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.visit_cnt} </td>
+                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.comment_cnt} </td>
+                            </tr>
+                        )
+                        })}
+                    </tbody>
+                </table> <hr/>
+                <Pagination
+                    activePage={currentPage} 
+                    itemsCountPerPage={articleCntPerPage} 
+                    totalItemsCount={articleList.length} 
+                    pageRangeDisplayed={pageLimit} 
+                    onChange={handlePageChange}
+                    innerClass={""}
+                    activeClass={"w3-button w3-round-xxlarge w3-small w3-deep-purple"}
+                    itemClass={"w3-button w3-round-xxlarge w3-small w3-hover-deep-purple"}
+                    linkClass={"none"}
+                />
+            </div>
         )
     }
 }

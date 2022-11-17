@@ -50,7 +50,7 @@ function MyPage(){
     }
 
     if(_.isEmpty(user)) { 
-        return <div style={{marginTop: "100px", textAlign: "center"}}> {console.log(user)} <b style={{fontSize: "30px"}}>User Not Found</b> </div> 
+        return <div style={{marginTop: "100px", textAlign: "center"}}><b style={{fontSize: "30px"}}>User Not Found</b> </div> 
     }else {
         return (
             <div className="div-box">
@@ -73,19 +73,19 @@ function MyPage(){
                 </div><hr/>
                 <div style={{width: "100%", height: "5.6vh", textAlign: "center", lineHeight : "5.6vh"}}>
                     <div className="page-bar" 
-                        style={visibleArticle ? {backgroundColor: "mediumslateblue", color: "aliceblue", fontSize: "20px"} : {}} 
+                        style={visibleArticle ? {backgroundColor: "mediumslateblue", color: "aliceblue"} : {}} 
                         onClick={() => {
                             setClicked();
                             setVisibleArticle(true);
                             }}> My Articles </div>
                     <div className="page-bar" 
-                        style={visibleComment ? {backgroundColor: "mediumslateblue", color: "aliceblue", fontSize: "20px"} : {}}
+                        style={visibleComment ? {backgroundColor: "mediumslateblue", color: "aliceblue"} : {}}
                         onClick={() => {
                             setClicked();
                             setVisibleComment(true);
                             }}> My Comments </div>
                     <div className="page-bar" 
-                        style={visible ? {backgroundColor: "mediumslateblue", color: "aliceblue", fontSize: "20px"} : {}}
+                        style={visible ? {backgroundColor: "mediumslateblue", color: "aliceblue"} : {}}
                         onClick={() => {
                             setClicked();
                             setVisible(true);

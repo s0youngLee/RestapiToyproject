@@ -29,7 +29,7 @@ function SearchForm(){
     return(
         <>
         <form onSubmit={searchArticle} style={{margin: "5px", width: "45vh", display: "inline-block"}}>
-            <select onChange={handleSelect} value={searchTypeParam} style={{width: "23%"}}>
+            <select onChange={handleSelect} value={searchTypeParam} style={{width: "30%", verticalAlign: "top"}}>
                 {searchType.map((type, index) => {
                     return <option key={index} value={type}>{type}</option>;
                 })}

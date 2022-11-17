@@ -60,12 +60,9 @@ function App() {
                 })
             }
         }else if(_.isEqual(login, false)){
-            // console.log(login);
             if(_.isEqual(sessionStorage.getItem("dateAlert"), "true")){
                 // 세션 만료 또는 2번째 로그인 등
-                // alert("Login status expired. Please re-login.");
                 alert("로그인 정보가 만료되었습니다. 다시 로그인하세요.");
-                // setUser(undefined);
                 window.location.href = "/login";
             }
             }

@@ -24,21 +24,18 @@ function ArticleSearchList() {
     
     if(_.isEmpty(searchResults)){ 
         return (
-            <div className="div-box" style={{ margin: "20px" , marginTop: "80px"}}>
-                <pre style={{ fontSize: "17px" }}> 
-                    
-                    {/* <b style={{fontSize: "25px"}}>Sorry, We cannot find any result. <br/> Please return to board. </b> <br/><br/>
-                    There's no article contains <b>"{decodeParam}"</b> in it's <b>{searchParam[1]}</b>. <br/>  */}
+            <div className="div-box">
+                <p style={{ fontSize: "17px" }}> 
                     <b style={{fontSize: "25px"}}> 결과를 찾을 수 없습니다. </b> <br/><br/>
-                    <b>"{decodeParam}"</b> 이 포함된 게시글이 없습니다. <br/> 
-                </pre>
+                    <b>"{decodeParam}"</b> 이(가) 포함된 게시글이 없습니다. <br/> 
+                </p>
             </div> 
         )
     }
     else {
         return (
             <div className='div-box'>
-                <b style={{ fontSize: "30px"}}> Search results for keyword "{decodeParam}"</b>
+                <b style={{ fontSize: "30px"}}> "{decodeParam}" 에 대한 검색 결과</b>
                 <ArticleList articleList={Array.from(searchResults)} />
             </div>
         )

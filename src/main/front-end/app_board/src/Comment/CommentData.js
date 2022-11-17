@@ -42,11 +42,9 @@ function CommentEditForm({data, visible, setVisible}){
                 content : content
             }
         }).then(() => {
-            // alert("Comment edited.");
             alert("댓글이 수정되었습니다.");
             window.location.href=`/board/${data?.article_id}`;
         }).catch((e) => {
-            // alert("Failed to edit comment.\nPlease try again.");
             alert("댓글 수정에 실패했습니다.");
             window.location.href=`/board/${data?.article_id}`;
             console.log(e.response);

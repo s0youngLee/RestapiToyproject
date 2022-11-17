@@ -50,7 +50,7 @@ public class UserController {
 
 	@PutMapping("")
 	public Status<UserInfo> userInfoEdit(@SessionAttribute("user") UserInfo user, @RequestBody Status<UserRequest> request) {
-		return userService.userInfoEdit(user.getCode(), request);
+		return userService.userInfoEdit(user, request);
 	}
 	@PutMapping("/manage/{code}")
 	public Status<UserInfo> changeAuth(@SessionAttribute("user") UserInfo user, @PathVariable int code, @RequestBody Status<UserRequest> request){

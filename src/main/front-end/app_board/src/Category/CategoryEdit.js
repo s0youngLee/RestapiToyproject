@@ -33,11 +33,9 @@ function CategoryEditForm({categoryId, nameOrigin}){
                 name: categoryName
             }
         }).then(() => {
-            // alert("Category edited. Move to " + categoryName);
             alert("카테고리 수정이 완료되었습니다.\n카테고리 " + categoryName +" 로 이동합니다.");
             window.location.href = `/board/category/${categoryId}`;
         }).catch((e) => {
-            // alert("Failed to edit category.\nError : " + e.response.statusText);
             alert("카테고리 수정에 실패했습니다.\nError : " + e.response.statusText);
             window.location.reload();
         });

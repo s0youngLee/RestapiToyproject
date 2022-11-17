@@ -44,8 +44,7 @@ function MyInfoEditForm({user}) {
     const changePW = (e) => {
         e.preventDefault();
         if(!_.isEmpty(checkPassword) && !_.isEqual(newPassword, checkPassword)){
-            // alert("Not matching password.\nTry again.");
-            alert("비밀번호가 서로 맞지 않습니다.\n 다시 확인해주세요.");
+            alert("비밀번호가 서로 맞지 않습니다.\n다시 확인해주세요.");
             return Error;
         }
         if(!_.isEmpty(newNickname)){
@@ -61,13 +60,14 @@ function MyInfoEditForm({user}) {
                 nickName : newNickname,
                 phone : newPhone
             }
-        }).then(() => {
-            // alert("User Information Changed.\nPlease re-login.");
+        }).then((res) => {
+            console.log(checkPassword);
+            console.log(newNickname);
+            console.log(newPhone);
             alert("사용자 정보가 수정되었습니다.\n다시 로그인하세요.");
             Logout();
             window.location.replace(`/login`);
         }).catch((e) => {
-            // alert("Failed to change information.\n" + e.response.statusText);
             alert("정보 수정에 실패했습니다.\n" + e.response.statusText);
             window.location.reload(); 
         })

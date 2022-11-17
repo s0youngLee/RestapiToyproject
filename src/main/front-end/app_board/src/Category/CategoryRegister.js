@@ -25,11 +25,9 @@ function CategoryRegister(){
                 name : name
             }
         }).then(() => {
-            // alert("Category registerd. Move to " + name);
             alert("카테고리가 등록되었습니다.\n 새로 등록한 카테고리 " + name + " 로 이동합니다.");
             window.location.href=`/board/category/${id}`;
         }).catch((e) => {
-            // alert("Failed to add category.\nError : " + e.response.statusText);
             alert("카테고리 등록에 실패했습니다.\nError : " + e.response.statusText);
             window.location.reload();
         });

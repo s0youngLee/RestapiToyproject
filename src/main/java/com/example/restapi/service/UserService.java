@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.PermissionDeniedDataAccessException;
@@ -25,8 +23,10 @@ import com.example.restapi.model.network.response.UserExcelResponseDto;
 import com.example.restapi.model.network.response.UserResponseDto;
 import com.example.restapi.repository.ArticleRepository;
 import com.example.restapi.repository.UserRepository;
-import com.example.restapi.security.MadeLogoutHandler;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @Service
 public class UserService {
 	private final UserRepository userRepository;
@@ -35,7 +35,6 @@ public class UserService {
 	private final ArticleRepository articleRepository;
 	private final ArticleService articleService;
 	private final ExcelSetting<UserExcelResponseDto> excelSetting;
-	Logger logger = LoggerFactory.getLogger(MadeLogoutHandler.class);
 	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 	public UserService(@Lazy UserRepository userRepository, ArticleRepository articleRepository,
 		ArticleService articleService, ExcelSetting<UserExcelResponseDto> excelSetting) {
@@ -48,7 +47,7 @@ public class UserService {
 	public Status<UserResponseDto> userPage(UserInfo user, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		if(session == null || !request.isRequestedSessionIdValid() || user == null){
-			logger.warn("Session condition : Invalid");
+			log.warn("Session condition : Invalid");
 			return null;
 		}else{
 			return Status.OK(buildUser(user));
@@ -81,21 +80,23 @@ public class UserService {
 		try{
 			return Status.OK(userRepository.save(user));
 		}catch (DataIntegrityViolationException e){
-			logger.error("Existing User. Please Try again.");
+			log.error("Existing User. Please Try again.");
 			response.setStatus(451);
 			return Status.ERROR("Existing User. Please Try again.");
 		}
 	}
 
-	public Status<UserInfo> userInfoEdit(Integer code, Status<UserRequest> request) {
+	public Status<UserInfo> userInfoEdit(UserInfo user, Status<UserRequest> request) {
 		UserRequest body = request.getData();
-		UserInfo user = userRepository.getReferenceById(code);
 
 		user.setNickName(body.getNickName());
+		log.info(body.getNickName());
 		if(!Objects.equals(body.getPassword(), "")){
 			user.setPassword(encoder.encode(body.getPassword()));
+			log.info(body.getPassword());
 		}
 		user.setPhone(body.getPhone());
+		log.info(body.getPhone());
 		return Status.OK(userRepository.save(user));
 	}
 

@@ -25,14 +25,12 @@ function LoginForm(){
         e.preventDefault();
         axios.post('/login', form)
         .then((res) => {
-            // alert("Login successful.");
-            alert("성공적으로 로그인되었습니다.\n 게시판 페이지로 이동합니다.");
+            alert("성공적으로 로그인되었습니다.\n게시판 페이지로 이동합니다.");
             window.location.replace("/board");
         })
         .catch((err) => {
             if(err.response.status === 401){
-                // alert("Insufficient ID or Password.\nPlease try again.");
-                alert("아이디 또는 비밀번호가 틀렸습니다.\n 다시 시도하세요.");
+                alert("아이디 또는 비밀번호가 틀렸습니다.\n다시 시도하세요.");
             }else {
                 alert(err + "\n로그인 실패.");
                 window.location.reload();

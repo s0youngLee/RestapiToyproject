@@ -31,7 +31,7 @@ function CategoryDeatilData({data}) {
         <div style={{textAlign: "left"}}>
             <b> ID : </b> <span> {data.id} </span><br/>
             <b> Name : </b><span> {data.name} </span><br/>
-            <b> Article : {data.article_cnt} ea </b>
+            <b> Article : {data.article_cnt} ea </b><br/>
             <Link to={`/board/category/${data.id}`} className="none">
                 <button className='w3-button w3-border w3-round-xlarge w3-small  w3-hover-deep-purple'> Go to {data.name} </button>
             </Link>

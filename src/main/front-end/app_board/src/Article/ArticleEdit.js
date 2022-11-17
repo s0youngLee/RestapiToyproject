@@ -183,37 +183,35 @@ function ArticleEditForm({articleDetail, handleClose}){
                     console.log(e.response.status + " : " + e.response.statusText);
                 }
             })
-            // alert("Article Edited");
             alert("게시글이 수정되었습니다.");
             window.location.reload(`/board/${articleDetail?.id}`);
         }).catch((e) => {
-            // alert("Failed to edit article.\nPlease try again.");
             alert("게시글 수정에 실패했습니다.\n다시 시도해주세요.");
         });
     }
     if(_.isEmpty(articleDetail)) {return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div>}
     else { 
         return(
-            <>
-                <b style={{fontSize: "25px", textAlign: "left"}}>Edit article</b><hr/>
+            <div style={{marginTop: "0", marginLeft: "10px"}}>
+                <b style={{fontSize: "25px", textAlign: "left"}}>게시글 수정</b><hr/>
                 <form onSubmit={editArticle}>
-                    <div className="div-box" style={{textAlign: "left", marginTop: "10px", marginBottom: "30px"}}>
-                        <b style={{fontSize: "20px"}}>User ID : {articleDetail.user_nickname} </b><br/>
-                        <b style={{fontSize: "17px"}}> Category : </b>
+                    <div className="modal-box">
+                        <b style={{fontSize: "small"}}> 카테고리 : </b>
                         <select onChange={handleSelect} value={selected}>
                             {categoryList?.map((category, index) => {
                                 return <option key={index} value={category.id}>{category.name}</option>;
                             })}
                         </select><br/>
                         <input style={{width:"100%", marginLeft: "0"}} type="text" value={title} onChange={editTitle} required autoFocus /> <br/>
-                        <textarea style={{width:"100%"}} value={content} onChange={editContent} required /> <br/>
+                        <textarea style={{width:"100%", height: "50%"}} value={content} onChange={editContent} required /> <br/>
 
-                        <input className="upload-name" style={{width:"85%", marginTop: "5px"}} value={fileName} disabled/>
-                        {/* <label className="upload" style={{width:"15%", marginTop: "5px"}} htmlFor="file"> Selecet File </label>  */}
-                        <label className="upload" style={{width:"15%", marginTop: "5px"}} htmlFor="file"> 파일 선택 </label> 
+                        <input className="upload-name" style={{width:"80%", marginTop: "5px"}} value={fileName} disabled/>
+                        <label className="upload" style={{width:"20%", marginTop: "5px"}} htmlFor="file"> 
+                            <img src={require("../Icon/upload.png").default} alt={"icon"} style={{width: "20px", marginTop: "5px"}}/>
+                        </label> 
                         <input type="file" name={"upfile"} id="file" style={{display:"none"}} onChange={uploadFile} multiple/>
 
-                        <div style={{textAlign: "right", marginTop: "5px"}}>
+                        <div style={{textAlign: "center", marginTop: "5px"}}>
                             <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > Save </button>
                             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red"
                                     onClick={handleClose}> Back </button>
@@ -221,15 +219,15 @@ function ArticleEditForm({articleDetail, handleClose}){
                     </div>
                 </form>
                 <div id='preview-zone'>
-                    <b style={{fontSize: "30px"}}> File Preview </b><br/>
+                    <b style={{fontSize: "medium"}}> File Preview </b><br/>
                     <div id='preview-img' style={visible ? {} : {display: "none"}}>
-                        <b style={{fontSize: "20px"}}> [ Image ] </b><br/>
+                        <b style={{fontSize: "small"}}> [ Image ] </b><br/>
                     </div>
                     <div id='preview-file' style={visible ? {} : {display: "none"}}>
-                        <b style={{fontSize: "20px"}}> [ File ] </b><br/>
+                        <b style={{fontSize: "small"}}> [ File ] </b><br/>
                     </div>
                 </div>
-            </>
+            </div>
         )
     }
 }

@@ -1,6 +1,6 @@
 function Home() {
     return(
-        <div className="home">
+        <div style={{marginTop: "100px", textAlign: "center"}}>
             <b style={{ fontSize: "40px"}}> Home Page </b>
             <p> 
                 App_Board Tutorial <br/>
