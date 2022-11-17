@@ -34,14 +34,17 @@ public class SessionListener implements HttpSessionListener {
 	@Override
 	public void sessionDestroyed(HttpSessionEvent event) {
 		// 세션 만료시 호출
+
+		// 세션 만료시에 바로 react로 반응을 보내줄 방법은..?
 		HttpSession session = event.getSession();
 		long lastTime = session.getLastAccessedTime();
 		long nowTime = System.currentTimeMillis();
 		long expiredTime = nowTime - lastTime;
 		String id = session.getId();
+
 		log.info("Login info = {}", session.getAttribute("user"));
 		log.warn("session expired in {} m {} s.", expiredTime / (1000 * 60), (expiredTime % (1000 * 60))/1000);
-		session.invalidate();
+
 		log.warn("JSESSIONID = {}\n", id);
 	}
 

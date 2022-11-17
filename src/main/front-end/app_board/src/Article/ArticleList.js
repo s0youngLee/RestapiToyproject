@@ -97,7 +97,7 @@ function ArticleList({user, articleList}){
                 <tbody>
                     {articlesPerPage.map((article, index) => {
                        return (
-                        <tr className="clickable" key={index}>
+                       <tr className="clickable" key={index} onClick={() => {window.location.href=`/board/${article.id}`}}>
                                 {isAdmin(user) && 
                                     <td>
                                     <input  type={'checkbox'} onChange={(e) => {checkHandler(e, article.id);}}
@@ -105,9 +105,16 @@ function ArticleList({user, articleList}){
                                     className="w3-check"/>
                                     </td>
                                 }
-                            <Article data={article} />
+                                <td> {article.id} </td>
+                                <td> {article.title} </td>
+                                <td> {article.category_name} </td>
+                                <td> {article.user_nickname} </td>
+                                <td> {article.created_at} </td>
+                                <td> {article.visit_cnt} </td>
+                                <td> {article.comment_cnt} </td>
                         </tr>
-                    )})}
+                       )
+                    })}
                 </tbody>
             </table> <hr/>
             <Pagination

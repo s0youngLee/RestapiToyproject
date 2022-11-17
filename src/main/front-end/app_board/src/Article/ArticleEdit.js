@@ -6,46 +6,90 @@ import _ from "lodash";
 function ArticleEditForm({user, articleDetail, handleClose}){
     const categoryList = Array.from(FetchWithoutId("category").data);
 
+    const [checkedInfile, setCheckedInfile] = useState(new Set()); // db에 올라가 있는 파일 (이미 첨부된 파일 중 체크 - 삭제해야함)
+    const [checkedUpload, setCheckedUpload] = useState(new Set()); // input file로 선택한 파일 (첨부되어 있지 않은 파일 - 전송할 formdata에 올리지 않아야함)
+
+    // article title, content, category 수정
     const [title, setTitle] = useState(articleDetail.title);
     const [content, setContent] = useState(articleDetail.content);
     const [selected, setSelected] = useState(articleDetail.category_id);
 
-    const formData = new FormData();
-    const inputFile = document.getElementsByName("upfile");
-    const fileName = useMemo(() => {return new Array("Selected Files")},[]);
-    const [files, setFiles] = useState({data : {}});
-    const [visible, setVisible] = useState(false);
+    // 파일 업로드용 formdata
+    // let formData = new FormData();
+    const inputFile = document.getElementsByName("upfile"); // file input
+    const fileName = useMemo(() => {return new Array("Selecte Files")},[]); // 파일 입력란에 띄울 선택된 파일 이름 리스트
+    const [files, setFiles] = useState({data : {}}); // 파일 목록
+    const [visible, setVisible] = useState(false); // 선택된 파일 또는 첨부된 파일이 없을 경우 visible false
+
+    function checkedItemHandler(id, type, isChecked){ 
+        if(isChecked) {
+            if(_.isEqual(type, "infile")){
+               checkedInfile.add(id);
+               setCheckedInfile(checkedInfile); 
+            }else{
+                checkedUpload.add(id);
+                setCheckedUpload(checkedUpload);
+            }
+        } else if (!isChecked && checkedInfile.has(id)) {
+            checkedInfile.delete(id);
+            setCheckedInfile(checkedInfile);
+        } else if (!isChecked && checkedUpload.has(id)) {
+            checkedUpload.delete(id);
+            setCheckedUpload(checkedUpload);
+        }
+        console.log(checkedUpload);
+    };
+
+    const checkHandler = ({ target }, id, file, fileType, labelClass, inputType) => { 
+        checkedItemHandler(id, inputType, target.checked);
+        if(_.isEqual(fileType, "image")){
+            file.style = target.checked ? "background-color: crimson;" : (_.isEqual(labelClass, "-uploaded") ? "background-color: cornflowerblue;" : "");
+        }else{
+            file.style = target.checked ? "color: crimson;" : (_.isEqual(labelClass, "-uploaded") ? "color: cornflowerblue;" : "");
+        }
+    };
+
+    function previewImage(filedata, fileIndex, fileName, className, labelClass, previewDiv, inputType){
+        const checkbox = makeCheckbox(fileIndex, "image", className);
+        const label = makeLabel(fileIndex, "image", labelClass);
+        const image = makeImage(filedata, fileName, className);
+        checkbox.oninput = (e) => {
+            checkHandler(e, fileIndex, image, "image", labelClass, inputType);
+        }
+
+        previewDiv.appendChild(checkbox);
+        previewDiv.appendChild(label);
+        label.appendChild(image);
+    }
+
+    function previewDocument(fileName, fileIndex, className, labelClass, previewDiv, inputType){
+        const checkbox = makeCheckbox(fileIndex, "document", className);
+        const label = makeLabel(fileIndex, "document", labelClass);
+        const doc = makeDoc(fileName, className);
+        checkbox.oninput = (e) => {
+            checkHandler(e, fileIndex, doc, "document", labelClass, inputType);
+        }
+        
+        previewDiv.appendChild(checkbox);
+        previewDiv.appendChild(label);
+        label.appendChild(doc);
+        previewDiv.appendChild(makeBr(className));
+    }
     
     useEffect(() => {
-        // 이부분 아래 겹치는 거 덜어내든지 다시 구조 짜기
         if(!_.isEmpty(articleDetail.files)){
             setVisible(true);
-            Array.from(articleDetail.files).forEach(file => {
+            Array.from(articleDetail.files).forEach((file, index) => {
                 const name = file.origin_name.split(".");
                 const fileType = name[name.length-1];
                 
                 if(isImage(fileType)){
                     axios.get(`/download/${file.id}`, {responseType: "blob"})
                     .then((res)=>{
-                        const image = document.createElement('img');
-                        image.setAttribute("name", "preview-infile");
-                        image.className = "image-preview-infile";
-                        image.setAttribute("alt", file.name);
-                        image.src = URL.createObjectURL(res.data);
-                        image.title = file.origin_name;
-                        document.getElementById('preview-img').appendChild(image);
+                        previewImage(res.data, file.id, file.name, "", "", document.getElementById('preview-img'), "infile");
                     });
                 }else {
-                    const br = document.createElement('br');
-                    br.setAttribute("name", "br");
-
-                    const doc = document.createElement('span');
-                    doc.setAttribute("name", "preview-infile");
-                    doc.className = "application-preview-infile";
-                    doc.textContent = file.origin_name;
-                    
-                    document.getElementById('preview-file').appendChild(doc);
-                    document.getElementById('preview-file').appendChild(br);
+                    previewDocument(file.origin_name, file.id, "", "", document.getElementById('preview-file'), "infile");
                 }
             })
         }
@@ -65,78 +109,59 @@ function ArticleEditForm({user, articleDetail, handleClose}){
     };
 
     const uploadFile = useCallback((e) => {
-        const previewImg = document.getElementById('preview-img');
-        const previewFile = document.getElementById('preview-file');
-        const child = Array.from(document.getElementsByName('preview'));
-        const els = Array.from(document.getElementsByName('el'));
+        const previewImg = document.getElementById('preview-img'); //img div
+        const previewFile = document.getElementById('preview-file'); //doc div
+        const imageUploaded = Array.from(document.getElementsByName('image-preview-uploaded')); //uploaded image (with checkbox, label element)
+        const docUploaded = Array.from(document.getElementsByName('document-preview-uploaded')); //uploaded document (with br element)
         
         if(!_.isEmpty(inputFile[0].files)){
-            setVisible(false);        
             fileName.length = 0;
-            if(!_.isEmpty(els)){
-                els.forEach(el => {
-                    previewFile.removeChild(el);
-                })
-            }
-            if(!_.isEmpty(child)){
-                child.forEach(files => {
-                    if(_.isEqual(files.nodeName, "IMG")){
-                        previewImg.removeChild(files);
-                    }else if(_.isEqual(files.nodeName, "SPAN")){
-                        previewFile.removeChild(files);
+            checkedUpload.clear();
+            if(!_.isEmpty(imageUploaded)){
+                for(let i=0;i<imageUploaded.length;i++){
+                    if(!(imageUploaded[i].nodeName === "IMG")){
+                        previewImg.removeChild(imageUploaded[i]);
                     }
-                    URL.revokeObjectURL(files.src);
-                })
+                }
+            }
+            if(!_.isEmpty(docUploaded)){
+                for(let i=0;i<docUploaded.length;i++){
+                    if(!(docUploaded[i].nodeName === "SPAN")){
+                        previewFile.removeChild(docUploaded[i]);
+                    }
+                }
             }
 
             setFiles(inputFile[0].files);
-            Array.from(inputFile[0].files).forEach(file => {
+            
+            Array.from(inputFile[0].files).forEach((file, index) => {
                 fileName.push(" " + file.name);
                 setVisible(true);
-                const fileType = file.type.split("/")[0];
+                const fileType = file.type.split("/")[1];
                 
-                if(_.isEqual(fileType, "image")){
-                    const image = document.createElement('img');
-                    image.setAttribute("name", "preview");
-                    image.className = "image-preview";
-                    image.setAttribute("alt", file.name);
-                    image.style = visible ? {display: "table-cell"} : {display: "none"};
-                    image.src = URL.createObjectURL(file);
-                    
-                    image.title = file.name;
-                    previewImg.appendChild(image);
-                }else if(_.isEqual(fileType, "application") || _.isEqual(fileType, "video")){
-                    const b = document.createElement('b'); // 새로 업로드된 파일임을 표시
-                    b.textContent = "NEW!";
-                    b.className = "new";
-                    b.setAttribute("name", "el");
-
-                    const br = document.createElement('br'); // 파일 목록 한 줄씩 출력(줄바꿈)
-                    br.setAttribute("name", "el");
-
-                    const doc = document.createElement('span');
-                    doc.setAttribute("name", "preview");
-                    doc.className = "application-preview";
-                    doc.style = visible ? {display: "table-cell"} : {display: "none"};
-                    doc.textContent = file.name;
-
-                    previewFile.appendChild(b);
-                    previewFile.appendChild(doc);
-                    previewFile.appendChild(br);
+                if(isImage(fileType)){
+                    previewImage(file, index, file.name, "-uploaded", "-uploaded", previewImg, "upload");
+                }else {
+                    previewDocument(file.name, index, "-uploaded", "-uploaded", previewFile, "upload");
                 }
             })
         }
         
-    }, [inputFile, fileName, visible]);
-    
-    for(let i = 0;i < files.length; i++){
-        formData.append("file", files[i]);
-    }
+    }, [inputFile, fileName]);
+
 
     const editArticle = (e) => {
         e.preventDefault();
         if(_.isEmpty(e.target.value)){ setTitle(articleDetail.title); }
         if(_.isEmpty(e.target.value)){ setContent(articleDetail.content); }
+
+        const formData = new FormData();
+        for(let i = 0;i < files.length; i++){
+            if(checkedUpload.has(i) === false){
+                formData.append("file", files[i]);
+                console.log(files[i].name);
+            }
+        }
 
         let data = {
             data: {
@@ -155,6 +180,14 @@ function ArticleEditForm({user, articleDetail, handleClose}){
         }).catch((e) => {
             alert("Failed to edit article.\nPlease try again.");
         });
+
+        Array.from(checkedInfile).map(async fileId => {
+            try {
+                return await axios.delete(`/delete/${fileId}`);
+            } catch (e) {
+                console.log(e.response.status + " : " + e.response.statusText);
+            }
+        })
     }
     if(_.isEmpty(articleDetail)) {return <div> Loading ... </div>}
     else { 
@@ -204,6 +237,54 @@ export  function isImage(dataType){
     }else{
         return false;
     }
+}
+
+export function makeDoc(fileName, attName){
+    const doc = document.createElement('span');
+    doc.setAttribute("name", "document-preview" + attName);
+    doc.className = "document-preview";
+    doc.style = _.isEqual(attName, "-uploaded") ? "color: cornflowerblue;" : "";
+    doc.textContent = fileName;
+    return doc;
+}
+
+export function makeBr(attName){
+    const br = document.createElement('br');
+    br.setAttribute("name", "document-preview" + attName);
+    return br;
+}
+
+export function makeImage(file, fileName, attName){
+    const image = document.createElement('img');
+    image.setAttribute("name", "image-preview" + attName);
+    image.className = "image-preview";
+    image.style = _.isEqual(attName, "-uploaded") ? "background-color: cornflowerblue;" : "";
+    image.setAttribute("alt", fileName);
+    image.src = URL.createObjectURL(file);
+    image.title = fileName;
+    return image;
+}
+
+export function makeLabel(index, fileType, labelClass){
+    const label = document.createElement('label');
+    label.setAttribute("name", fileType + "-preview" + labelClass);
+    label.htmlFor = "checkboxImage"+index;
+    label.key = index;
+    label.className = fileType + "-label" + labelClass;
+
+    return label;
+}
+
+export function makeCheckbox(index, fileType, attName){
+    const checkbox = document.createElement('input');
+    checkbox.type = "checkbox";
+    checkbox.setAttribute("name", fileType + "-preview" + attName);
+    checkbox.id = "checkboxImage"+index;
+    checkbox.key = index;
+    checkbox.className = "w3-check";
+    checkbox.style = "display: none;";
+
+    return checkbox;
 }
 
 export default ArticleEditForm;

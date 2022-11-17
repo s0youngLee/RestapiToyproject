@@ -12,11 +12,7 @@ public class LoginService {
 
 	public Boolean status(HttpServletRequest request){
 		HttpSession session = request.getSession(false);
-			if(session != null){
-				return true;
-			}else {
-				return false;
-			}
+		return session != null;
 	}
 
 	public void sessionExpired(HttpServletRequest request){

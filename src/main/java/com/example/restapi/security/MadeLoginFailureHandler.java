@@ -6,21 +6,18 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
-public class MadeLoginFailureHandler implements AuthenticationFailureHandler {
-	private final Logger logger;
-	public MadeLoginFailureHandler(Logger logger) {
-		this.logger = logger;
-	}
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
+public class MadeLoginFailureHandler implements AuthenticationFailureHandler {
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 		AuthenticationException exception) throws IOException, ServletException {
-		logger.error("Exception - " + exception.getMessage());
-		logger.error("Exception - " + exception.getCause());
+		log.error("Exception - " + exception.getMessage());
+		log.error("Exception - " + exception.getCause());
 		response.sendRedirect("http://localhost:3000/login");
 	}
 }

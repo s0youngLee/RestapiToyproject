@@ -7,13 +7,13 @@ import Files from './FileForm';
 import ArticleEditForm from './ArticleEdit';
 import axios from 'axios';
 
-function ArticleDeatil({user, isLogin}){
-    const articleDetail = FetchWithId("board", 1).data;
-    if(!articleDetail) { return <div> Loading .. </div>}
-    else { return <ArticleDetailData data={articleDetail} user={user} isLogin={isLogin}/>; }
+function ArticleDeatil(){
+    const articleDetail = FetchWithId("article", 1).data;
+    if(_.isEmpty(articleDetail)) { return <div> Loading .. </div>}
+    else { return <ArticleDetailData data={articleDetail} />; }
 }
 
-function ArticleDetailData({data, user, isLogin}) {
+function ArticleDetailData({data}) {
     const [isOpen, setIsOpen] = useState(false);
     const handleClose = () => {setIsOpen(false);}
     let resource = useMemo(() => { return new Blob(); },[])
@@ -49,23 +49,27 @@ function ArticleDetailData({data, user, isLogin}) {
                     <span style={{fontSize:"17px", color:"gray"}}> Finally edited : {data?.final_edit_date} </span><br/>
                    
                     <b style={{fontSize: "17px"}}> File list </b>
-                    <button onClick={() => { downloadAll() }}
+                    {/* {(isLogin && !_.isEmpty(data.files)) &&
+                        <>
+                        <button onClick={() => { downloadAll() }}
                             className="w3-button w3-border w3-round-xlarge w3-small w3-hover-light-blue"> Download All </button>
-                    <br/>
-                    <Files files={data.files} user={user} createdId={data.id}/>
-                    { _.isEqual(data.user_nickname, user?.nick_name) &&
-                        <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                                onClick={() => setIsOpen(true)}>Edit</button>
-                    }
+                        <br/>
+                        </>
+                    } */}
+                    <Files files={data.files}  createdId={data.id}/>
+                    {/* { _.isEqual(data.user_nickname, user?.nick_name) &&
+                    } */}
+                    <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
+                            onClick={() => setIsOpen(true)}>Edit</button>
                     <Modal isOpen={isOpen} onRequestClose={handleClose}>
-                        <ArticleEditForm user={user} articleDetail={data} handleClose={handleClose} />
+                        <ArticleEditForm articleDetail={data} handleClose={handleClose} />
                     </Modal>
-                    {canChange(user, data.user_nickname) &&
-                        <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
-                                onClick={() => { Delete("board", data.id) }}>Delete</button>
-                    }
+                    {/* {canChange(user, data.user_nickname) &&
+                    } */}
+                    <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
+                            onClick={() => { Delete("board", data.id) }}>Delete</button>
                 </div><hr/>
-                <Comment article={data} user={user} isLogin={isLogin}/>
+                <Comment article={data}/>
             </>
         )
     }

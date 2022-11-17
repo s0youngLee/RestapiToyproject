@@ -12,7 +12,7 @@ function ArticleSearchList({user}) {
     const [searchResults, setSearchResults] = useState({ data : {} });
     
     useEffect(() => {
-        axios.get(`/board/search/${searchParam[0]}-${searchParam[1]}/${searchParam[2]}`)
+        axios.get(`/article/search/${searchParam[0]}-${searchParam[1]}/${searchParam[2]}`)
         .then((res) => {
             setSearchResults(res?.data);
         })

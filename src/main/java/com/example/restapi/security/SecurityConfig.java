@@ -2,8 +2,6 @@ package com.example.restapi.security;
 
 import javax.servlet.http.HttpSessionListener;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +15,9 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.example.restapi.service.UserSecurityService;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -26,8 +27,6 @@ public class SecurityConfig {
 		this.userSecurityService = userSecurityService;
 		this.loginService = loginService;
 	}
-	Logger logger = LoggerFactory.getLogger(MadeLogoutHandler.class);
-
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		// session 만료 시 컨트롤 시도...? 수정 ****
@@ -39,7 +38,7 @@ public class SecurityConfig {
 			.httpBasic().disable()
 
 			.sessionManagement(session -> {
-				session.maximumSessions(1)
+				session.maximumSessions(5)
 					.maxSessionsPreventsLogin(true);
 			})
 			.sessionManagement()
@@ -61,14 +60,14 @@ public class SecurityConfig {
 
 			.formLogin()
 				.loginPage("/login")
-				.successHandler(new MadeLoginSuccessHandler(userSecurityService, logger))
-				.failureHandler(new MadeLoginFailureHandler(logger))
+				.successHandler(new MadeLoginSuccessHandler(userSecurityService))
+				.failureHandler(new MadeLoginFailureHandler())
 
 			.and()
 
 			.logout()
 				.logoutUrl("/logout")
-				.addLogoutHandler(new MadeLogoutHandler(logger))
+				.addLogoutHandler(new MadeLogoutHandler())
 				.clearAuthentication(true)
 				.invalidateHttpSession(true)
 				.deleteCookies("JSESSIONID")

@@ -25,17 +25,16 @@ function LoginForm(){
         e.preventDefault();
         axios.post('/login', form)
         .then((res) => {
-            console.log(res);
             alert("Login successful.");
             window.location.replace("/board");
         })
         .catch((err) => {
-            if(err.response.status === 404){
+            if(err.response.status === 403){
                 alert("Insufficient ID or Password.\nPlease try again.");
             }else {
                 alert(err + "\nFailed to login. Try again.");
             }
-            window.location.reload();
+            // window.location.reload();
         })
     }
 

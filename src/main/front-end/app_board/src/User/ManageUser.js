@@ -122,7 +122,7 @@ function EditUser({index, userinfo, editList}){
                 <td>{userinfo.name}</td>
                 <td>{userinfo.nick_name}</td>
                 <td style={{minWidth: "150px"}}>{userinfo.phone}</td>
-                <td>{userAuth} &nbsp; 
+                <td style={{minWidth: "110px"}}>{userAuth} &nbsp; 
                     <input type={"image"} src={require("../Icon/change.png").default} alt={"icon"}
                         style={{width:"20px", verticalAlign: "middle"}}
                         onClick={() => {changeAuth()}} />

@@ -40,9 +40,9 @@ function MyPage({user}){
             console.log(e);
         })
     }
-    
+
     if(_.isEmpty(user)) { 
-        return <div> Loading ... </div> 
+        return <div> User Not Found </div> 
     }else {
         return (
             <div className="div-box">

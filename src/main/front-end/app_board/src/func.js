@@ -16,7 +16,7 @@ export function canChange(user, id){
     if(_.isEmpty(user)){
         return false;
     }else{
-        return isAdmin(user.auth) ||  _.isEqual(id, user?.nick_name);
+        return isAdmin(user) ||  _.isEqual(id, user?.nick_name);
     }
 }
 
@@ -37,7 +37,11 @@ export function getUrlId(n){
 export function FetchWithoutId(dataName){
     const [data, setData] = useState({ data : {} });
     useEffect(() => {
-        axios.get(`/${dataName}`)
+        axios.get(`/${dataName}`, { 
+            headers : {
+                "cache" : "no-store"
+            }
+         })
         .then((res) => {
             setData(res?.data);
         })
@@ -58,7 +62,11 @@ export function FetchWithId(dataName, n){
     const [data, setData] = useState({ data : {} });
     const id = getUrlId(n);
     useEffect(() => {
-        axios.get(`/${dataName}/${id}`)
+        axios.get(`/${dataName}/${id}`, { 
+            headers : {
+                "cache" : "no-store"
+            }
+        })
         .then((res) => {
             setData(res?.data);
         })
@@ -99,7 +107,7 @@ export function Download(resource, dataname, id, filename){
         anchor.click();
 
         document.body.removeChild(anchor);
-        window.URL.revokeObjectURL(downloadUrl);
+        // window.URL.revokeObjectURL(downloadUrl);
     }).catch((e) => {
         console.log(e);
     })

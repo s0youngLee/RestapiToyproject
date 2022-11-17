@@ -9,20 +9,19 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
-import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import com.example.restapi.service.UserSecurityService;
 
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class MadeLoginSuccessHandler implements AuthenticationSuccessHandler {
 	private final UserSecurityService userSecurityService;
 
-	private final Logger logger;
-	public MadeLoginSuccessHandler(UserSecurityService userSecurityService, Logger logger) {
+	public MadeLoginSuccessHandler(UserSecurityService userSecurityService) {
 		this.userSecurityService = userSecurityService;
-		this.logger = logger;
 	}
 
 	@Override
@@ -38,12 +37,12 @@ public class MadeLoginSuccessHandler implements AuthenticationSuccessHandler {
 		HttpSession session = request.getSession(false);
 		if(session != null){
 			session.setAttribute("user", userSecurityService.loadUserByUsername(authentication.getName()));
-			logger.info("Authenticated with " + authentication.getName());
-			response.sendRedirect("http://localhost:3000/board");
+			log.info("Authenticated with " + authentication.getName());
+			session.setMaxInactiveInterval(1200);
+			// response.sendRedirect("http://192.168.1.158:3000/board");
 		}else{
-			logger.warn("No User. Login suggested.");
+			log.warn("No User. Login suggested.");
 		}
-		// session.setMaxInactiveInterval(1200);
 
 	}
 }

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +31,8 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @RestController
-@RequestMapping("/board")
+@CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("/article")
 public class ArticleController extends AbstractCrudMethod<ArticleRequest, ArticleResponseDto> {
     private final ArticleService articleService;
     public ArticleController(@Lazy ArticleService articleService) {
