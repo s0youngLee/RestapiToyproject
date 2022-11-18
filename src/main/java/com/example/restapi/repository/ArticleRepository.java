@@ -8,17 +8,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.example.restapi.model.entity.Article;
+import com.example.restapi.model.entity.UserInfo;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Integer> {
 	List<Article> findAllByCategoryId(Integer id);
-	List<Article> findAllByCreatedId(String nickName);
-
+	// List<Article> findAllByCreatedId(String nickName);
+	List<Article> findAllByUser(UserInfo nickName);
     @Modifying
     @Query("update Article a set a.visitCnt = a.visitCnt + 1 where a.id = :articleId")
     void updateVisitCnt(int articleId);
 
-	@Modifying
-	@Query("update Article a set a.visitCnt = a.visitCnt - 1 where a.id = :articleId")
-	void decreaseVisitCnt(int articleId);
 }

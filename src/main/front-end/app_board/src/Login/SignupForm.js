@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import "../App.css";
+import { autoHypenTel } from "../func";
 
 
 function SignupForm(){
@@ -29,7 +30,7 @@ function SignupForm(){
     }, [])
 
     const inputPhoneNumber = useCallback(e => {
-        setPhoneNumber(e.target.value);
+        setPhoneNumber(autoHypenTel(e.target.value));
     }, [])
     
     const setAdmin = useCallback(e => {
@@ -53,18 +54,17 @@ function SignupForm(){
                 phone : phoneNumber
             }
         }).then((res) => {
-            alert("Register Successed.\nPlease login.");
+            alert("회원가입이 완료되었습니다.\n로그인 페이지로 이동합니다.");
             window.location.href="/login";
         }).catch((e) => {
             if(e.response.status === 451){
-                if (window.confirm("Existing User ID.\nWanna login with this id?")){
+                if (window.confirm("이미 존재하는 아이디입니다.\n이 아이디로 로그인하시겠습니까?")){
                     window.location.href =  "/login";
                 }else{
-                    alert("Please register with other ID");
+                    alert("다른 아이디로 가입해주세요.");
                 }
             }else{
-                alert("Error. Please try again.\n" + e.response);
-                // window.location.replace("/login/signup");
+                alert("Error. 다시 시도해주세요.\n" + e.response);
             }
         });
     }
@@ -79,7 +79,8 @@ function SignupForm(){
                 <input type="text" name="email" placeholder="E-Mail ( ID )" onChange={inputEmail} required/> <br/>
                 <input type="password" name="password" placeholder="Password" onChange={inputPassword} required/> <br/>
                 <input type="text" name="nickname" placeholder="nickname" onChange={inputNickName} required/> <br/>
-                <input type="text" maxLength={'11'} name="phone" placeholder="phone number" onChange={inputPhoneNumber}/> <br/>
+                <input type={"text"} placeholder="phone number (ex: 010-1234-1234)" onChange={inputPhoneNumber} value={phoneNumber} 
+                       maxLength="13" pattern="[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}"></input><br/>
                 <p> ROLE : &nbsp;&nbsp;
                     <input type="radio" className="w3-radio" name="auth" value="ROLE_USER" defaultChecked="checked" onChange={setUser}/> User&nbsp;&nbsp;
                     <input type="radio" className="w3-radio" name="auth" value="ROLE_ADMIN" onChange={setAdmin}/> Admin<br/>

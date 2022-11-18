@@ -1,26 +1,26 @@
 import {useState, useCallback} from "react";
 import _ from 'lodash';
 import axios from "axios";
-import {canChange, Delete} from "../func";
+import {canRemove, Delete, isPublisher} from "../func";
 
-function CommentData({index, data, user}){
+function CommentData({index, data}){
     const [visible, setVisible] = useState(false);
     return(
         <><li className="filelist" key={index}>
             <span> <b> {data?.user_id} </b> / <span style={{color: "gray"}}> {data?.created_at} </span> </span><br/>
             <div className="info-box"> 
                 {data?.content} 
-                {canChange(user, data?.user_id) && 
-                    <input type={"image"} src={require("../remove.png").default} alt={"icon"}
+                {canRemove(data?.user_id) && 
+                    <input type={"image"} src={require("../Icon/remove.png").default} alt={"icon"}
                         style={{float: "right", width:"20px"}}
-                        onClick={() => {Delete("comment", data.id)}} />
+                        onClick={() => {Delete("comment", data.id)}} /> 
+                }
+                {isPublisher(data.user_id) && 
+                    <input type={"image"} src={require("../Icon/edit.png").default} alt={"icon"}
+                        style={{width:"20px", float: "right", marginRight: "10px"}}
+                        onClick={() => {setVisible(!visible)}} /> 
                 }
             </div>
-            {_.isEqual(user.nick_name, data?.user_id) &&
-                <input type={"image"} src={require("../edit.png").default} alt={"icon"}
-                    style={{width:"40px", verticalAlign: "top"}}
-                    onClick={() => {setVisible(!visible)}} />
-            }
             
             {visible && <CommentEditForm data={data} visible={visible} setVisible={setVisible}/>} 
         </li> <br/></>
@@ -42,10 +42,10 @@ function CommentEditForm({data, visible, setVisible}){
                 content : content
             }
         }).then(() => {
-            alert("comment edited.");
+            alert("댓글이 수정되었습니다.");
             window.location.href=`/board/${data?.article_id}`;
         }).catch((e) => {
-            alert("Failed to edit comment.\nPlease try again.");
+            alert("댓글 수정에 실패했습니다.");
             window.location.href=`/board/${data?.article_id}`;
             console.log(e.response);
         })

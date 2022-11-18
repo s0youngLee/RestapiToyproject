@@ -12,7 +12,7 @@ public class ArticleRequest {
 	private Integer id;
 	private String title;
 	private String content;
-	private String createdId;
+	private Integer createdId;
 	private LocalDateTime createdAt;
 	private Integer categoryId;
 	private LocalDateTime finalEditDate;
@@ -54,11 +54,11 @@ public class ArticleRequest {
 		this.content = content;
 	}
 
-	public String getCreatedId() {
+	public Integer getCreatedId() {
 		return createdId;
 	}
 
-	public void setCreatedId(String createdId) {
+	public void setCreatedId(Integer createdId) {
 		this.createdId = createdId;
 	}
 

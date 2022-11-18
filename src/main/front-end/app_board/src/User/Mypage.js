@@ -1,29 +1,44 @@
-import { useState, useMemo } from "react";
-import PasswordEditForm from "../Login/PasswordEditForm";
+import { useState, useMemo, useEffect } from "react";
+import MyInfoEditForm from "../Login/MyInfoEditForm";
 import { isAdmin, FetchWithoutId } from "../func";
 import MyArticles from "./MyArticles";
 import MyComments from "./MyComments";
-import UserManage from "./ManageUser";
 import axios from "axios";
+import _ from "lodash";
 
-function MyPage({user}){
-    const articles = Array.from(FetchWithoutId("board/user"));
-    const comments = Array.from(FetchWithoutId("comment/user"));
-    const manage = Array.from(FetchWithoutId("user/manage").data);
-
+function MyPage(){
     const [visible, setVisible] = useState(false);
-    
     const [visibleArticle, setVisibleArticle] = useState(true);
     const [visibleComment, setVisibleComment] = useState(false);
-    const [visibleUser, setVisibleUser] = useState(false);
+    
+    let resource = useMemo(() => { return new Blob(); },[])
+    
+    const [user, setUser] = useState();
+    const [articles, setArticles] = useState();
+    const [comments, setComments] = useState();
+
+    useEffect(() => {
+        if(_.isEmpty(user)){
+            axios.get("/user").then((res) => {
+                setUser(res.data.data);
+            }).catch((e) => {
+                console.log(e);
+            })
+        }
+        if(_.isEmpty(articles) && !_.isEqual(articles, [])){
+            FetchWithoutId(articles, setArticles, "article/user");
+        }
+        if(_.isEmpty(comments) && !_.isEqual(comments, [])){
+            FetchWithoutId(comments, setComments, "comment/user");
+        }
+    },[articles, comments, user]);
 
     function setClicked(){
         setVisibleArticle(false);
         setVisibleComment(false);
-        setVisibleUser(false);    
+        setVisible(false);  
     }
 
-    let resource = useMemo(() => { return new Blob(); },[])
     function downloadExcel(dataName){
         axios.get(`/${dataName}/excel/download`, {responseType: "blob"})
         .then((res) => {
@@ -38,54 +53,56 @@ function MyPage({user}){
             anchor.click();
     
             document.body.removeChild(anchor);
-            window.URL.revokeObjectURL(downloadUrl);
         }).catch((e) => {
             console.log(e);
         })
     }
 
-    if(!user) { return <div> Loading ... </div> }
-    else {
+    if(_.isEmpty(user)) { 
+        return <div style={{marginTop: "100px", textAlign: "center"}}><b style={{fontSize: "30px"}}>User Not Found</b> </div> 
+    }else {
         return (
-            <div className="div-box">
+            <div className="div-box" style={{marginLeft: "10px"}}>
                 <b style={{ fontSize: "40px"}}>MY PAGE</b> <hr/>
                 <div style={{textAlign: "left",padding: "10px", margin: "20px", marginBottom: 0}}>
                     <b> Name : </b><span> {user.name} </span><br/>
                     <b> Email : </b><span> {user.email} </span><br/>
                     <b> Nickname : </b><span> {user.nick_name} </span><br/>
                     <b> PhoneNumber : </b><span> {user.phone} </span><br/><br/>
-                    {isAdmin(user?.auth) && <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                            onClick={() => downloadExcel("board")}> Download board </button>}
-                    {isAdmin(user?.auth) && <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                            onClick={() => downloadExcel("user")}> Download Users </button>}
-                    <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" 
-                            onClick={() => setVisible(!visible)}> {visible ? "Cancel" : "Change PW"} </button>
-                    {visible && <PasswordEditForm user={user}/>}
+                    {isAdmin() && 
+                        <div>
+                            <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
+                                onClick={() => downloadExcel("article")}> Download board </button>
+                            <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
+                                onClick={() => downloadExcel("user")}> Download Users </button>
+                            <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
+                                onClick={() => window.location.href="/user/manage"}> Manage Users </button>
+                        </div>
+                    }                    
                 </div><hr/>
                 <div style={{width: "100%", height: "5.6vh", textAlign: "center", lineHeight : "5.6vh"}}>
                     <div className="page-bar" 
-                        style={visibleArticle ? {backgroundColor: "mediumslateblue", color: "aliceblue", fontSize: "20px"} : {}} 
+                        style={visibleArticle ? {backgroundColor: "mediumslateblue", color: "aliceblue"} : {}} 
                         onClick={() => {
                             setClicked();
                             setVisibleArticle(true);
                             }}> My Articles </div>
                     <div className="page-bar" 
-                        style={visibleComment ? {backgroundColor: "mediumslateblue", color: "aliceblue", fontSize: "20px"} : {}}
+                        style={visibleComment ? {backgroundColor: "mediumslateblue", color: "aliceblue"} : {}}
                         onClick={() => {
                             setClicked();
                             setVisibleComment(true);
                             }}> My Comments </div>
-                    {isAdmin(user?.auth) && 
                     <div className="page-bar" 
-                        style={visibleUser ? {backgroundColor: "mediumslateblue", color: "aliceblue", fontSize: "20px"} : {}}
+                        style={visible ? {backgroundColor: "mediumslateblue", color: "aliceblue"} : {}}
                         onClick={() => {
                             setClicked();
-                            setVisibleUser(true);
-                            }}> Manage Users </div>}
+                            setVisible(true);
+                            }}> Change MyInfo </div>
                 </div><hr/>
                 {visibleArticle && <MyArticles articles={articles}/>}
                 {visibleComment && <MyComments comments={comments}/>}
-                {visibleUser && <UserManage manage={manage}/>}
+                {visible && <MyInfoEditForm user={user} />}
             </div>
         )
     }

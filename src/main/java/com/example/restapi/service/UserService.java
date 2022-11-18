@@ -1,44 +1,57 @@
 package com.example.restapi.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.UserInfo;
 import com.example.restapi.model.network.Status;
 import com.example.restapi.model.network.request.UserRequest;
+import com.example.restapi.model.network.response.UserExcelResponseDto;
 import com.example.restapi.model.network.response.UserResponseDto;
+import com.example.restapi.repository.ArticleRepository;
 import com.example.restapi.repository.UserRepository;
-import com.example.restapi.security.MadeLogoutHandler;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @Service
 public class UserService {
 	private final UserRepository userRepository;
-	private final ExcelSetting<UserResponseDto> excelSetting;
-	Logger logger = LoggerFactory.getLogger(MadeLogoutHandler.class);
+
+	//임시
+	private final ArticleRepository articleRepository;
+	private final ArticleService articleService;
+	private final ExcelSetting<UserExcelResponseDto> excelSetting;
 	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-	public UserService(@Lazy UserRepository userRepository, ExcelSetting<UserResponseDto> excelSetting) {
+	public UserService(@Lazy UserRepository userRepository, ArticleRepository articleRepository,
+		ArticleService articleService, ExcelSetting<UserExcelResponseDto> excelSetting) {
 		this.userRepository = userRepository;
+		this.articleRepository = articleRepository;
+		this.articleService = articleService;
 		this.excelSetting = excelSetting;
 	}
 
-	public String phone_format(String number) {
-		String regEx = "(\\d{3})(\\d{3,4})(\\d{4})";
-		return number.replaceAll(regEx, "$1-$2-$3");
-	}
-
-	public Status<UserResponseDto> userPage(UserInfo user) {
-		return Status.OK(buildUser(user));
+	public Status<UserResponseDto> userPage(UserInfo user, HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		if(session == null || !request.isRequestedSessionIdValid() || user == null){
+			log.warn("Session condition : Invalid");
+			return null;
+		}else{
+			return Status.OK(buildUser(user));
+		}
 	}
 
 	public List<UserResponseDto> userList(String auth) {
@@ -61,22 +74,29 @@ public class UserService {
 				.auth(body.getAuth())
 				.nickName(body.getNickName())
 				.name(body.getName())
-				.phone(phone_format(body.getPhone()))
+				.phone(body.getPhone())
+				.lastAccess(LocalDateTime.now())
 				.build();
 		try{
 			return Status.OK(userRepository.save(user));
 		}catch (DataIntegrityViolationException e){
-			logger.error("Existing User. Please Try again.");
+			log.error("Existing User. Please Try again.");
 			response.setStatus(451);
 			return Status.ERROR("Existing User. Please Try again.");
 		}
 	}
 
-	public Status<UserInfo> changePassword(Integer code, Status<UserRequest> request) {
+	public Status<UserInfo> userInfoEdit(UserInfo user, Status<UserRequest> request) {
 		UserRequest body = request.getData();
-		UserInfo user = userRepository.getReferenceById(code);
 
-		user.setPassword(encoder.encode(body.getPassword()));
+		user.setNickName(body.getNickName());
+		log.info(body.getNickName());
+		if(!Objects.equals(body.getPassword(), "")){
+			user.setPassword(encoder.encode(body.getPassword()));
+			log.info(body.getPassword());
+		}
+		user.setPhone(body.getPhone());
+		log.info(body.getPhone());
 		return Status.OK(userRepository.save(user));
 	}
 
@@ -94,7 +114,19 @@ public class UserService {
 		}
 	}
 
+	public Status<UserInfo> updateAccessDate(UserInfo user) {
+		user.setLastAccess(LocalDateTime.now());
+		return Status.OK(userRepository.save(user));
+	}
+
+
 	public Status deleteUser(int code) {
+		// 임시 처리
+		List<Article> toDelete = articleRepository.findAllByUser(userRepository.getReferenceById(code));
+		for(Article article : toDelete){
+			articleService.delete(article.getId());
+		}
+
 		return userRepository.findById(code)
 			.map(delUser -> {
 				userRepository.delete(delUser);
@@ -111,21 +143,31 @@ public class UserService {
 			.nickName(user.getNickName())
 			.phone(user.getPhone())
 			.auth(user.getAuth())
+			.lastAccess(user.getLastAccess())
 			.build();
 	}
 
 	public void downloadExcelUser(HttpServletResponse response) {
-		List<UserResponseDto> dtoData = new ArrayList<>();
+		List<UserExcelResponseDto> dtoData = new ArrayList<>();
 		for(UserInfo user : userRepository.findAll()){
-			dtoData.add(buildUser(user));
+			UserExcelResponseDto body = UserExcelResponseDto.builder()
+				.code(user.getCode())
+				.email(user.getEmail())
+				.name(user.getName())
+				.nickName(user.getNickName())
+				.phone(user.getPhone())
+				.auth(user.getAuth())
+				.lastAccess(user.getLastAccess())
+				.build();
+			dtoData.add(body);
 		}
 
 		List<List<String>> dataList = new ArrayList<>();
-		for(UserResponseDto data : dtoData){
+		for(UserExcelResponseDto data : dtoData){
 			dataList.add(data.getData());
 		}
 
-		excelSetting.writeWorkbook(response, UserResponseDto.class.getRecordComponents(), dtoData, dataList);
+		excelSetting.writeWorkbook(response, UserExcelResponseDto.class.getRecordComponents(), dtoData, dataList);
 	}
 
 }

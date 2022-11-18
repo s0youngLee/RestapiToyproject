@@ -1,5 +1,6 @@
 package com.example.restapi.model.entity;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,14 +16,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.Builder;
 
-// @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Builder
 public class UserInfo implements UserDetails {
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer code;
-
 	private String email;
 	private String password;
 	private String auth;
@@ -30,12 +29,15 @@ public class UserInfo implements UserDetails {
 	private String name;
 	private String phone;
 
+	private LocalDateTime lastAccess;
+
 	public UserInfo() {
 
 	}
 
 	public UserInfo(Integer code, String email, String password, String auth, String nickName, String name,
-		String phone) {
+		String phone,
+		LocalDateTime lastAccess) {
 		this.code = code;
 		this.email = email;
 		this.password = password;
@@ -43,8 +45,16 @@ public class UserInfo implements UserDetails {
 		this.nickName = nickName;
 		this.name = name;
 		this.phone = phone;
+		this.lastAccess = lastAccess;
 	}
 
+	public LocalDateTime getLastAccess() {
+		return lastAccess;
+	}
+
+	public void setLastAccess(LocalDateTime lastAccess) {
+		this.lastAccess = lastAccess;
+	}
 
 	public String getNickName() {
 		return nickName;

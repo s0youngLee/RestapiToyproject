@@ -19,8 +19,9 @@ import com.example.restapi.model.network.response.CommentResponseDto;
 import com.example.restapi.repository.ArticleRepository;
 import com.example.restapi.repository.CommentRepository;
 
+import lombok.extern.log4j.Log4j2;
 
-
+@Log4j2
 @Service
 public class CommentService extends AbstractCrudMethod<CommentRequest, CommentResponseDto> {
     private final CommentRepository commentRepository;
@@ -96,6 +97,7 @@ public class CommentService extends AbstractCrudMethod<CommentRequest, CommentRe
         for(Comment comment : commentRepository.findAllByUserId(nickName)){
             commentList.add(buildComment(comment));
         }
+        log.warn(commentList);
         return commentList;
     }
 

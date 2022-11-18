@@ -1,11 +1,21 @@
 import axios from "axios";
-import {useState, useCallback} from "react";
+import { useState, useCallback, useEffect } from "react";
 import { FetchWithId, getUrlId } from "../func";
 import _ from 'lodash';
 
 
 function CategoryEdit(){
-    const category = FetchWithId("category", 1).data;
+    const [category, setCategory] = useState();
+    const [categoryData, setCategoryData] = useState();
+
+    useEffect(() => {
+        if(_.isEmpty(categoryData)){
+            FetchWithId(categoryData, setCategoryData, "category", 1);
+        }else{
+            setCategory(categoryData.data);
+        }
+    }, [categoryData]);
+
     if(_.isEmpty(category)) {return <div> Loading ... </div>}
     else { 
         return (
@@ -33,10 +43,10 @@ function CategoryEditForm({categoryId, nameOrigin}){
                 name: categoryName
             }
         }).then(() => {
-            alert("Category edited. Move to " + categoryName);
+            alert("카테고리 수정이 완료되었습니다.\n카테고리 " + categoryName +" 로 이동합니다.");
             window.location.href = `/board/category/${categoryId}`;
         }).catch((e) => {
-            alert("Failed to edit category.\nError : " + e.response.statusText);
+            alert("카테고리 수정에 실패했습니다.\nError : " + e.response.statusText);
             window.location.reload();
         });
     }

@@ -28,11 +28,13 @@ public class Article {
     private Integer id;
     private String title;
     private String content;
-    private String createdId;
+    // private Integer createdId;
     private LocalDateTime createdAt;
     private Integer visitCnt;
     private LocalDateTime finalEditDate;
-
+    @ManyToOne
+    @JoinColumn(name="created_id")
+    private UserInfo user;
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
@@ -43,22 +45,31 @@ public class Article {
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
     private List<Filedata> files;
 
-    public Article(Integer id, String title, String content, String createdId, LocalDateTime createdAt, Integer visitCnt,
-        LocalDateTime finalEditDate, Category category, List<Comment> comment, List<Filedata> files) {
+    public Article() {
+
+    }
+
+    public Article(Integer id, String title, String content, LocalDateTime createdAt,
+        Integer visitCnt,
+        LocalDateTime finalEditDate, UserInfo user, Category category, List<Comment> comment, List<Filedata> files) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.createdId = createdId;
         this.createdAt = createdAt;
         this.visitCnt = visitCnt;
         this.finalEditDate = finalEditDate;
+        this.user = user;
         this.category = category;
         this.comment = comment;
         this.files = files;
     }
 
-    public Article() {
+    public UserInfo getUser() {
+        return user;
+    }
 
+    public void setUser(UserInfo user) {
+        this.user = user;
     }
 
     public LocalDateTime getFinalEditDate() {
@@ -101,13 +112,13 @@ public class Article {
         this.content = content;
     }
 
-    public String getCreatedId() {
-        return createdId;
-    }
-
-    public void setCreatedId(String createdId) {
-        this.createdId = createdId;
-    }
+    // public Integer getCreatedId() {
+    //     return createdId;
+    // }
+    //
+    // public void setCreatedId(Integer createdId) {
+    //     this.createdId = createdId;
+    // }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;

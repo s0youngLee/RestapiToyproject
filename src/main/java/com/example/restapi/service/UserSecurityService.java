@@ -28,7 +28,6 @@ public class UserSecurityService implements UserDetailsService {
 			logger.error(e.getMessage());
 			throw e;
 		}
-		// logger.info(String.valueOf(user));
 		return user;
 	}
 }

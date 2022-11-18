@@ -39,7 +39,7 @@ input[type=text], input[type=password] {
   border: 1px solid gainsboro;
   font-weight: bold;
   border-radius: 5px;
-  font-size: 17px;
+  font-size: x-small;
   text-align: center;
   padding-top: 0.9%;
   padding-bottom: 0.9%;
@@ -81,7 +81,7 @@ table {
 }
 
 td, tr, th {
-  padding: 10px;
+  padding: 5px;
 }
 
 button{
@@ -97,19 +97,15 @@ button{
   color: slateblue;
 }
 
+.mypage-none {
+  text-align: left;
+}.mypage-none:hover {
+  background-color: gainsboro;
+}
+
 .clickable:hover{
   background-color: lightsteelblue;
   cursor: pointer;
-}
-
-.home{
-  width: 300px;
-  height: 450px;
-  position: absolute;
-  top: 10%;
-  left: 50%;
-  text-align: center;
-  transform: translate(-50%, 0%);
 }
 
 /* Box CSS */
@@ -120,29 +116,12 @@ button{
   height: 50vh;
 }
 
-/* media css */
-@media screen and (max-width: 1010px) {
-  .div-box {
-    margin-top: 100px;
-  }
-}
-
-@media screen and (max-width: 802px){
-  
-}
-
-@media screen and (max-width: 620px){
-  .div-box {
-    margin-top: 150px;
-  }
-}
-
 .content-box {
   border: 1px solid gainsboro;
   border-radius: 5px;
   word-break: break-all;
   text-align: left;
-  height: 60%;
+  height: 45%;
   margin-bottom: 10px;
   padding: 10px;
   overflow: auto;
@@ -168,7 +147,7 @@ button{
 
 .page-bar {
   display: inline-block;
-  width: 30%;
+  width:30%;
   height: 100%;
   vertical-align: middle;
   margin-bottom: 1%;
@@ -193,6 +172,7 @@ button{
   color: mediumslateblue;
 }
 
+/* preview zone css */
 #preview-zone {
   border: 1px solid gainsboro;
   border-radius: 5px;
@@ -203,19 +183,118 @@ button{
   border-right: 1px solid gainsboro;
   margin-bottom: 10px;
   width: 65%;
+  height: auto;
 }
 #preview-file {
   display: inline-block;
+  overflow: hidden;
   vertical-align: top;
   width: 35%;
 }
 
-.image-preview {
-  margin: 5px;
+/* label css */
+.image-label, .image-label-uploaded{
+  display: inline-flex;
   width: 46%;
+  height: 150px;
+  margin: 5px;
 }
 
-.application-preview {
-  margin: 5px;
+
+/* image css */
+.image-preview{
+  width: 100%;
+  border-radius: 5px;
+  padding: 5px;
+  object-fit: cover;
+}.image-preview:hover{
+  cursor: pointer;
+}
+
+/* document css */
+.document-preview, .document-label, .document-label-uploaded{
+  padding: 1px;
   font-weight: 600;
+  text-align: center;
+  vertical-align: middle;
+}
+.document-preview:hover{
+  cursor: pointer;
+}
+
+
+.manage {
+  border-top: 1px solid gainsboro;
+}.manage:hover {
+  background-color: gainsboro;
+  cursor: pointer;
+}
+
+.bar-top{
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.modal-box{
+  text-align: left;
+  height: 50vh;
+}
+
+.p-user{
+  color: gray;
+  margin-bottom: 0;
+}
+
+
+.b-user{
+  color: black;
+}
+
+@media only screen and (max-device-width: 400px) {
+  .div-box{
+    width: 370px;
+    margin-top: 110px;
+  }
+
+  .modal-box{
+    text-align: left;
+    margin-top: 10px;
+    width: 265px;
+    height: 400px;
+  }
+
+  .bar-top{
+    width: 390px;
+  }
+  
+  table{
+    width: 390px;
+  }
+
+  th {
+    font-size: small;
+  }
+
+  td {
+    font-size: smaller;
+  }
+
+  .image-label, .image-label-uploaded{
+    width: 80%;
+    height: 100px;
+  }
+
+  .document-preview{
+    font-size: xx-small;
+  }
+
+  .paginate{
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    margin-top: 10px;
+  }
+
 }

@@ -2,9 +2,9 @@ import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import "../App.css";
-import { ifError } from "../func";
 
 function LoginForm(){
+    sessionStorage.setItem("dateAlert", false);
     const [account, setAccount] = useState({
         username: "",
         password: "",
@@ -23,23 +23,18 @@ function LoginForm(){
 
     const userlogin = (e) => {
         e.preventDefault();
-        axios.post('/userlogin', form)
+        axios.post('/login', form)
         .then((res) => {
-            if(res.status===200){
-                sessionStorage.setItem("isLogin", true);
-                alert("Login successful.\nMove to board.");
-                window.location.replace("/board");
-            }else {
-                ifError(res);
-            }
+            alert("성공적으로 로그인되었습니다.\n게시판 페이지로 이동합니다.");
+            window.location.replace("/board");
         })
         .catch((err) => {
-            if(err.response.withCredentials===false){
-                alert("Insufficient ID or Password.\nPlease try again.");
-            }else{
-                alert(err + "\nFailed to login. Try again.");
+            if(err.response.status === 401){
+                alert("아이디 또는 비밀번호가 틀렸습니다.\n다시 시도하세요.");
+            }else {
+                alert(err + "\n로그인 실패.");
+                window.location.reload();
             }
-            window.location.reload();
         })
     }
 
@@ -53,7 +48,7 @@ function LoginForm(){
             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" type="submit" 
                     onClick={userlogin} >Login</button>
             <Link className="none" to="/login/signup">
-                <button className="w3-button w3-round-xlarge w3-small w3-hover-deep-purple w3-border">Sign up</button>
+                <button className="w3-button w3-round-xlarge w3-small w3-hover-deep-purple w3-border">Register</button>
             </Link>
         </form> 
     </div>

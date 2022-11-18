@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { User } from "./func";
+import { useEffect, useState } from "react";
+import _ from "lodash";
 
 import Home from "./Home";
 import Bar from "./Bar";
@@ -18,40 +19,79 @@ import LoginForm from "./Login/LoginForm";
 import SignupForm from "./Login/SignupForm";
 
 import MyPage from "./User/Mypage";
-import UserManage from "./User/ManageUser";
-import MyArticles from "./User/MyArticles";
-import MyComments from "./User/MyComments";
+import PageNotFound from "./PageNotFound";
 
 import './App.css';
 import 'w3-css';
+import UserManage from "./User/ManageUser";
+import axios from "axios";
 
 function App() {
-    const login = sessionStorage.getItem("isLogin");
-    const user = User(login);
+    const [user, setUser] = useState(undefined);
+    const [login, setLogin] = useState(undefined);
 
+    useEffect(() => {
+        axios.get("/loginstatus")
+        .then((res) => {
+            if(_.isEqual(res.data, true)){
+                sessionStorage.setItem("login", "true");
+                setLogin(true);
+            }else{
+                sessionStorage.setItem("login", "false");
+                setLogin(false);
+            }
+        }).catch((e) => {
+            console.log(e);
+        })
+    }, [user])
+
+    useEffect(() => {
+        if(_.isEqual(sessionStorage.getItem("login"), "true")){
+            if(_.isEmpty(sessionStorage.getItem("username"))){
+                axios.get("/user").then((res) => {
+                    console.log(res.data.data);
+                    setUser(res.data.data);
+                    sessionStorage.setItem("username", res.data.data.nick_name);
+                    sessionStorage.setItem("userauth", res.data.data.auth);
+                    sessionStorage.setItem("usercode", res.data.data.code);
+                    sessionStorage.setItem("lastAccess", res.data.data.last_access);
+                }).catch((e) => {
+                    console.log(e);
+                })
+            }
+        }else if(_.isEqual(login, false)){
+            if(_.isEqual(sessionStorage.getItem("dateAlert"), "true")){
+                // 세션 만료 또는 2번째 로그인 등
+                alert("로그인 정보가 만료되었습니다. 다시 로그인하세요.");
+                sessionStorage.clear();
+                window.location.href = "/login";
+            }
+            }
+    }, [login, user]);
+    
     return(
         <Router>
-            <Bar isLogin={login} user={user}/>
-                <Routes>
-                <Route path="/" exact element={<Home isLogin={login}/>} />
+            <Bar isLogin={sessionStorage.getItem("login")}/>
+            <Routes>
+                <Route path="/" exact element={<Home />} />
 
-                <Route path="/board" element={<Board user={user} isLogin={login}/>} />
-                <Route path="/board/:articleId" element={<ArticleDetail user={user} isLogin={login}/>} /> 
-                <Route path="/board/category/:categoryId" element={<ArticlesByCategory user={user} isLogin={login} />} />
-                <Route path="/search/:keyword" element={<ArticleSearchList user={user} />} />
-                <Route path="/board/add/:categoryId" element={<ArticleRegister user={user}/>} />
+                <Route exact path="/board" element={<Board  />} />
+                <Route path="/board/:articleId" element={<ArticleDetail  />} /> 
+                <Route path="/board/category/:categoryId" element={<ArticlesByCategory />} />
+                <Route path="/board/add/:categoryId" element={<ArticleRegister />} />
+                <Route path="/search/:keyword" element={<ArticleSearchList  />} />
 
-                <Route path="/category" element={<CategoryDeatil />} />
+                <Route exact path="/category" element={<CategoryDeatil />} />
                 <Route path="/category/add/" element={<CategoryRegister />} />
                 <Route path="/category/edit/:categoryId" element={<CategoryEdit />} />
 
-                <Route path="/login" element={<LoginForm/>} />
+                <Route exact path="/login" element={<LoginForm/>} />
                 <Route path="/login/signup" element={<SignupForm />} />
                 
-                <Route path="/mypage" element={<MyPage user={user}/>} />
-                <Route path="/mypage/board" element={<MyArticles/>} />
-                <Route path="/mypage/comments" element={<MyComments/>} />
-                <Route path="/user" element={<UserManage />} />
+                <Route path="/mypage" element={<MyPage />} />
+                <Route path="/user/manage" element={<UserManage />} />
+
+                <Route path="*" element={<PageNotFound />} /> {/* No route match location Handle */}
             </Routes>
         </Router>
     )

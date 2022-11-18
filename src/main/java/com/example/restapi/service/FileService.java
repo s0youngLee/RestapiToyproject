@@ -3,6 +3,7 @@ package com.example.restapi.service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -12,9 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.FileSystemResource;
@@ -25,9 +26,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import net.lingala.zip4j.ZipFile;
+
 import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.Filedata;
-import com.example.restapi.model.network.response.ArticleExcelResponseDto;
 import com.example.restapi.model.network.response.FileResponseDto;
 import com.example.restapi.repository.ArticleRepository;
 import com.example.restapi.repository.FileRepository;
@@ -39,31 +41,31 @@ import lombok.extern.log4j.Log4j2;
 public class FileService {
 	private final FileRepository fileRepository;
 	private final ArticleRepository articleRepository;
-	private final ExcelSetting<ArticleExcelResponseDto> excelSetting;
 
 	@Value("${upload.path}")
 	private String uploadPath;
 
+	@Value("${zip.path}")
+	private String zipPath;
 
-	public FileService(@Lazy FileRepository fileRepository, ArticleRepository articleRepository, ExcelSetting<ArticleExcelResponseDto> excelSetting) {
+
+	public FileService(@Lazy FileRepository fileRepository, ArticleRepository articleRepository) {
 		this.fileRepository = fileRepository;
 		this.articleRepository = articleRepository;
-		this.excelSetting = excelSetting;
-	}
-
-	public List<FileResponseDto> getList(Article article){
-		List<FileResponseDto> fileList = new ArrayList<>();
-		for(Filedata file : fileRepository.findAllByArticleId(article.getId())){
-			fileList.add(buildFile(file));
-		}
-		return fileList;
 	}
 
 	public List<Filedata> upload(List<MultipartFile> uploadFiles, Integer articleId) throws IOException {
 		List<Filedata> fileList = new ArrayList<>();
+		final String[] acceptFileType = new String[]{
+			"image", "video", "audio", "text/plain",
+			"application/vnd.openxmlformats-officedocument.presentationml.presentation",
+			"application/vnd.ms-powerpoint", "application/vnd.ms-excel",
+			"application/pdf", "application/zip", "application/x-hwp", "application/haansofthwp"
+		};
+
 		for (MultipartFile uploadFile : uploadFiles) {
-			if(!uploadFile.getContentType().startsWith("image") && !uploadFile.getContentType().startsWith("application")) {
-				log.warn("Invalid file type");
+			if(!validFileType(acceptFileType, uploadFile)) {
+				log.warn("Invalid file type : " + uploadFile.getOriginalFilename());
 				return null;
 			}
 
@@ -75,18 +77,14 @@ public class FileService {
 			String folderPath = makeFolder();
 			//UUID - 파일 덮어쓰기 방지
 			String uuid = UUID.randomUUID().toString();
-			String saveFile = uploadPath + File.separator + folderPath + File.separator;
 			String saveName = uploadPath + File.separator + folderPath + File.separator + uuid + "_" + fileName;
-			log.info("saveName : " + saveName);
 
 			Path savePath = Paths.get(saveName);
 
-			log.info(articleId);
 			try{
 				uploadFile.transferTo(savePath);
 				Filedata newFile = Filedata.builder()
 					.article(articleRepository.getReferenceById(articleId))
-					.saveFile(saveFile)
 					.date(LocalDateTime.now())
 					.fileSize(uploadFile.getSize())
 					.originName(originalName)
@@ -102,16 +100,25 @@ public class FileService {
 		return fileList;
 	}
 
+	public List<FileResponseDto> getList(Article article){
+		List<FileResponseDto> fileList = new ArrayList<>();
+		for(Filedata file : fileRepository.findAllByArticleId(article.getId())){
+			fileList.add(buildFile(file));
+		}
+		return fileList;
+	}
+
 	public FileResponseDto buildFile(Filedata file){
 		return FileResponseDto.builder()
-				.id(file.getId())
-				.originName(file.getOriginName())
-				.fileSize(file.getFileSize()/(1000000.0))
-				.date(file.getDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-				.build();
+			.id(file.getId())
+			.originName(file.getOriginName())
+			.fileSize(file.getFileSize()/(1000000.0))
+			.date(file.getDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+			.build();
 	}
 
 	private String makeFolder(){
+		// String folderPath = articleId + "-" + articleRepository.getReferenceById(articleId).getTitle();
 		String folderPath = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
 		File uploadPathFolder = new File(uploadPath, folderPath);
 
@@ -119,6 +126,17 @@ public class FileService {
 			uploadPathFolder.mkdirs();
 		}
 		return folderPath;
+	}
+
+	public boolean validFileType(String[] acceptList, MultipartFile file){
+		boolean valid = false;
+		for(int i=0;i<acceptList.length;i++){
+			if(file.getContentType().startsWith(acceptList[i])){
+				valid = true;
+				break;
+			}
+		}
+		return valid;
 	}
 
 	@Transactional
@@ -138,32 +156,6 @@ public class FileService {
 					+ new String(resourceName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1))
 				.body(resource);
 		}
-	}
-
-	/**
-	 * GetMapping("/board/excel/download")
-	 * Write an Excel file with article table
-	 *
-	 * @param response to download written Excel file
-	 */
-	public void downloadExcelBoard(HttpServletResponse response) {
-		List<ArticleExcelResponseDto> dtoData = new ArrayList<>();
-		for(Article article: articleRepository.findAll()){
-			ArticleExcelResponseDto body = ArticleExcelResponseDto.builder()
-				.id(article.getId())
-				.title(article.getTitle())
-				.createdId(article.getCreatedId())
-				.createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
-				.finalEditDate(article.getFinalEditDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
-				.build();
-			dtoData.add(body);
-		}
-
-		List<List<String>> dataList = new ArrayList<>();
-		for(ArticleExcelResponseDto data : dtoData){
-			dataList.add(data.getData());
-		}
-		excelSetting.writeWorkbook(response, ArticleExcelResponseDto.class.getRecordComponents() , dtoData, dataList);
 	}
 
 	/**
@@ -192,5 +184,45 @@ public class FileService {
 		}
 	}
 
+	public ResponseEntity<Resource> downloadZipFile(int articleId) throws IOException {
+		// 호출 시 해당 article에 upload 되어있는 모든 파일을 zip으로 압축한 파일을 생성하여 저장
+		Article article = articleRepository.getReferenceById(articleId);
 
+		List<File> filesInArticle = new ArrayList<>();
+		Path movePath = Paths.get(zipPath);
+		for(Filedata filedata : article.getFiles()){
+			File originFile = new File(filedata.getSaveName());
+			File forzipFile = new File(zipPath + File.separator + filedata.getOriginName());
+			FileUtils.copyFile(originFile, forzipFile);
+
+			File file = new File(zipPath + File.separator + filedata.getOriginName());
+			filesInArticle.add(file);
+		}
+
+		ZipFile newZipFile = new ZipFile(article.getTitle()+".zip");
+		newZipFile.addFiles(filesInArticle);
+
+		Resource resource = new FileSystemResource(newZipFile.getFile());
+
+		for(File file : filesInArticle){
+			Path filePath = Paths.get(file.getAbsolutePath());
+			Files.deleteIfExists(filePath);
+		}
+
+		if(!resource.exists()){
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}else{
+			String resourceName = resource.getFilename();
+
+			return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename="
+					+ new String(resourceName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1))
+				.body(resource);
+		}
+	}
+
+	public void deleteZipFile(Integer articleId) throws IOException {
+		Files.deleteIfExists(Paths.get(System.getProperty("user.dir") + File.separator + articleRepository.getReferenceById(articleId).getTitle() + ".zip"));
+		log.info(System.getProperty("user.dir") + File.separator + articleRepository.getReferenceById(articleId).getTitle() + ".zip");
+	}
 }
