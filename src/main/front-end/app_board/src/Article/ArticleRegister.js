@@ -1,4 +1,4 @@
-import {useState, useCallback, useMemo} from 'react';
+import {useState, useCallback, useEffect, useMemo} from 'react';
 import {getUrlId, FetchWithoutId} from "../func";
 import axios from "axios";
 import _ from 'lodash';
@@ -8,6 +8,17 @@ function ArticleRegister(){
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [selected, setSelected] = useState(urlId);
+
+    const [categoryList, setCategoryList] = useState();
+    const [categoryData, setCategoryData] = useState();
+    
+    useEffect(() => {
+        if(_.isEmpty(categoryData)){
+            FetchWithoutId(categoryData, setCategoryData, "category");
+        }else{
+            setCategoryList(categoryData.data);
+        }
+    }, [categoryData]);
     
     const formData = new FormData();
     const inputFile = document.getElementsByName("upfile");
@@ -63,34 +74,35 @@ function ArticleRegister(){
         });
     }
 
-
-    return(
-        <form onSubmit={addArticle}>
-            <div className="div-box" style={{height: "55vh"}}>
-                <b style={{ fontSize: "30px"}}> 게시물 작성 </b> <hr/>
-                {/* <b style={{fontSize: "17px", justifyContent: "left"}}>User ID : {sessionStorage.getItem("username")} </b><br/> */}
-                <b> 카테고리 : </b>
-                <select onChange={handleSelect} value={selected}>
-                    {Array.from(FetchWithoutId("category").data)?.map((category, index) => {
-                        return <option key={index} value={category.id}>{category.name}</option>;
-                    })}
-                </select><br/>
-                <input type={"text"} placeholder='Title' onChange={addTitle} required autoFocus></input> <br/>
-                <textarea placeholder='Content' className="content-box" style={{height: "40%"}}
-                          onChange={addContent} required></textarea> <br/>
-
-                <input className="upload-name" value={fileName} disabled/>
-                <label className="upload" htmlFor="file"> 
-                    <img src={require("../Icon/upload.png").default} alt={"icon"} style={{width: "20px", marginTop: "5px"}}/>
-                </label> 
-                <input type="file" name={"upfile"} id="file" style={{display:"none"}} onChange={uploadFile} multiple/><br/>
-                
-                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > 글쓰기 </button>
-                <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
-                        onClick={() => {window.location.href = "/board"}}> 돌아가기 </button><br/>
-            </div>
-        </form>
-    )
+    if(_.isEmpty(categoryList)){return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Category Not Found</b> </div>}
+    else{
+        return(
+            <form onSubmit={addArticle}>
+                <div className="div-box" style={{height: "55vh"}}>
+                    <b style={{ fontSize: "30px"}}> 게시물 작성 </b> <hr/>
+                    <b> 카테고리 : </b>
+                    <select onChange={handleSelect} value={selected}>
+                        {Array.from(categoryList)?.map((category, index) => {
+                            return <option key={index} value={category.id}>{category.name}</option>;
+                        })}
+                    </select><br/>
+                    <input type={"text"} placeholder='Title' onChange={addTitle} required autoFocus></input> <br/>
+                    <textarea placeholder='Content' className="content-box" style={{height: "40%"}}
+                              onChange={addContent} required></textarea> <br/>
+    
+                    <input className="upload-name" value={fileName} disabled/>
+                    <label className="upload" htmlFor="file"> 
+                        <img src={require("../Icon/upload.png").default} alt={"icon"} style={{width: "20px", marginTop: "5px"}}/>
+                    </label> 
+                    <input type="file" name={"upfile"} id="file" style={{display:"none"}} onChange={uploadFile} multiple/><br/>
+                    
+                    <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > 글쓰기 </button>
+                    <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
+                            onClick={() => {window.location.href = "/board"}}> 돌아가기 </button><br/>
+                </div>
+            </form>
+        )
+    }
 }
 
 export default ArticleRegister;

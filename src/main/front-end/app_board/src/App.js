@@ -63,6 +63,7 @@ function App() {
             if(_.isEqual(sessionStorage.getItem("dateAlert"), "true")){
                 // 세션 만료 또는 2번째 로그인 등
                 alert("로그인 정보가 만료되었습니다. 다시 로그인하세요.");
+                sessionStorage.clear();
                 window.location.href = "/login";
             }
             }

@@ -4,7 +4,16 @@ import axios from "axios";
 import _ from "lodash";
 
 function ArticleEditForm({articleDetail, handleClose}){
-    const categoryList = Array.from(FetchWithoutId("category").data);
+    const [categoryList, setCategoryList] = useState();
+    const [categoryData, setCategoryData] = useState();
+    
+    useEffect(() => {
+        if(_.isEmpty(categoryData)){
+            FetchWithoutId(categoryData, setCategoryData, "category");
+        }else{
+            setCategoryList(categoryData.data);
+        }
+    }, [categoryData]);
 
     const [checkedInfile, setCheckedInfile] = useState(new Set()); // db에 올라가 있는 파일 (이미 첨부된 파일 중 체크 - 삭제해야함)
     const [checkedUpload, setCheckedUpload] = useState(new Set()); // input file로 선택한 파일 (첨부되어 있지 않은 파일 - 전송할 formdata에 올리지 않아야함)
@@ -38,7 +47,6 @@ function ArticleEditForm({articleDetail, handleClose}){
             checkedUpload.delete(id);
             setCheckedUpload(checkedUpload);
         }
-        // console.log(checkedUpload);
     }, [checkedInfile, checkedUpload]);
 
     const checkHandler = useCallback(({ target }, id, file, fileType, labelClass, inputType) => { 
@@ -192,7 +200,7 @@ function ArticleEditForm({articleDetail, handleClose}){
     if(_.isEmpty(articleDetail)) {return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div>}
     else { 
         return(
-            <div style={{marginTop: "0", marginLeft: "10px"}}>
+            <div style={{marginTop: "0", marginLeft: "5px"}}>
                 <b style={{fontSize: "25px", textAlign: "left"}}>게시글 수정</b><hr/>
                 <form onSubmit={editArticle}>
                     <div className="modal-box">

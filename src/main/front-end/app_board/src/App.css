@@ -243,6 +243,7 @@ button{
 
 .p-user{
   color: gray;
+  margin-bottom: 0;
 }
 
 
@@ -279,7 +280,6 @@ button{
     font-size: smaller;
   }
 
-
   .image-label, .image-label-uploaded{
     width: 80%;
     height: 100px;
@@ -289,7 +289,7 @@ button{
     font-size: xx-small;
   }
 
-  .pagenate{
+  .paginate{
     display: flex;
     justify-content: center;
     padding: 0;

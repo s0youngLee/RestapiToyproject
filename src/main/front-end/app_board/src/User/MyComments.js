@@ -12,7 +12,7 @@ function MyComments({comments}){
     }else {
         return (
             <>
-                {comments?.map((comment, index) => {
+                {Array.from(comments)?.map((comment, index) => {
                     return (
                     <Link  key={index} style={{textDecorationLine: "none", color: "inherit"}} to={`/board/${comment?.article_id}`}>
                         <li className="mypage-none">

@@ -11,7 +11,7 @@ function MyArticles({articles}){
     }else {
         return (
             <>
-                {articles?.map((article, index) => {
+                {Array.from(articles)?.map((article, index) => {
                     return (
                     <Link  key={index} style={{textDecorationLine: "none", color: "inherit"}} to={`/board/${article.id}`}>
                         <li className="mypage-none" >

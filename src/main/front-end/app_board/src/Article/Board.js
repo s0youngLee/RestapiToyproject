@@ -1,10 +1,20 @@
+import { useState, useEffect } from "react";
 import _ from 'lodash';
 import { FetchWithoutId } from '../func';
 import ArticleList from './ArticleList';
 import '../App.css'
 
 function Board(){
-    const article = FetchWithoutId("article").data;
+    const [article, setArticle] = useState();
+    const [articleData, setArticleData] = useState();
+
+    useEffect(() => {
+        if(_.isEmpty(articleData)){
+            FetchWithoutId(articleData, setArticleData, "article");
+        }else{
+            setArticle(articleData.data);
+        }
+    }, [articleData]);
     
     function checkUserAccessDate(){
         if(!_.isEmpty(sessionStorage.getItem("username"))){
@@ -30,7 +40,7 @@ function Board(){
             {!_.isEqual(sessionStorage.getItem("dateAlert"),"true") && checkUserAccessDate()}
             <div className='div-box'> 
                 <b style={{ fontSize: "30px", margin : "10px"}}> Article List </b><br/>
-                <ArticleList articleList={Array.from(article)}/>
+                <ArticleList articleList={Array.from(article).reverse()}/>
             </div>
         </>
         )

@@ -1,11 +1,21 @@
 import axios from "axios";
-import {useState, useCallback} from "react";
+import { useState, useCallback, useEffect } from "react";
 import { FetchWithId, getUrlId } from "../func";
 import _ from 'lodash';
 
 
 function CategoryEdit(){
-    const category = FetchWithId("category", 1).data;
+    const [category, setCategory] = useState();
+    const [categoryData, setCategoryData] = useState();
+
+    useEffect(() => {
+        if(_.isEmpty(categoryData)){
+            FetchWithId(categoryData, setCategoryData, "category", 1);
+        }else{
+            setCategory(categoryData.data);
+        }
+    }, [categoryData]);
+
     if(_.isEmpty(category)) {return <div> Loading ... </div>}
     else { 
         return (

@@ -1,10 +1,19 @@
+import { useState, useEffect } from "react";
 import _ from 'lodash';
 import {Link} from 'react-router-dom';
 import { Delete, FetchWithoutId }from '../func';
 
 function CategoryDeatil () {
-    const categoryList = Array.from(FetchWithoutId("category").data);
-    const defaultCategory = categoryList.splice(0,1);
+    const [categoryList, setCategoryList] = useState();
+    const [categoryData, setCategoryData] = useState();
+
+    useEffect(() => {
+        if(_.isEmpty(categoryData)){
+            FetchWithoutId(categoryData, setCategoryData, "category");
+        }else{
+            setCategoryList(categoryData.data);
+        }
+    }, [categoryData]);
 
     if(_.isEmpty(categoryList)){ return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div>}
     else {
@@ -14,7 +23,7 @@ function CategoryDeatil () {
                 <Link to={`/category/add`} className="none">
                     <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> Add Category </button>
                 </Link>
-                <Link to={`/board/category/${defaultCategory[0].id}`} className="none">
+                <Link to={`/board/category/${categoryList.splice(0,1)[0].id}`} className="none">
                     <button className='w3-button w3-border w3-round-xlarge w3-small  w3-hover-deep-purple'> Go to Default </button>
                 </Link>
                 <hr/>

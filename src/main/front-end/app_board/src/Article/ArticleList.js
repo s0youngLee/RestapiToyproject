@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getUrlId, isAdmin } from "../func";
+import { suggestLogin, isAdmin } from "../func";
 import Pagination from "react-js-pagination";
 import axios from "axios";
 import "../App.css";
@@ -11,12 +11,11 @@ function ArticleList({articleList}){
     const [allChecked, setAllChecked] = useState(false);
     const [checkedItems, setCheckedItems] = useState(new Set());
     
-    const articles = articleList.reverse();
     const pageLimit = 5; // page display cnt limit
     const articleCntPerPage = 10; // article cnt per pages
     const [currentPage, setCurrentPage] = useState(1);
     const offset = (currentPage - 1) * articleCntPerPage;
-    const articlesPerPage = articles?.slice(offset, offset + articleCntPerPage);
+    const articlesPerPage = articleList.slice(offset, offset + articleCntPerPage);
 
     const checkedItemHandler = (id, isChecked) => {
         if(isChecked) {
@@ -26,7 +25,7 @@ function ArticleList({articleList}){
             checkedItems.delete(id);
             setCheckedItems(checkedItems);
         }
-        if(checkedItems.size === articleCntPerPage){
+        if(checkedItems.size === articlesPerPage.length){
             setAllChecked(true);
         }
     };
@@ -69,22 +68,6 @@ function ArticleList({articleList}){
         }
     }
 
-    function suggestLogin(){
-        if(_.isEqual(sessionStorage.getItem("login"), "true")){
-            const categoryId = getUrlId(1);
-            if(_.isEqual(Number(categoryId), NaN)){
-                window.location.href=`/board/add/0`;
-            }else{
-                window.location.href=`/board/add/${categoryId}`;
-            }
-        }else{
-            if(window.confirm("글을 작성하려면 로그인해야합니다.\n확인을 누르면 로그인 페이지로 이동합니다.")){
-                window.location.href=`/login`;
-            }
-        }
-    }
-
-    
     if(_.isEmpty(articleList)){ 
         return (
             <div style={{marginTop: "100px", textAlign: "center"}}> 

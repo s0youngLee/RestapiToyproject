@@ -10,19 +10,28 @@ function MyPage(){
     const [visible, setVisible] = useState(false);
     const [visibleArticle, setVisibleArticle] = useState(true);
     const [visibleComment, setVisibleComment] = useState(false);
-    const [user, setUser] = useState();
-    let resource = useMemo(() => { return new Blob(); },[])
-
-    const articles = Array.from(FetchWithoutId("article/user"));
-    const comments = Array.from(FetchWithoutId("comment/user"));
     
+    let resource = useMemo(() => { return new Blob(); },[])
+    
+    const [user, setUser] = useState();
+    const [articles, setArticles] = useState();
+    const [comments, setComments] = useState();
+
     useEffect(() => {
-        axios.get("/user").then((res) => {
-            setUser(res.data.data);
-        }).catch((e) => {
-            console.log(e);
-        })
-    },[]);
+        if(_.isEmpty(user)){
+            axios.get("/user").then((res) => {
+                setUser(res.data.data);
+            }).catch((e) => {
+                console.log(e);
+            })
+        }
+        if(_.isEmpty(articles) && !_.isEqual(articles, [])){
+            FetchWithoutId(articles, setArticles, "article/user");
+        }
+        if(_.isEmpty(comments) && !_.isEqual(comments, [])){
+            FetchWithoutId(comments, setComments, "comment/user");
+        }
+    },[articles, comments, user]);
 
     function setClicked(){
         setVisibleArticle(false);
@@ -53,7 +62,7 @@ function MyPage(){
         return <div style={{marginTop: "100px", textAlign: "center"}}><b style={{fontSize: "30px"}}>User Not Found</b> </div> 
     }else {
         return (
-            <div className="div-box">
+            <div className="div-box" style={{marginLeft: "10px"}}>
                 <b style={{ fontSize: "40px"}}>MY PAGE</b> <hr/>
                 <div style={{textAlign: "left",padding: "10px", margin: "20px", marginBottom: 0}}>
                     <b> Name : </b><span> {user.name} </span><br/>

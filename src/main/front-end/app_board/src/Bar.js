@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import 'w3-css';
@@ -5,7 +6,18 @@ import { FetchWithoutId, ifError, isAdmin } from "./func";
 import _ from "lodash";
 
 function Bar() {
-    const categoryList = Array.from(FetchWithoutId("category").data);
+    // const categoryList = Array.from(FetchWithoutId("category").data);
+    const [categoryList, setCategoryList] = useState();
+    const [categoryData, setCategorydata] = useState();
+
+    useEffect(() => {
+        if(_.isEmpty(categoryData)){
+            FetchWithoutId(categoryData, setCategorydata, "category");
+        }else{
+            setCategoryList(categoryData.data);
+        }
+    },[categoryData]);
+
     function isLogin(){
         if(_.isEqual(sessionStorage.getItem("login"), "true")){
             return true;
@@ -25,8 +37,9 @@ function Bar() {
                     <button className="w3-button w3-hover-deep-purple">Category</button>
                     <div className="w3-dropdown-content w3-bar-block w3-border">
                         {categoryList?.map((category, index) => (
-                            <button key={index} className="w3-bar-item w3-button"
-                                    onClick={() => {window.location.href=`/board/category/${category.id}`}}> {category.name} </button>
+                            <Link className="none" key={index} to={`/board/category/${category.id}`}>
+                                <button className="w3-bar-item w3-button"> {category.name} </button>
+                            </Link>
                         ))}
                     </div>
                 </div>

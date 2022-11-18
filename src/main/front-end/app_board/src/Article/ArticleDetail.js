@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { FetchWithId, Delete, canRemove, Download, isPublisher } from '../func';
 import _ from 'lodash';
 import * as Modal from 'react-modal';
@@ -8,7 +8,17 @@ import ArticleEditForm from './ArticleEdit';
 import axios from 'axios';
 
 function ArticleDeatil(){
-    const articleDetail = FetchWithId("article", 1).data;
+    const [articleDetailData, setArticleDetailData] = useState();
+    const [articleDetail, setArticleDetail] = useState();
+
+    useEffect(() => {
+        if(_.isEmpty(articleDetailData)){
+            FetchWithId(articleDetailData, setArticleDetailData, "article", 1);
+        }else {
+            setArticleDetail(articleDetailData.data);
+        }
+    }, [articleDetailData, articleDetail]);
+
     if(_.isEmpty(articleDetail)) { return <div> Loading .. </div>}
     else { return <ArticleDetailData data={articleDetail} />; }
 }
@@ -40,7 +50,7 @@ function ArticleDetailData({data}) {
     if(_.isEmpty(data)){ return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div> }
     else {
         return (
-            <><div className='div-box' style={{padding: "10px", overflow: "auto", marginLeft: "20px", textAlign: "left", height: "80vh"}}>
+            <><div className='div-box' style={{padding: "10px", overflow: "auto", marginLeft: "10px", textAlign: "left", height: "80vh"}}>
                     <b style={{fontSize: "30px"}}>{data?.title}</b><br/>
                     <span style={{fontSize: "17px", color: "gray"}}> {data?.created_at} </span><br/>
                     <span style={{fontSize: "17px"}}> Posted in <b>{data?.category_name} </b> by <b> {data.user_nickname} </b> / visit : <b>{data?.visit_cnt}</b></span>

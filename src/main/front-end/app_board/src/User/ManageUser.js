@@ -1,14 +1,30 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import _ from "lodash";
 import { Delete, FetchWithoutId } from "../func";
 import axios from "axios";
 import Pagination from "react-js-pagination";
 
 function UserManage(){
-    const manage = Array.from(FetchWithoutId("user/manage").data);
+    const [manage, setManage] = useState();
+    const [userData, setUserData] = useState();
+
+    useEffect(() => {
+        if(_.isEmpty(userData)){
+            FetchWithoutId(userData, setUserData, "user/manage");
+        }else{
+            setManage(userData.data);
+        }
+    }, [userData]);
+
+    const pageLimit = 5; // page display cnt limit
+    const userCntPerPage = 3; // article cnt per pages
+    const [currentPage, setCurrentPage] = useState(1);
+    const offset = (currentPage - 1) * userCntPerPage;
+    const usersPerPage = manage?.slice(offset, offset + userCntPerPage);
+
     const editList = useMemo(() => {
         let list = [];
-        manage.map((user, index)=> {
+        usersPerPage?.map((user, index)=> {
             return list.push({
                 code : user.code,
                 auth : user.auth
@@ -17,19 +33,13 @@ function UserManage(){
         return list;
     }, [manage]);
 
-    const pageLimit = 5; // page display cnt limit
-    const userCntPerPage = 3; // article cnt per pages
-    const [currentPage, setCurrentPage] = useState(1);
-    const offset = (currentPage - 1) * userCntPerPage;
-    const usersPerPage = manage?.slice(offset, offset + userCntPerPage);
-
     const handlePageChange = (currentPage) => {
         setCurrentPage(currentPage);
     };
 
     function SaveAll(){
         let check = false;
-        manage.map((origin, index) => {
+        usersPerPage.map((origin, index) => {
             if(!_.isEqual(origin.auth, editList[index].auth)){
                 axios.put(`/user/manage/${origin.code}`, {
                     data : {
@@ -87,7 +97,7 @@ function UserManage(){
 
 function EditUser({index, userinfo, editList}){
     const authList = ["ROLE_USER", "ROLE_ADMIN"];
-    const [userAuth, setAuth] = useState(userinfo.auth.split("_")[1]);
+    const [userAuth, setAuth] = useState("USER");
     const [visible, setVisible] = useState(false);
     
     function changeAuth(){
@@ -126,17 +136,17 @@ function EditUser({index, userinfo, editList}){
     }
 
     return (
-        <li onClick={() => setVisible(!visible)}>
+        <li style={{padding: "5px"}} onClick={() => setVisible(!visible)}>
             <p className="p-user"> 
                 번호 : <b className="b-user">{userinfo.code}</b> <br/>
                 아이디 : <b className="b-user"> {userinfo.email} </b> <br/>
                 이름 : <b className="b-user"> {userinfo.name} </b>
                 닉네임 : <b className="b-user"> {userinfo.nick_name} </b><br/>
                 전화번호 : <b className="b-user"> {userinfo.phone} </b><br/>
-                권한 : <b className="b-user"> {userAuth} </b> &nbsp;
+                권한 : <b className="b-user"> {userinfo.auth.split("_")[1]} → {userAuth} </b> &nbsp;
                     <input type={"image"} src={require("../Icon/change.png").default} alt={"icon"}
                         style={{width:"20px", verticalAlign: "middle"}}
-                        onClick={() => {changeAuth()}} />
+                        onClick={() => {changeAuth()}} /><br/>
                 <button onClick={() => {editAuth()}} className="w3-button w3-border w3-round-xlarge w3-tiny w3-hover-teal"> 저장 </button>
                 <button onClick={() => {Delete("user",userinfo.code)}} className="w3-button w3-border w3-round-xlarge w3-tiny w3-hover-red"> 삭제 </button>
             </p>

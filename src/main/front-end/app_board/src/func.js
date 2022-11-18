@@ -1,5 +1,3 @@
-import React, { useState, useEffect } from "react";
-
 import _ from "lodash";
 import axios from "axios";
 
@@ -30,43 +28,50 @@ export function getUrlId(n){
     return id;
 }
 
-export function FetchWithoutId(dataName){
-    const [data, setData] = useState({ data : {} });
-    useEffect(() => {
-        axios.get(`/${dataName}`, { 
-            headers : {
-                "cache" : "no-store"
-            }
-         })
-        .then((res) => {
-            setData(res?.data);
-        })
-        .catch((e) => {
-            ifError(e);
-        });
-    }, [dataName]);
-    if(_.isEmpty(data)){ return <div> Loading ... </div> }
-    else{ return data; }
+export function suggestLogin(){
+    if(_.isEqual(sessionStorage.getItem("login"), "true")){
+        const categoryId = getUrlId(1);
+        if(_.isEqual(Number(categoryId), NaN)){
+            window.location.href=`/board/add/0`;
+        }else{
+            window.location.href=`/board/add/${categoryId}`;
+        }
+    }else{
+        if(window.confirm("글을 작성하려면 로그인해야합니다.\n확인을 누르면 로그인 페이지로 이동합니다.")){
+            window.location.href=`/login`;
+        }
+    }
 }
 
-export function FetchWithId(dataName, n){
-    const [data, setData] = useState({ data : {} });
+export function FetchWithoutId(data, setData, dataName){
+    axios.get(`/${dataName}`, { 
+        headers : {
+            "cache" : "no-store"
+        }
+    })
+    .then((res) => {
+        setData(res.data);
+    })
+    .catch((e) => {
+        ifError(e);
+    });
+    return data;
+}
+
+export function FetchWithId(data, setData, dataName, n){
     const id = getUrlId(n);
-    useEffect(() => {
-        axios.get(`/${dataName}/${id}`, { 
-            headers : {
-                "cache" : "no-store"
-            }
-        })
-        .then((res) => {
-            setData(res?.data);
-        })
-        .catch((e) => {
-            ifError(e);
-        });
-    }, [dataName, id]);
-    if(_.isEmpty(data)){ return <div> Loading ... </div>}
-    else{ return data;} 
+    axios.get(`/${dataName}/${id}`, { 
+        headers : {
+            "cache" : "no-store"
+        }
+    })
+    .then((res) => {
+        setData(res?.data);
+    })
+    .catch((e) => {
+        ifError(e);
+    });
+    return data;
 }
 
 export function Delete(dataName, dataId){
