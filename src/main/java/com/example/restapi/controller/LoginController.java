@@ -3,7 +3,6 @@ package com.example.restapi.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.restapi.security.LoginService;
@@ -24,8 +23,8 @@ public class LoginController {
 		return loginService.status(request);
 	}
 
-	@RequestMapping("/sessionExpired")
-	public void sessionExpired(HttpServletRequest request){
-		loginService.sessionExpired(request);
-	}
+	// @RequestMapping("/sessionExpired")
+	// public void sessionExpired(HttpServletRequest request){
+	// 	loginService.sessionExpired(request);
+	// }
 }

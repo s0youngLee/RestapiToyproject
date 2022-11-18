@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.restapi.controller.AbstractCrudMethod;
 import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.Category;
 import com.example.restapi.model.entity.UserInfo;
@@ -30,7 +29,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Service
-public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleResponseDto> {
+public class ArticleService {
     private final CategoryRepository categoryRepository;
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
@@ -72,7 +71,6 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
         }
     }
 
-    @Override
     @Transactional
     public Status<ArticleResponseDto> read(int id) {
         articleRepository.updateVisitCnt(id);
@@ -107,7 +105,6 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
                 .orElseGet(()-> Status.ERROR("No DATA"));
     }
 
-    @Override
     @Transactional
     public Status delete(int id) {
         return articleRepository.findById(id)
@@ -127,8 +124,8 @@ public class ArticleService extends AbstractCrudMethod<ArticleRequest, ArticleRe
         return listResponse(articleRepository.findAllByCategoryId(categoryId));
     }
 
-    public List<ArticleListResponseDto> getUserArticles(UserInfo user){
-        return listResponse(articleRepository.findAllByUser(user));
+    public Status<List<ArticleListResponseDto>> getUserArticles(UserInfo user){
+        return Status.OK(listResponse(articleRepository.findAllByUser(user)));
     }
 
     private Status<ArticleResponseDto> articleBuilder(Article article){

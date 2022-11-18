@@ -81,10 +81,10 @@ function ArticleList({articleList}){
         return(
             <div className="totalPage">
                 <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                        onClick={() => { suggestLogin() }}> Write article </button>
+                        onClick={() => { suggestLogin() }}> 글쓰기 </button>
                 {isAdmin() && 
                     <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
-                    onClick={() => DeleteArticles()}>  Delete </button>}
+                    onClick={() => DeleteArticles()}>  선택 삭제 </button>}
                 <SearchForm />
         
                 <table>
@@ -131,7 +131,7 @@ function ArticleList({articleList}){
                     totalItemsCount={articleList.length} 
                     pageRangeDisplayed={pageLimit} 
                     onChange={handlePageChange}
-                    innerClass={""}
+                    innerClass={"paginate"}
                     activeClass={"w3-button w3-round-xxlarge w3-small w3-deep-purple"}
                     itemClass={"w3-button w3-round-xxlarge w3-small w3-hover-deep-purple"}
                     linkClass={"none"}

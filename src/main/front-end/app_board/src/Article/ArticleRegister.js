@@ -65,7 +65,7 @@ function ArticleRegister(){
         }
         formData.append("article", new Blob([JSON.stringify(data)], {type: "application/json"}));
     
-        axios.post('/article/withfile', formData)
+        axios.post('/article', formData)
         .then((res) => {
             alert("게시글이 작성되었습니다.\n선택한 카테고리로 이동합니다.");
             window.location.href=`/board/category/${selected}`;

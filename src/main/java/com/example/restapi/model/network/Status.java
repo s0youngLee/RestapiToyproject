@@ -31,7 +31,7 @@ public class Status<T> {
 
     //ERROR
     public static <T> Status<T> ERROR(String description){
-        return (Status<T>)Status.builder().build();
+        return (Status<T>)Status.builder().data(description).build();
     }
 
 }

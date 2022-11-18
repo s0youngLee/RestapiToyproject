@@ -6,7 +6,6 @@ import { FetchWithoutId, ifError, isAdmin } from "./func";
 import _ from "lodash";
 
 function Bar() {
-    // const categoryList = Array.from(FetchWithoutId("category").data);
     const [categoryList, setCategoryList] = useState();
     const [categoryData, setCategorydata] = useState();
 
@@ -30,30 +29,34 @@ function Bar() {
         <>
         <div className="bar-top">
             <div className="w3-bar w3-large" style={{backgroundColor:"#cab6ff"}}>
-                <Link to={'/'} className="none"><button className="w3-bar-item w3-button w3-hover-deep-purple" >Home</button></Link>
-                <Link to={'/board'} className="none"><button className="w3-bar-item w3-button w3-hover-deep-purple">Board</button></Link>
-                    
-                <div className="w3-dropdown-hover">
-                    <button className="w3-button w3-hover-deep-purple">Category</button>
-                    <div className="w3-dropdown-content w3-bar-block w3-border">
-                        {categoryList?.map((category, index) => (
-                            <Link className="none" key={index} to={`/board/category/${category.id}`}>
-                                <button className="w3-bar-item w3-button"> {category.name} </button>
-                            </Link>
-                        ))}
+                <div className="bar-left">
+                    <Link to={'/'} className="none bar-item-left"><button className="w3-bar-item w3-button w3-hover-deep-purple" >Home</button></Link>
+                    <Link to={'/board'} className="none bar-item-left"><button className="w3-bar-item w3-button w3-hover-deep-purple">Board</button></Link>
+                        
+                    <div className="w3-dropdown-hover">
+                        <button className="w3-button w3-hover-deep-purple">Category</button>
+                        <div className="w3-dropdown-content w3-bar-block barcontent">
+                            {categoryList?.map((category, index) => (
+                                <Link className="none" key={index} to={`/board/category/${category.id}`}>
+                                    <button className="w3-bar-item w3-button w3-light-gray w3-hover-deep-purple"> {category.name} </button>
+                                </Link>
+                            ))}
+                        </div>
                     </div>
+                    {isAdmin() && <Link to={"/category"} className="none bar-item-left">
+                        <button className="w3-bar-item w3-button w3-hover-red">Setting</button></Link>}
                 </div>
-                {isAdmin() && <Link to={"/category"} className="none">
-                    <button className="w3-bar-item w3-button w3-hover-red">Setting</button></Link>}
                 
-                {!isLogin() && <Link to={'/login/signup'} className="none">
-                    <button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">Register</button></Link>}
-                {!isLogin() && <Link to={'/login'} className="none">
-                    <button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">Login</button></Link>}
-                {isLogin() && <Link to={'/mypage'} className="none">
-                    <button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">MyPage</button></Link>}
-                {isLogin() && <button className="w3-bar-item w3-button w3-hover-red w3-right"
-                    onClick={() => Logout()}>Logout</button>}
+                <div>
+                    {!isLogin() && <Link to={'/login/signup'} className="none">
+                        <button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">Register</button></Link>}
+                    {!isLogin() && <Link to={'/login'} className="none">
+                        <button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">Login</button></Link>}
+                    {isLogin() && <Link to={'/mypage'} className="none">
+                        <button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">MyPage</button></Link>}
+                    {isLogin() && <button className="w3-bar-item w3-button w3-hover-red w3-right"
+                        onClick={() => Logout()}>Logout</button>}
+                </div>
             </div>
         </div>
         </>

@@ -15,7 +15,10 @@ function MyPage(){
     
     const [user, setUser] = useState();
     const [articles, setArticles] = useState();
+    const [articlesData, setArticlesData] = useState();
     const [comments, setComments] = useState();
+    const [commentsData, setCommentsData] = useState();
+    
 
     useEffect(() => {
         if(_.isEmpty(user)){
@@ -25,13 +28,17 @@ function MyPage(){
                 console.log(e);
             })
         }
-        if(_.isEmpty(articles) && !_.isEqual(articles, [])){
-            FetchWithoutId(articles, setArticles, "article/user");
+        if(_.isEmpty(articlesData) && !_.isEqual(articlesData, [])){
+            FetchWithoutId(articlesData, setArticlesData, "article/user");
+        }else{
+            setArticles(articlesData.data);
         }
-        if(_.isEmpty(comments) && !_.isEqual(comments, [])){
-            FetchWithoutId(comments, setComments, "comment/user");
+        if(_.isEmpty(commentsData) && !_.isEqual(commentsData, [])){
+            FetchWithoutId(commentsData, setCommentsData, "comment/user");
+        }else{
+            setComments(commentsData.data);
         }
-    },[articles, comments, user]);
+    },[articlesData, commentsData, user]);
 
     function setClicked(){
         setVisibleArticle(false);
@@ -63,8 +70,8 @@ function MyPage(){
     }else {
         return (
             <div className="div-box" style={{marginLeft: "10px"}}>
-                <b style={{ fontSize: "40px"}}>MY PAGE</b> <hr/>
-                <div style={{textAlign: "left",padding: "10px", margin: "20px", marginBottom: 0}}>
+                <b style={{ fontSize: "40px"}}>MY PAGE</b>
+                <div style={{textAlign: "left", padding: "20px", margin: "10px", marginBottom: 0, backgroundColor: "#f3f3f3"}}>
                     <b> Name : </b><span> {user.name} </span><br/>
                     <b> Email : </b><span> {user.email} </span><br/>
                     <b> Nickname : </b><span> {user.nick_name} </span><br/>

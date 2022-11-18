@@ -8,7 +8,7 @@ function Files({files, createdId}) {
 
     function deleteFile(id, filename){
         if(window.confirm(filename + " 을 삭제하시겠습니까? ")){
-            axios.delete(`/delete/${id}`).catch((e) => {
+            axios.delete(`/file/delete/${id}`).catch((e) => {
                 console.log(e.response.status + " : " + e.response.statusText);
             })
             window.location.reload();
@@ -31,7 +31,7 @@ function Files({files, createdId}) {
                             { _.isEqual(sessionStorage.getItem("login"), "true") &&
                                 <input type={"image"} src={require("../Icon/download.png").default} alt={"icon"}
                                     style={{width:"20px", height:"20px", objectFit: "fill", verticalAlign: "middle", marginLeft: "10px"}}
-                                    onClick={() => {Download(resource, "download", file.id, file.origin_name)}} />
+                                    onClick={() => {Download(resource, "file/download", file.id, file.origin_name)}} />
                             }
                         </li>
                     )

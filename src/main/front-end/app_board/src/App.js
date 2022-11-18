@@ -73,7 +73,7 @@ function App() {
         <Router>
             <Bar isLogin={sessionStorage.getItem("login")}/>
             <Routes>
-                <Route path="/" exact element={<Home />} />
+                <Route exact path="/" element={<Home />} />
 
                 <Route exact path="/board" element={<Board  />} />
                 <Route path="/board/:articleId" element={<ArticleDetail  />} /> 
@@ -91,7 +91,7 @@ function App() {
                 <Route path="/mypage" element={<MyPage />} />
                 <Route path="/user/manage" element={<UserManage />} />
 
-                <Route path="*" element={<PageNotFound />} /> {/* No route match location Handle */}
+                <Route exact path="*" element={<PageNotFound />} /> {/* No route match location Handle */}
             </Routes>
         </Router>
     )

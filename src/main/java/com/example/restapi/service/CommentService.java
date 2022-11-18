@@ -10,7 +10,6 @@ import javax.transaction.Transactional;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import com.example.restapi.controller.AbstractCrudMethod;
 import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.Comment;
 import com.example.restapi.model.network.Status;
@@ -23,7 +22,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Service
-public class CommentService extends AbstractCrudMethod<CommentRequest, CommentResponseDto> {
+public class CommentService {
     private final CommentRepository commentRepository;
     private final ArticleRepository articleRepository;
 
@@ -32,7 +31,6 @@ public class CommentService extends AbstractCrudMethod<CommentRequest, CommentRe
         this.articleRepository = articleRepository;
     }
 
-    @Override
     public Status<CommentResponseDto> create(Status<CommentRequest> request) {
         CommentRequest body = request.getData();
         if(body.getUserId()==null){
@@ -49,7 +47,6 @@ public class CommentService extends AbstractCrudMethod<CommentRequest, CommentRe
         return Status.OK(buildComment(commentRepository.save(comment)));
     }
 
-    @Override
     @Transactional
     public Status<CommentResponseDto> read(int id) {
         return commentRepository.findById(id)
@@ -57,7 +54,6 @@ public class CommentService extends AbstractCrudMethod<CommentRequest, CommentRe
             .orElseGet(()-> Status.ERROR("No DATA"));
     }
 
-    @Override
     @Transactional
     public Status<CommentResponseDto> update(Status<CommentRequest> request, int id) {
         CommentRequest body = request.getData();
@@ -74,7 +70,6 @@ public class CommentService extends AbstractCrudMethod<CommentRequest, CommentRe
             .orElseGet(()-> Status.ERROR("No DATA"));
     }
 
-    @Override
     public Status delete(int id) {
         return commentRepository.findById((id))
                 .map(comment -> {
@@ -92,13 +87,12 @@ public class CommentService extends AbstractCrudMethod<CommentRequest, CommentRe
         return commentList;
     }
 
-    public List<CommentResponseDto> getUserComment(String nickName){
+    public Status<List<CommentResponseDto>> getUserComment(String nickName){
         List<CommentResponseDto> commentList = new ArrayList<>();
         for(Comment comment : commentRepository.findAllByUserId(nickName)){
             commentList.add(buildComment(comment));
         }
-        log.warn(commentList);
-        return commentList;
+        return Status.OK(commentList);
     }
 
     private CommentResponseDto buildComment(Comment comment){

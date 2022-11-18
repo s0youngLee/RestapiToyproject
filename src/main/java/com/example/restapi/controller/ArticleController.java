@@ -2,13 +2,12 @@ package com.example.restapi.controller;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,17 +30,22 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+// @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/article")
-public class ArticleController extends AbstractCrudMethod<ArticleRequest, ArticleResponseDto> {
+public class ArticleController {
     private final ArticleService articleService;
     public ArticleController(@Lazy ArticleService articleService) {
         this.articleService = articleService;
     }
 
-    @PostConstruct
-    public void init(){
-        this.baseService = articleService;
+    @GetMapping("{id}")
+    public Status<ArticleResponseDto> read(@PathVariable int id) {
+        return articleService.read(id);
+    }
+
+    @DeleteMapping("{id}")
+    public Status delete(@PathVariable int id) {
+        return articleService.delete(id);
     }
 
     @GetMapping("")
@@ -55,7 +59,7 @@ public class ArticleController extends AbstractCrudMethod<ArticleRequest, Articl
     }
 
     @GetMapping("/user")
-    public List<ArticleListResponseDto> getMyArticles(@SessionAttribute("user") UserInfo user){
+    public Status<List<ArticleListResponseDto>> getMyArticles(@SessionAttribute("user") UserInfo user){
         return articleService.getUserArticles(user);
     }
 
@@ -65,13 +69,13 @@ public class ArticleController extends AbstractCrudMethod<ArticleRequest, Articl
         return articleService.getSearchResults(type, keyword);
     }
 
-    @PostMapping(value = "/withfile", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public void register(@RequestPart("article") Status<ArticleRequest> request, @RequestPart(value = "file", required = false) List<MultipartFile> upfile)
         throws Exception {
         articleService.register(upfile, request);
     }
 
-    @PutMapping(value = "/withfile/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PutMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public void edit(@RequestPart(value = "file", required = false) List<MultipartFile> uploadFiles, @RequestPart("article") Status<ArticleRequest> request, @PathVariable int id)
         throws MissingServletRequestPartException {
         articleService.edit(uploadFiles, request, id);

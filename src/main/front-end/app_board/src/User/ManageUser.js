@@ -31,7 +31,7 @@ function UserManage(){
             });
         })
         return list;
-    }, [manage]);
+    }, [usersPerPage]);
 
     const handlePageChange = (currentPage) => {
         setCurrentPage(currentPage);
@@ -40,6 +40,8 @@ function UserManage(){
     function SaveAll(){
         let check = false;
         usersPerPage.map((origin, index) => {
+            console.log(origin.auth);
+            console.log(editList[index].auth);
             if(!_.isEqual(origin.auth, editList[index].auth)){
                 axios.put(`/user/manage/${origin.code}`, {
                     data : {
@@ -65,7 +67,7 @@ function UserManage(){
     else{
         return (
             <>
-            <div className="div-box">
+            <div className="div-box" style={{marginLeft: "10px"}}>
                 <b style={{fontSize: "30px"}}> User List </b>
                 {usersPerPage?.map((userinfo, index) => {
                     return (
@@ -83,11 +85,10 @@ function UserManage(){
                     totalItemsCount={manage.length} 
                     pageRangeDisplayed={pageLimit} 
                     onChange={handlePageChange}
-                    innerClass={""}
+                    innerClass={"paginate"}
                     activeClass={"w3-button w3-round-xxlarge w3-small w3-deep-purple"}
                     itemClass={"w3-button w3-round-xxlarge w3-small w3-hover-deep-purple"}
                     linkClass={"none"}
-                    className={"paginate"}
                 />
             </div>
             </>
@@ -97,7 +98,7 @@ function UserManage(){
 
 function EditUser({index, userinfo, editList}){
     const authList = ["ROLE_USER", "ROLE_ADMIN"];
-    const [userAuth, setAuth] = useState("USER");
+    const [userAuth, setAuth] = useState("click to change");
     const [visible, setVisible] = useState(false);
     
     function changeAuth(){
@@ -127,7 +128,7 @@ function EditUser({index, userinfo, editList}){
             }
         }).then(() => {
             console.log("ROLE_" + userAuth);
-            alert("User's auth edited.");
+            alert("User " + userinfo.name + "'s auth edited.");
             window.location.reload();
         }).catch((e) => {
             alert("Failed to edit auth.\nPlease try again.");

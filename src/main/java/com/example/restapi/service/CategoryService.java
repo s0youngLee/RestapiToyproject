@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import com.example.restapi.controller.AbstractCrudMethod;
 import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.Category;
 import com.example.restapi.model.network.Status;
@@ -16,7 +15,7 @@ import com.example.restapi.repository.ArticleRepository;
 import com.example.restapi.repository.CategoryRepository;
 
 @Service
-public class CategoryService extends AbstractCrudMethod<CategoryRequest, CategoryResponseDto> {
+public class CategoryService{
     private final CategoryRepository categoryRepository;
     private final ArticleRepository articleRepository;
 
@@ -25,7 +24,6 @@ public class CategoryService extends AbstractCrudMethod<CategoryRequest, Categor
         this.articleRepository = articleRepository;
     }
 
-    @Override
     public Status<CategoryResponseDto> create(Status<CategoryRequest> request) {
         System.out.println(request);
         CategoryRequest body = request.getData();
@@ -38,15 +36,13 @@ public class CategoryService extends AbstractCrudMethod<CategoryRequest, Categor
         return Status.OK(buildCategory(categoryRepository.save(category)));
     }
 
-    @Override
     public Status<CategoryResponseDto> read(int id) {
         return categoryRepository.findById(id)
                 .map(category -> Status.OK(buildCategory(categoryRepository.save(category))))
                 .orElseGet(()-> Status.ERROR("No DATA"));
     }
 
-    // category 목록
-    @Override
+
     public Status<CategoryResponseDto> update(Status<CategoryRequest> request, int id) {
         CategoryRequest body = request.getData();
 
@@ -60,7 +56,6 @@ public class CategoryService extends AbstractCrudMethod<CategoryRequest, Categor
                 .orElseGet(()-> Status.ERROR("No DATA"));
     }
 
-    @Override
     public Status delete(int categoryId) {
         List<Article> articleList = articleRepository.findAll();
 

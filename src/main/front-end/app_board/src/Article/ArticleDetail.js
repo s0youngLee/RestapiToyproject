@@ -6,6 +6,7 @@ import Comment from "../Comment/Comment";
 import Files from './FileForm';
 import ArticleEditForm from './ArticleEdit';
 import axios from 'axios';
+import PageNotFound from '../PageNotFound';
 
 function ArticleDeatil(){
     const [articleDetailData, setArticleDetailData] = useState();
@@ -26,10 +27,10 @@ function ArticleDeatil(){
 function ArticleDetailData({data}) {
     const [isOpen, setIsOpen] = useState(false);
     const handleClose = () => {setIsOpen(false);}
-    let resource = useMemo(() => { return new Blob(); },[])
+    let resource = useMemo(() => { return new Blob(); },[]);
 
     function downloadAll(){
-        Download(resource, "download/zip", data.id, data.title);
+        Download(resource, "file/downloadzip", data.id, data.title);
         axios.get(`/download/complete/${data.id}`);
     }
 
@@ -48,6 +49,7 @@ function ArticleDetailData({data}) {
 
 
     if(_.isEmpty(data)){ return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div> }
+    else if(_.isEqual(data, "No DATA")){ return <PageNotFound /> }
     else {
         return (
             <><div className='div-box' style={{padding: "10px", overflow: "auto", marginLeft: "10px", textAlign: "left", height: "80vh"}}>
