@@ -35,11 +35,6 @@ public class FileController {
 	public ResponseEntity<Resource> downloadZipFile(@PathVariable Integer articleId) throws IOException {
 		return fileService.downloadZipFile(articleId);
 	}
-	//
-	// @GetMapping("/download/complete/{articleId}")
-	// public void deleteZipFile(@PathVariable Integer articleId) throws IOException {
-	// 	fileService.deleteZipFile(articleId);
-	// }
 
 	@DeleteMapping("/delete/{id}")
 	public void deleteFile(@PathVariable Integer id){

@@ -1,5 +1,5 @@
-import {useState, useCallback, useEffect, useMemo} from 'react';
-import {getUrlId, FetchWithoutId} from "../func";
+import { useState, useCallback, useEffect, useMemo } from 'react';
+import { getUrlId, FetchWithoutId, userCode } from "../func";
 import axios from "axios";
 import _ from 'lodash';
 
@@ -9,6 +9,7 @@ function ArticleRegister(){
     const [content, setContent] = useState("");
     const [selected, setSelected] = useState(urlId);
 
+
     const [categoryList, setCategoryList] = useState();
     const [categoryData, setCategoryData] = useState();
     
@@ -16,7 +17,7 @@ function ArticleRegister(){
         if(_.isEmpty(categoryData)){
             FetchWithoutId(categoryData, setCategoryData, "category");
         }else{
-            setCategoryList(categoryData.data);
+            setCategoryList(categoryData);
         }
     }, [categoryData]);
     
@@ -56,19 +57,17 @@ function ArticleRegister(){
     const addArticle = (e) => {
         e.preventDefault();
         let data = {
-            data: {
-                title : title,
-                content : content,
-                created_id : sessionStorage.getItem("usercode"),
-                category_id : selected
-            }
+            title : title,
+            content : content,
+            created_id : userCode,
+            category_id : selected
         }
         formData.append("article", new Blob([JSON.stringify(data)], {type: "application/json"}));
     
         axios.post('/article', formData)
         .then((res) => {
-            alert("게시글이 작성되었습니다.\n선택한 카테고리로 이동합니다.");
-            window.location.href=`/board/category/${selected}`;
+            alert("게시글이 작성되었습니다.\n작성한 게시글로 이동합니다.");
+            window.location.href=`/board/${res.data.id}`;
         }).catch((e) => {
             alert("게시글 등록을 실패하였습니다.\n다시 시도해주세요.");
         });

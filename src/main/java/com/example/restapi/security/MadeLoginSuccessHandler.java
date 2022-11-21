@@ -33,7 +33,7 @@ public class MadeLoginSuccessHandler implements AuthenticationSuccessHandler {
 	@Override
 	@Transactional
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-		Authentication authentication) throws IOException, ServletException {
+		Authentication authentication) {
 		HttpSession session = request.getSession(false);
 		if(session != null){
 			session.setAttribute("user", userSecurityService.loadUserByUsername(authentication.getName()));

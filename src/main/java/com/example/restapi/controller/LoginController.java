@@ -22,9 +22,4 @@ public class LoginController {
 	public Boolean status(HttpServletRequest request){
 		return loginService.status(request);
 	}
-
-	// @RequestMapping("/sessionExpired")
-	// public void sessionExpired(HttpServletRequest request){
-	// 	loginService.sessionExpired(request);
-	// }
 }

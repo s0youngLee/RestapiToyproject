@@ -5,18 +5,20 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.Category;
 import com.example.restapi.model.entity.UserInfo;
-import com.example.restapi.model.network.Status;
 import com.example.restapi.model.network.request.ArticleRequest;
 import com.example.restapi.model.network.response.ArticleExcelResponseDto;
 import com.example.restapi.model.network.response.ArticleListResponseDto;
@@ -49,43 +51,47 @@ public class ArticleService {
     }
 
     @Transactional
-    public void register(List<MultipartFile> uploadFiles, Status<ArticleRequest> request) throws Exception {
-        ArticleRequest body = request.getData();
+    public ResponseEntity<ArticleResponseDto> register(List<MultipartFile> uploadFiles, ArticleRequest request) throws Exception {
         Article article = Article.builder()
-            .title(body.getTitle())
-            .content(body.getContent())
+            .title(request.getTitle())
+            .content(request.getContent())
             .createdAt(LocalDateTime.now())
             .finalEditDate(LocalDateTime.now())
-            .category(categoryRepository.getReferenceById(body.getCategoryId()))
+            .category(categoryRepository.getReferenceById(request.getCategoryId()))
             .visitCnt(0)
             .comment(new ArrayList<>())
             .files(new ArrayList<>())
-            .user(userRepository.getReferenceById(body.getCreatedId()))
+            .user(userRepository.getReferenceById(request.getCreatedId()))
             .build();
 
-        articleRepository.save(article);
         try{
+            articleRepository.save(article);
             article.setFiles(fileService.upload(uploadFiles, article.getId())); // file upload
         }catch (NullPointerException e){
             log.warn("File not selected");
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(articleBuilder(article));
+    }
+
+    @Transactional
+    public ResponseEntity<ArticleResponseDto> read(int id) {
+        articleRepository.updateVisitCnt(id);
+        try{
+            return ResponseEntity.ok(articleBuilder(articleRepository.getReferenceById(id)));
+        }catch (EntityNotFoundException e){
+            return ResponseEntity.badRequest().build();
         }
     }
 
     @Transactional
-    public Status<ArticleResponseDto> read(int id) {
-        articleRepository.updateVisitCnt(id);
-        return articleRepository.findById(id)
-                .map(this::articleBuilder)
-                .orElseGet(()-> Status.ERROR("No DATA"));
-    }
-
-    @Transactional
-    public Status<ArticleResponseDto> edit(List<MultipartFile> uploadFiles, Status<ArticleRequest> request, int id) {
-        ArticleRequest body = request.getData();
-        return articleRepository.findById(id)
+    public ResponseEntity<ArticleResponseDto> edit(List<MultipartFile> uploadFiles, ArticleRequest request, int id) {
+        try {
+            articleRepository.findById(id)
                 .map(article -> {
-                    article.setTitle(body.getTitle());
-                    article.setContent(body.getContent());
+                    article.setTitle(request.getTitle());
+                    article.setContent(request.getContent());
                     article.setFinalEditDate(LocalDateTime.now());
                     try {
                         article.setFiles(fileService.upload(uploadFiles, id));
@@ -95,92 +101,49 @@ public class ArticleService {
                         throw new RuntimeException(e);
                     }
                     article.setCategory(Category.builder()
-                                   .id(body.getCategoryId())
-                                   .name(categoryRepository.findById(body.getCategoryId()).get().getName())
-                                   .build());
+                        .id(request.getCategoryId())
+                        .name(categoryRepository.findById(request.getCategoryId()).orElseThrow().getName())
+                        .build());
                     return article;
                 })
                 .map(articleRepository::save)
-                .map(this::articleBuilder)
-                .orElseGet(()-> Status.ERROR("No DATA"));
+                .map(this::articleBuilder);
+        }catch (IllegalArgumentException | NoSuchElementException e){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.noContent().build();
     }
 
     @Transactional
-    public Status delete(int id) {
-        return articleRepository.findById(id)
-                .map(article -> {
-                    fileService.deleteFileByArticleId(id);
-                    articleRepository.delete(article);
-                    return Status.OK();
-                })
-                .orElseGet(()-> Status.ERROR("No DATA"));
+    public ResponseEntity<ArticleResponseDto> delete(int id) {
+        try {
+            fileService.deleteFileByArticleId(id);
+            articleRepository.delete(articleRepository.getReferenceById(id));
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.noContent().build();
     }
-    
-    public List<ArticleListResponseDto> getList(){
-        return listResponse(articleRepository.findAll());
+
+    public ResponseEntity<List<ArticleListResponseDto>> getList(){
+        return ResponseEntity.ok(listResponse(articleRepository.findAll()));
     }
  
-    public List<ArticleListResponseDto> getArticleListByCategory(int categoryId) {
-        return listResponse(articleRepository.findAllByCategoryId(categoryId));
+    public ResponseEntity<List<ArticleListResponseDto>> getArticleListByCategory(int categoryId) {
+        return ResponseEntity.ok(listResponse(articleRepository.findAllByCategoryId(categoryId)));
     }
 
-    public Status<List<ArticleListResponseDto>> getUserArticles(UserInfo user){
-        return Status.OK(listResponse(articleRepository.findAllByUser(user)));
+    public ResponseEntity<List<ArticleListResponseDto>> getUserArticles(UserInfo user){
+        return ResponseEntity.ok(listResponse(articleRepository.findAllByUser(user)));
     }
 
-    private Status<ArticleResponseDto> articleBuilder(Article article){
-        try{
-            ArticleResponseDto body  = ArticleResponseDto.builder()
-                    .id(article.getId())
-                    .title(article.getTitle())
-                    .content(article.getContent())
-                    .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
-                    .categoryName(article.getCategory().getName())
-                    .categoryId(article.getCategory().getId())
-                    .visitCnt(article.getVisitCnt())
-                    .finalEditDate(article.getFinalEditDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
-                    .comment(commentService.getList(article))
-                    .files(fileService.getList(article))
-                    .userNickname(article.getUser().getNickName())
-                    .build();
-
-            return Status.OK(body);
-        }catch (NullPointerException e){
-            log.warn("Edit time is null");
-            return null;
-        }
-    }
-
-    private ArticleListResponseDto listResponseBuilder(Article article) {
-        ArticleListResponseDto addBody = ArticleListResponseDto.builder()
-            .id(article.getId())
-            .title(article.getTitle())
-            .finalEditDate(article.getFinalEditDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-            .categoryName(article.getCategory().getName())
-            .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-            .visitCnt(article.getVisitCnt())
-            .commentCnt(article.getComment().size())
-            .userNickname(article.getUser().getNickName())
-            .build();
-        return addBody;
-    }
-
-
-    private List<ArticleListResponseDto> listResponse(List<Article> articleList){
-        List<ArticleListResponseDto> newList = new ArrayList<>();
-        for(Article article: articleList){
-            newList.add(listResponseBuilder(article));
-        }
-        return newList;
-    }
-
-    public List<ArticleListResponseDto> getSearchResults(String type, String keyword){
+    public ResponseEntity<List<ArticleListResponseDto>> getSearchResults(String type, String keyword){
         String searchType = type.split("-")[1];
         String categoryId = type.split("-")[0];
         if(categoryId.equals("")){
-            return search(articleRepository.findAll(), searchType, keyword);
+            return ResponseEntity.ok(search(articleRepository.findAll(), searchType, keyword));
         }else{
-            return search(articleRepository.findAllByCategoryId(Integer.parseInt(categoryId)), searchType, keyword);
+            return ResponseEntity.ok(search(articleRepository.findAllByCategoryId(Integer.parseInt(categoryId)), searchType, keyword));
         }
     }
 
@@ -241,5 +204,49 @@ public class ArticleService {
             dataList.add(data.getData());
         }
         excelSetting.writeWorkbook(response, ArticleExcelResponseDto.class.getRecordComponents() , dtoData, dataList);
+    }
+
+
+    private ArticleResponseDto articleBuilder(Article article){
+        try{
+            return ArticleResponseDto.builder()
+                .id(article.getId())
+                .title(article.getTitle())
+                .content(article.getContent())
+                .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
+                .categoryName(article.getCategory().getName())
+                .categoryId(article.getCategory().getId())
+                .visitCnt(article.getVisitCnt())
+                .finalEditDate(article.getFinalEditDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
+                .comment(commentService.getList(article))
+                .files(fileService.getList(article))
+                .userNickname(article.getUser().getNickName())
+                .build();
+        }catch (NullPointerException e){
+            log.warn("Edit time is null");
+            return null;
+        }
+    }
+
+    private ArticleListResponseDto listResponseBuilder(Article article) {
+        return ArticleListResponseDto.builder()
+            .id(article.getId())
+            .title(article.getTitle())
+            .finalEditDate(article.getFinalEditDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+            .categoryName(article.getCategory().getName())
+            .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+            .visitCnt(article.getVisitCnt())
+            .commentCnt(article.getComment().size())
+            .userNickname(article.getUser().getNickName())
+            .build();
+    }
+
+
+    private List<ArticleListResponseDto> listResponse(List<Article> articleList){
+        List<ArticleListResponseDto> newList = new ArrayList<>();
+        for(Article article: articleList){
+            newList.add(listResponseBuilder(article));
+        }
+        return newList;
     }
 }

@@ -1,6 +1,11 @@
 import _ from "lodash";
 import axios from "axios";
 
+export const userNickname = !_.isEmpty(sessionStorage.getItem("userinfo")) ? Buffer.from(sessionStorage.getItem("userinfo"), 'base64').toString('ascii').split("/")[0] : undefined;
+export const userAuth = !_.isEmpty(sessionStorage.getItem("userinfo")) ? Buffer.from(sessionStorage.getItem("userinfo"), 'base64').toString('ascii').split("/")[1] : undefined;
+export const userCode = !_.isEmpty(sessionStorage.getItem("userinfo")) ? Buffer.from(sessionStorage.getItem("userinfo"), 'base64').toString('ascii').split("/")[2] : undefined;
+export const userLastAccess = !_.isEmpty(sessionStorage.getItem("userinfo")) ? Buffer.from(sessionStorage.getItem("userinfo"), 'base64').toString('ascii').split("/")[3] : undefined;
+
 export const sliceArrayByLimit = (totalPage, limit) => {
     const totalPageArray = Array(totalPage)
       .fill()
@@ -11,11 +16,11 @@ export const sliceArrayByLimit = (totalPage, limit) => {
   };
   
 export function isPublisher(publisher){
-    return _.isEqual(publisher, sessionStorage.getItem("username"));
+    return _.isEqual(publisher, userNickname);
 }
     
 export function isAdmin(){
-    return _.isEqual(sessionStorage.getItem("userauth"), "ROLE_ADMIN");
+    return _.isEqual(userAuth, "ROLE_ADMIN");
 }
 
 export function canRemove(publisher){
@@ -66,7 +71,7 @@ export function FetchWithId(data, setData, dataName, n){
         }
     })
     .then((res) => {
-        setData(res?.data);
+        setData(res.data);
     })
     .catch((e) => {
         ifError(e);

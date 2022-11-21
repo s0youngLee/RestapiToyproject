@@ -16,12 +16,12 @@ function ArticlesByCategory(){
         if(_.isEmpty(categoryData)){
             FetchWithId(categoryData, setCategoryData, "category", 1);
         }else{
-            setCategory(categoryData.data);
+            setCategory(categoryData);
         }
-        if(_.isEmpty(articleByCategoryData)){
+        if(_.isEmpty(articleByCategoryData) && !_.isEqual(articleByCategoryData, [])){
             FetchWithId(articleByCategoryData, setArticleByCategoryData, "article/category", 1);
         }else{
-            setArticleByCategory(articleByCategoryData.data);
+            setArticleByCategory(articleByCategoryData);
         }
     }, [categoryData, articleByCategoryData]);
 

@@ -38,9 +38,7 @@ function CommentEditForm({data, visible, setVisible}){
         if(_.isEmpty(e.target.value)){ setContent(data.content); }
 
         axios.put(`/comment/${data.id}`, {
-            data : {
-                content : content
-            }
+            content : content
         }).then(() => {
             alert("댓글이 수정되었습니다.");
             window.location.href=`/board/${data?.article_id}`;

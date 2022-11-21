@@ -52,14 +52,12 @@ function MyInfoEditForm({user}) {
         }
         
         axios.put(`/user`, {
-            data : {
-                email : user.email,
-                name : user.name,
-                auth : user.auth,
-                password : checkPassword,
-                nickName : newNickname,
-                phone : newPhone
-            }
+            email : user.email,
+            name : user.name,
+            auth : user.auth,
+            password : checkPassword,
+            nickName : newNickname,
+            phone : newPhone
         }).then((res) => {
             console.log(checkPassword);
             console.log(newNickname);

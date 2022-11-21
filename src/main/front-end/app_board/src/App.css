@@ -85,7 +85,7 @@ td, tr, th {
 }
 
 button{
-  margin-left: 5px!important;
+  margin-left: 5px;
   font-weight: bolder!important;
 } 
 
@@ -291,11 +291,11 @@ button{
   }
 
   th {
-    font-size: small;
+    font-size: x-small;
   }
 
   td {
-    font-size: smaller;
+    font-size: xx-small;
   }
 
   .image-label, .image-label-uploaded{

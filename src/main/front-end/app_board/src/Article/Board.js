@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import _ from 'lodash';
-import { FetchWithoutId } from '../func';
+import { FetchWithoutId, userLastAccess, userNickname } from '../func';
 import ArticleList from './ArticleList';
 import '../App.css'
 
@@ -12,13 +12,13 @@ function Board(){
         if(_.isEmpty(articleData)){
             FetchWithoutId(articleData, setArticleData, "article");
         }else{
-            setArticle(articleData.data);
+            setArticle(articleData);
         }
     }, [articleData]);
     
     function checkUserAccessDate(){
-        if(!_.isEmpty(sessionStorage.getItem("username"))){
-            const lastAccess = new Date(sessionStorage.getItem("lastAccess"));
+        if(!_.isEmpty(userNickname)){
+            const lastAccess = new Date(userLastAccess);
             const today = new Date();
     
             const compare = today.getTime() - lastAccess.getTime();

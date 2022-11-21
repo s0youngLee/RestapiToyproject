@@ -23,7 +23,7 @@ function MyPage(){
     useEffect(() => {
         if(_.isEmpty(user)){
             axios.get("/user").then((res) => {
-                setUser(res.data.data);
+                setUser(res.data);
             }).catch((e) => {
                 console.log(e);
             })
@@ -31,12 +31,12 @@ function MyPage(){
         if(_.isEmpty(articlesData) && !_.isEqual(articlesData, [])){
             FetchWithoutId(articlesData, setArticlesData, "article/user");
         }else{
-            setArticles(articlesData.data);
+            setArticles(articlesData);
         }
         if(_.isEmpty(commentsData) && !_.isEqual(commentsData, [])){
             FetchWithoutId(commentsData, setCommentsData, "comment/user");
         }else{
-            setComments(commentsData.data);
+            setComments(commentsData);
         }
     },[articlesData, commentsData, user]);
 

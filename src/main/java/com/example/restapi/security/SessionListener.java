@@ -9,17 +9,13 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
+import com.example.restapi.model.entity.UserInfo;
+
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @WebListener
 public class SessionListener implements HttpSessionListener {
-
-	private final LoginService loginService;
-
-	public SessionListener(LoginService loginService) {
-		this.loginService = loginService;
-	}
 
 	@Override
 	public void sessionCreated(HttpSessionEvent event) {
@@ -34,17 +30,15 @@ public class SessionListener implements HttpSessionListener {
 	@Override
 	public void sessionDestroyed(HttpSessionEvent event) {
 		// 세션 만료시 호출
-
-		// 세션 만료시에 바로 react로 반응을 보내줄 방법은..?
 		HttpSession session = event.getSession();
 		long lastTime = session.getLastAccessedTime();
 		long nowTime = System.currentTimeMillis();
 		long expiredTime = nowTime - lastTime;
 		String id = session.getId();
 
-		log.info("Login info = {}", session.getAttribute("user"));
+		// log.info("Login info = {}", session.getAttribute("user"));
+		log.info("Expired Login info = {}", ((UserInfo)session.getAttribute("user")).getName());
 		log.warn("session expired in {} m {} s.", expiredTime / (1000 * 60), (expiredTime % (1000 * 60))/1000);
-
 		log.warn("JSESSIONID = {}\n", id);
 	}
 

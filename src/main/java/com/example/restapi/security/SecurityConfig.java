@@ -6,6 +6,8 @@ import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,14 +24,11 @@ import lombok.extern.log4j.Log4j2;
 @EnableWebSecurity
 public class SecurityConfig {
 	private final UserSecurityService userSecurityService;
-	private final LoginService loginService;
-	public SecurityConfig(UserSecurityService userSecurityService, LoginService loginService) {
+	public SecurityConfig(UserSecurityService userSecurityService) {
 		this.userSecurityService = userSecurityService;
-		this.loginService = loginService;
 	}
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		// session 만료 시 컨트롤 시도...? 수정 ****
 		http
 			.cors()
 			.and()
@@ -78,7 +77,16 @@ public class SecurityConfig {
 
 	@Bean
 	public ServletListenerRegistrationBean<HttpSessionListener> sessionListener() {
-		return new ServletListenerRegistrationBean<>(new SessionListener(loginService));
+		return new ServletListenerRegistrationBean<>(new SessionListener());
+	}
+
+	@Bean
+	public AuthenticationProvider daoAuthenticationProvider(){
+		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+		authenticationProvider.setUserDetailsService(userSecurityService);
+		authenticationProvider.setPasswordEncoder(encoder());
+		authenticationProvider.setHideUserNotFoundExceptions(false);
+		return authenticationProvider;
 	}
 
 	@Bean

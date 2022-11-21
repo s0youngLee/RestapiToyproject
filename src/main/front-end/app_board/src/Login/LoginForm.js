@@ -30,7 +30,9 @@ function LoginForm(){
         })
         .catch((err) => {
             if(err.response.status === 401){
-                alert("아이디 또는 비밀번호가 틀렸습니다.\n다시 시도하세요.");
+                alert("잘못된 비밀번호입니다.\n다시 시도하세요.");
+            }else if(err.response.status === 404){
+                alert("존재하지 않는 아이디입니다.");
             }else {
                 alert(err + "\n로그인 실패.");
                 window.location.reload();
@@ -39,7 +41,7 @@ function LoginForm(){
     }
 
     return (
-    <div className="div-box">
+    <div className="div-box" style={{marginLeft: "10px"}}>
         <br/>
         <form >
             <h2 >Please Login</h2> <hr/>

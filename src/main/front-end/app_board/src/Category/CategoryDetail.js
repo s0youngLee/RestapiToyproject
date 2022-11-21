@@ -11,7 +11,7 @@ function CategoryDeatil () {
         if(_.isEmpty(categoryData)){
             FetchWithoutId(categoryData, setCategoryData, "category");
         }else{
-            setCategoryList(categoryData.data);
+            setCategoryList(categoryData);
         }
     }, [categoryData]);
 

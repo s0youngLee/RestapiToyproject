@@ -16,11 +16,11 @@ function ArticleDeatil(){
         if(_.isEmpty(articleDetailData)){
             FetchWithId(articleDetailData, setArticleDetailData, "article", 1);
         }else {
-            setArticleDetail(articleDetailData.data);
+            setArticleDetail(articleDetailData);
         }
     }, [articleDetailData, articleDetail]);
 
-    if(_.isEmpty(articleDetail)) { return <div> Loading .. </div>}
+    if(_.isEmpty(articleDetail)) { return <div style={{marginTop : "100px"}}> Loading .. </div>}
     else { return <ArticleDetailData data={articleDetail} />; }
 }
 
@@ -85,7 +85,7 @@ function ArticleDetailData({data}) {
                                 onClick={() => { Delete("article", data.id) }}>Delete</button>
                     }
                 </div><hr/>
-                <Comment article={data}/>
+                <Comment comments={data.comment}/>
             </>
         )
     }

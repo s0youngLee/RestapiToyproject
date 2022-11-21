@@ -3,6 +3,7 @@ package com.example.restapi.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,12 +13,13 @@ import javax.servlet.http.HttpSession;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.PermissionDeniedDataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.UserInfo;
-import com.example.restapi.model.network.Status;
 import com.example.restapi.model.network.request.UserRequest;
 import com.example.restapi.model.network.response.UserExcelResponseDto;
 import com.example.restapi.model.network.response.UserResponseDto;
@@ -30,7 +32,6 @@ import lombok.extern.log4j.Log4j2;
 @Service
 public class UserService {
 	private final UserRepository userRepository;
-
 	//임시
 	private final ArticleRepository articleRepository;
 	private final ArticleService articleService;
@@ -44,94 +45,103 @@ public class UserService {
 		this.excelSetting = excelSetting;
 	}
 
-	public Status<UserResponseDto> userPage(UserInfo user, HttpServletRequest request) {
+	public ResponseEntity<UserResponseDto> userPage(UserInfo user, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		if(session == null || !request.isRequestedSessionIdValid() || user == null){
 			log.warn("Session condition : Invalid");
-			return null;
+			return ResponseEntity.badRequest().build();
 		}else{
-			return Status.OK(buildUser(user));
+			return ResponseEntity.ok(buildUser(user));
 		}
 	}
 
-	public List<UserResponseDto> userList(String auth) {
+	public ResponseEntity<List<UserResponseDto>> userList(String auth) {
 		if(Objects.equals(auth, "ROLE_ADMIN")){
 			List<UserResponseDto> responseList = new ArrayList<>();
 			for(UserInfo userInfo : userRepository.findAll()){
-				responseList.add(buildUser(userInfo));
+				if(userInfo.getCode() != 0){
+					responseList.add(buildUser(userInfo));
+				}
 			}
-			return responseList;
+			return ResponseEntity.ok(responseList);
 		}else {
 			throw new PermissionDeniedDataAccessException("Permission Denied.", new Throwable(auth));
 		}
 	}
 
-	public Status<UserInfo> register(Status<UserRequest> infoDto, HttpServletResponse response) {
-		UserRequest body = infoDto.getData();
+	public ResponseEntity<UserInfo> register(UserRequest infoDto) {
 		UserInfo user = UserInfo.builder()
-				.email(body.getEmail())
-				.password(encoder.encode(body.getPassword()))
-				.auth(body.getAuth())
-				.nickName(body.getNickName())
-				.name(body.getName())
-				.phone(body.getPhone())
+				.email(infoDto.getEmail())
+				.password(encoder.encode(infoDto.getPassword()))
+				.auth(infoDto.getAuth())
+				.nickName(infoDto.getNickName())
+				.name(infoDto.getName())
+				.phone(infoDto.getPhone())
 				.lastAccess(LocalDateTime.now())
 				.build();
 		try{
-			return Status.OK(userRepository.save(user));
+			return ResponseEntity.ok(userRepository.save(user));
 		}catch (DataIntegrityViolationException e){
 			log.error("Existing User. Please Try again.");
-			response.setStatus(451);
-			return Status.ERROR("Existing User. Please Try again.");
+			return new ResponseEntity<>(HttpStatus.CONFLICT);
 		}
 	}
 
-	public Status<UserInfo> userInfoEdit(UserInfo user, Status<UserRequest> request) {
-		UserRequest body = request.getData();
-
-		user.setNickName(body.getNickName());
-		log.info(body.getNickName());
-		if(!Objects.equals(body.getPassword(), "")){
-			user.setPassword(encoder.encode(body.getPassword()));
-			log.info(body.getPassword());
+	public ResponseEntity<UserInfo> userInfoEdit(UserInfo user, UserRequest request) {
+		user.setNickName(request.getNickName());
+		if(!Objects.equals(request.getPassword(), "")){
+			user.setPassword(encoder.encode(request.getPassword()));
 		}
-		user.setPhone(body.getPhone());
-		log.info(body.getPhone());
-		return Status.OK(userRepository.save(user));
+		user.setPhone(request.getPhone());
+		try{
+			userRepository.save(user);
+		}catch (IllegalArgumentException e){
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.noContent().build();
 	}
 
 
 
-	public Status<UserInfo> changeAuth(String auth, Status<UserRequest> request, Integer code) {
+	public ResponseEntity<UserInfo> changeAuth(String auth, UserRequest request, Integer code) {
 		if(Objects.equals(auth, "ROLE_ADMIN")){
-			UserRequest body = request.getData();
 			UserInfo user = userRepository.getReferenceById(code);
 
-			user.setAuth(body.getAuth());
-			return Status.OK(userRepository.save(user));
+			user.setAuth(request.getAuth());
+			try{
+				userRepository.save(user);
+			}catch (IllegalArgumentException e){
+				return ResponseEntity.badRequest().build();
+			}
+			return ResponseEntity.noContent().build();
 		}else {
 			throw new PermissionDeniedDataAccessException("Permission Denied.", new Throwable(auth));
 		}
 	}
 
-	public Status<UserInfo> updateAccessDate(UserInfo user) {
+	public ResponseEntity<UserInfo> updateAccessDate(UserInfo user) {
 		user.setLastAccess(LocalDateTime.now());
-		return Status.OK(userRepository.save(user));
+		try{
+			userRepository.save(user);
+		}catch (IllegalArgumentException e){
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.noContent().build();
 	}
 
 
-	public Status deleteUser(int code) {
+	public ResponseEntity<UserInfo> deleteUser(int code) {
 		// 임시 처리
 		List<Article> toDelete = articleRepository.findAllByUser(userRepository.getReferenceById(code));
 		for(Article article : toDelete){
-			articleService.delete(article.getId());
+			article.setUser(userRepository.getReferenceById(0));
 		}
-
-		return userRepository.findById(code)
-			.map(delUser -> {
-				userRepository.delete(delUser);
-				return Status.OK();
-			}).orElseGet(() -> Status.ERROR("No DATA"));
+		try {
+			userRepository.delete(userRepository.getReferenceById(code));
+		}catch (IllegalArgumentException | NoSuchElementException e){
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.noContent().build();
 	}
 
 

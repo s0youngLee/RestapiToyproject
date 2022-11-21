@@ -13,7 +13,7 @@ function Bar() {
         if(_.isEmpty(categoryData)){
             FetchWithoutId(categoryData, setCategorydata, "category");
         }else{
-            setCategoryList(categoryData.data);
+            setCategoryList(categoryData);
         }
     },[categoryData]);
 
@@ -34,11 +34,11 @@ function Bar() {
                     <Link to={'/board'} className="none bar-item-left"><button className="w3-bar-item w3-button w3-hover-deep-purple">Board</button></Link>
                         
                     <div className="w3-dropdown-hover">
-                        <button className="w3-button w3-hover-deep-purple">Category</button>
+                        <button className="w3-button w3-hover-deep-purple" style={{marginLeft: "0"}}>Category</button>
                         <div className="w3-dropdown-content w3-bar-block barcontent">
                             {categoryList?.map((category, index) => (
                                 <Link className="none" key={index} to={`/board/category/${category.id}`}>
-                                    <button className="w3-bar-item w3-button w3-light-gray w3-hover-deep-purple"> {category.name} </button>
+                                    <button className="w3-bar-item w3-button w3-light-gray w3-hover-deep-purple w3-border"> {category.name} </button>
                                 </Link>
                             ))}
                         </div>

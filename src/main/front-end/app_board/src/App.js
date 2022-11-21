@@ -47,21 +47,20 @@ function App() {
 
     useEffect(() => {
         if(_.isEqual(sessionStorage.getItem("login"), "true")){
-            if(_.isEmpty(sessionStorage.getItem("username"))){
+            if(_.isEmpty(sessionStorage.getItem("userinfo"))){
                 axios.get("/user").then((res) => {
-                    console.log(res.data.data);
-                    setUser(res.data.data);
-                    sessionStorage.setItem("username", res.data.data.nick_name);
-                    sessionStorage.setItem("userauth", res.data.data.auth);
-                    sessionStorage.setItem("usercode", res.data.data.code);
-                    sessionStorage.setItem("lastAccess", res.data.data.last_access);
+                    setUser(res.data);
+                    const encode = Buffer.from(res.data.nick_name + "/"
+                                                + res.data.auth + "/"
+                                                + res.data.code + "/"
+                                                + res.data.last_access ).toString('base64');
+                    sessionStorage.setItem("userinfo", encode);
                 }).catch((e) => {
                     console.log(e);
                 })
             }
         }else if(_.isEqual(login, false)){
             if(_.isEqual(sessionStorage.getItem("dateAlert"), "true")){
-                // 세션 만료 또는 2번째 로그인 등
                 alert("로그인 정보가 만료되었습니다. 다시 로그인하세요.");
                 sessionStorage.clear();
                 window.location.href = "/login";

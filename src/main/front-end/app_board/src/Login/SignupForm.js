@@ -45,7 +45,6 @@ function SignupForm(){
     const signUp = (e) => {
         e.preventDefault();
         axios.post('/user', {
-            data : {
                 email : email,
                 password : password,
                 auth : auth,
@@ -53,11 +52,11 @@ function SignupForm(){
                 name : realName,
                 phone : phoneNumber
             }
-        }).then((res) => {
+        ).then((res) => {
             alert("회원가입이 완료되었습니다.\n로그인 페이지로 이동합니다.");
             window.location.href="/login";
         }).catch((e) => {
-            if(e.response.status === 451){
+            if(e.response.status === 409){
                 if (window.confirm("이미 존재하는 아이디입니다.\n이 아이디로 로그인하시겠습니까?")){
                     window.location.href =  "/login";
                 }else{
