@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import _ from "lodash";
 
 import Home from "./Home";
@@ -27,18 +27,16 @@ import UserManage from "./User/ManageUser";
 import axios from "axios";
 
 function App() {
-    const [user, setUser] = useState(undefined);
-    const [login, setLogin] = useState(undefined);
+    const user = sessionStorage.getItem("userinfo");
+    const login = sessionStorage.getItem("login");
 
     useEffect(() => {
         axios.get("/loginstatus")
         .then((res) => {
             if(_.isEqual(res.data, true)){
-                sessionStorage.setItem("login", "true");
-                setLogin(true);
+                sessionStorage.setItem("login", true);
             }else{
-                sessionStorage.setItem("login", "false");
-                setLogin(false);
+                sessionStorage.setItem("login", false);
             }
         }).catch((e) => {
             console.log(e);
@@ -46,26 +44,13 @@ function App() {
     }, [user])
 
     useEffect(() => {
-        if(_.isEqual(sessionStorage.getItem("login"), "true")){
-            if(_.isEmpty(sessionStorage.getItem("userinfo"))){
-                axios.get("/user").then((res) => {
-                    setUser(res.data);
-                    const encode = Buffer.from(res.data.nick_name + "/"
-                                                + res.data.auth + "/"
-                                                + res.data.code + "/"
-                                                + res.data.last_access ).toString('base64');
-                    sessionStorage.setItem("userinfo", encode);
-                }).catch((e) => {
-                    console.log(e);
-                })
-            }
-        }else if(_.isEqual(login, false)){
+        if(_.isEqual(login, false)){
             if(_.isEqual(sessionStorage.getItem("dateAlert"), "true")){
                 alert("로그인 정보가 만료되었습니다. 다시 로그인하세요.");
                 sessionStorage.clear();
                 window.location.href = "/login";
             }
-            }
+        }
     }, [login, user]);
     
     return(

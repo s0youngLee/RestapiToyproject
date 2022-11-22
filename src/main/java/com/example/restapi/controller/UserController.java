@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,7 +65,11 @@ public class UserController {
 
 	@DeleteMapping("/{code}")
 	public ResponseEntity<UserInfo> deleteUser(@PathVariable Integer code){
-		return userService.deleteUser(code);
+		if(code!=0){
+			return userService.deleteUser(code);
+		}else{
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
 	}
 
 	@GetMapping("/excel/download")

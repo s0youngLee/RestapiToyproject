@@ -8,6 +8,4 @@ import com.example.restapi.model.entity.UserInfo;
 @Repository
 public interface UserRepository extends JpaRepository<UserInfo, Integer> {
 	UserInfo findByEmail(String email);
-
-	UserInfo findByEmailAndPassword(String email, String password);
 }

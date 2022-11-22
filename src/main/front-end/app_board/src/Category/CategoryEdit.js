@@ -12,7 +12,7 @@ function CategoryEdit(){
         if(_.isEmpty(categoryData)){
             FetchWithId(categoryData, setCategoryData, "category", 1);
         }else{
-            setCategory(categoryData.data);
+            setCategory(categoryData);
         }
     }, [categoryData]);
 

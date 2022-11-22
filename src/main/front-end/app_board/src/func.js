@@ -1,10 +1,12 @@
 import _ from "lodash";
 import axios from "axios";
 
+
 export const userNickname = !_.isEmpty(sessionStorage.getItem("userinfo")) ? Buffer.from(sessionStorage.getItem("userinfo"), 'base64').toString('ascii').split("/")[0] : undefined;
 export const userAuth = !_.isEmpty(sessionStorage.getItem("userinfo")) ? Buffer.from(sessionStorage.getItem("userinfo"), 'base64').toString('ascii').split("/")[1] : undefined;
 export const userCode = !_.isEmpty(sessionStorage.getItem("userinfo")) ? Buffer.from(sessionStorage.getItem("userinfo"), 'base64').toString('ascii').split("/")[2] : undefined;
 export const userLastAccess = !_.isEmpty(sessionStorage.getItem("userinfo")) ? Buffer.from(sessionStorage.getItem("userinfo"), 'base64').toString('ascii').split("/")[3] : undefined;
+export const isLogin = _.isEqual(sessionStorage.getItem("login"), "true");
 
 export const sliceArrayByLimit = (totalPage, limit) => {
     const totalPageArray = Array(totalPage)
@@ -19,12 +21,12 @@ export function isPublisher(publisher){
     return _.isEqual(publisher, userNickname);
 }
     
-export function isAdmin(){
-    return _.isEqual(userAuth, "ROLE_ADMIN");
+export function isAdmin(auth){
+    return _.isEqual(auth, "ROLE_ADMIN");
 }
 
 export function canRemove(publisher){
-    return isAdmin() || isPublisher(publisher);
+    return isAdmin(userAuth) || isPublisher(publisher);
 }
 
 export function getUrlId(n){

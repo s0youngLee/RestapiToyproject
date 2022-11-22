@@ -17,7 +17,7 @@ public class MadeLoginFailureHandler implements AuthenticationFailureHandler {
 
 		// unauthorized 시 usenamenotfound -> badcredential -> 403
 		// password incorrenct -> badcredentail -> 403..
-		// setHideUserNotFoundException(false); 하는 방법, 보안 약화됨 - 임시 처
+		// setHideUserNotFoundException(false); 하는 방법, 보안 약화됨 - 임시 처리
 		String exceptionName = exception.getClass().getSimpleName();
 
 		if(exceptionName.equals("UsernameNotFoundException")){

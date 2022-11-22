@@ -13,14 +13,4 @@ public class LoginService {
 		return session != null;
 	}
 
-	// public void sessionExpired(HttpServletRequest request){
-	// 	SecurityContextHolder.clearContext();
-	// 	HttpSession session = request.getSession(false);
-	// 	if(session!=null){
-	// 		session.invalidate();
-	// 	}
-	// 	for(Cookie cookie : request.getCookies()){
-	// 		cookie.setMaxAge(0);
-	// 	}
-	// }
 }

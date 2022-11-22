@@ -34,14 +34,12 @@ public class UserService {
 	private final UserRepository userRepository;
 	//임시
 	private final ArticleRepository articleRepository;
-	private final ArticleService articleService;
 	private final ExcelSetting<UserExcelResponseDto> excelSetting;
 	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 	public UserService(@Lazy UserRepository userRepository, ArticleRepository articleRepository,
-		ArticleService articleService, ExcelSetting<UserExcelResponseDto> excelSetting) {
+		ExcelSetting<UserExcelResponseDto> excelSetting) {
 		this.userRepository = userRepository;
 		this.articleRepository = articleRepository;
-		this.articleService = articleService;
 		this.excelSetting = excelSetting;
 	}
 

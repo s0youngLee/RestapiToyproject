@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.example.restapi.repository.UserRepository;
 import com.example.restapi.service.UserSecurityService;
 
 import lombok.extern.log4j.Log4j2;
@@ -24,8 +25,10 @@ import lombok.extern.log4j.Log4j2;
 @EnableWebSecurity
 public class SecurityConfig {
 	private final UserSecurityService userSecurityService;
-	public SecurityConfig(UserSecurityService userSecurityService) {
+	private final UserRepository userRepository;
+	public SecurityConfig(UserSecurityService userSecurityService, UserRepository userRepository) {
 		this.userSecurityService = userSecurityService;
+		this.userRepository = userRepository;
 	}
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -59,7 +62,7 @@ public class SecurityConfig {
 
 			.formLogin()
 				.loginPage("/login")
-				.successHandler(new MadeLoginSuccessHandler(userSecurityService))
+				.successHandler(new MadeLoginSuccessHandler(userSecurityService, userRepository))
 				.failureHandler(new MadeLoginFailureHandler())
 
 			.and()
@@ -85,7 +88,7 @@ public class SecurityConfig {
 		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
 		authenticationProvider.setUserDetailsService(userSecurityService);
 		authenticationProvider.setPasswordEncoder(encoder());
-		authenticationProvider.setHideUserNotFoundExceptions(false);
+		authenticationProvider.setHideUserNotFoundExceptions(false); // 보안 취약해진다고 하는데, 일단 사용하는 것으로 함. 추후 수정할 것
 		return authenticationProvider;
 	}
 

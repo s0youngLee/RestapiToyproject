@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { suggestLogin, isAdmin } from "../func";
+import { suggestLogin, isAdmin, userAuth } from "../func";
 import Pagination from "react-js-pagination";
 import axios from "axios";
 import "../App.css";
 import SearchForm from "./SearchForm";
 import _ from "lodash";
+import { Link } from "react-router-dom";
 
 
 function ArticleList({articleList}){
@@ -48,7 +49,7 @@ function ArticleList({articleList}){
 
     const handlePageChange = (currentPage) => {
         setCurrentPage(currentPage);
-        if(isAdmin()){
+        if(isAdmin(userAuth)){
             checkedItems.clear();
             changeAll(false);
         }
@@ -82,7 +83,7 @@ function ArticleList({articleList}){
             <div className="totalPage">
                 <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
                         onClick={() => { suggestLogin() }}> 글쓰기 </button>
-                {isAdmin() && 
+                {isAdmin(userAuth) && 
                     <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
                     onClick={() => DeleteArticles()}>  선택 삭제 </button>}
                 <SearchForm />
@@ -90,7 +91,7 @@ function ArticleList({articleList}){
                 <table>
                     <thead style={{backgroundColor: "#bdb5f6"}}>
                     <tr>
-                        {isAdmin() && 
+                        {isAdmin(userAuth) && 
                             <th> <input type={'checkbox'} checked={allChecked} 
                                         onChange={() => { changeAll(!allChecked); }}/></th>
                         }
@@ -107,19 +108,19 @@ function ArticleList({articleList}){
                         {articlesPerPage.map((article, index) => {
                         return (
                         <tr className="clickable" key={index}>
-                                {isAdmin() && 
+                                {isAdmin(userAuth) && 
                                     <td>
                                     <input  type={'checkbox'} onChange={(e) => {checkHandler(e, article.id);}}
                                     name="check" value={article.id}/>
                                     </td>
                                 }
-                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.id} </td>
-                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.title} </td>
-                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.category_name} </td>
-                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.user_nickname} </td>
-                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.created_at} </td>
-                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.visit_cnt} </td>
-                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.comment_cnt} </td>
+                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.id} </Link></td>
+                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.title} </Link></td>
+                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.category_name} </Link></td>
+                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.user_nickname} </Link></td>
+                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.created_at} </Link></td>
+                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.visit_cnt} </Link></td>
+                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.comment_cnt} </Link></td>
                             </tr>
                         )
                         })}
