@@ -17,8 +17,9 @@ public class MadeLogoutHandler implements LogoutHandler {
 		Authentication authentication) {
 		req.getSession().invalidate();
 		Cookie[] cookies = req.getCookies();
-		log.info("Cookie : " + cookies[0].getName());
-		cookies[0].setMaxAge(0);
+		for(Cookie cookie : cookies){
+			cookie.setMaxAge(0);
+		}
 		log.info("Logout successful.");
 	}
 }

@@ -80,13 +80,13 @@ function SignupForm(){
                 <input type="text" name="nickname" placeholder="nickname" onChange={inputNickName} required/> <br/>
                 <input type={"text"} placeholder="phone number (ex: 010-1234-1234)" onChange={inputPhoneNumber} value={phoneNumber} 
                        maxLength="13" pattern="[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}"></input><br/>
-                <p> ROLE : &nbsp;&nbsp;
-                    <input type="radio" className="w3-radio" name="auth" value="ROLE_USER" defaultChecked="checked" onChange={setUser}/> User&nbsp;&nbsp;
-                    <input type="radio" className="w3-radio" name="auth" value="ROLE_ADMIN" onChange={setAdmin}/> Admin<br/>
+                <p> 권한 : &nbsp;&nbsp;
+                    <input type="radio" className="w3-radio" name="auth" value="ROLE_USER" defaultChecked="checked" onChange={setUser}/> 사용자&nbsp;&nbsp;
+                    <input type="radio" className="w3-radio" name="auth" value="ROLE_ADMIN" onChange={setAdmin}/> 관리자<br/>
                 </p>
-                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal">Join</button>
+                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal">가입</button>
                 <Link className="none" to="/login">
-                    <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-deep-purple">Go to Login →</button>
+                    <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-deep-purple">로그인 페이지 →</button>
                 </Link>
             </form>
 

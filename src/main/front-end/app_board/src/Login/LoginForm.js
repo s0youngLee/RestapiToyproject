@@ -6,11 +6,14 @@ import "../App.css";
 
 function LoginForm(){
     sessionStorage.setItem("dateAlert", false);
+    const remember = document.getElementsByName('remember-me');
     const [account, setAccount] = useState({
         username: "",
         password: "",
     });
 
+
+    console.log(remember);
     const onChangeAccount = (e) => {
         setAccount({
         ...account,
@@ -24,6 +27,11 @@ function LoginForm(){
 
     const userlogin = (e) => {
         e.preventDefault();
+        if(remember[0].checked){
+            form.append('remember-me', remember[0].checked);
+            console.log("appended");
+        }
+        console.log(remember[0].checked);
         axios.post('/login', form)
         .then((res) => {
             alert("성공적으로 로그인되었습니다.");
@@ -69,13 +77,20 @@ function LoginForm(){
     <div className="div-box" style={{marginLeft: "10px"}}>
         <br/>
         <form >
-            <h2 >Please Login</h2> <hr/>
-            <input type="text" id="username" name="username" placeholder="ID (Email)" onChange={onChangeAccount} required autoFocus/><br/>
-            <input type="password" id="password" name="password" placeholder="Password" onChange={onChangeAccount} required/><br/>
+            <h2 > App_Board </h2> <hr/>
+            <p style={{marginBottom : "0"}}>
+                <input type="text" id="username" name="username" placeholder="ID (Email)" onChange={onChangeAccount} required autoFocus/>
+            </p>
+            <p style={{marginBottom : "0"}}>
+                <input type="password" id="password" name="password" placeholder="Password" onChange={onChangeAccount} required/><br/>
+            </p>
+            <p>
+                <input type={'checkbox'} name='remember-me'/> &nbsp;자동 로그인
+            </p>
             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" type="submit" 
-                    onClick={userlogin} >Login</button>
+                    onClick={userlogin} >로그인</button>
             <Link className="none" to="/login/signup">
-                <button className="w3-button w3-round-xlarge w3-small w3-hover-deep-purple w3-border">Register</button>
+                <button className="w3-button w3-round-xlarge w3-small w3-hover-deep-purple w3-border">회원가입</button>
             </Link>
         </form> 
     </div>

@@ -2,22 +2,17 @@ import { useState, useEffect } from "react";
 import _ from 'lodash';
 import { useLocation } from "react-router-dom";
 import ArticleList from '../Article/ArticleList';
-import { FetchWithId, suggestLogin } from "../func";
+import { FetchWithId, getUrlId, suggestLogin } from "../func";
 
 
 function ArticlesByCategory(){
-    const [category, setCategory] = useState();
+    const category = getUrlId(2);
     const [articleByCategory, setArticleByCategory] = useState();
     const [categoryData, setCategoryData] = useState();
     const [articleByCategoryData, setArticleByCategoryData] = useState();
     const categoryId = useLocation();
 
     useEffect(() => {
-        if(_.isEmpty(categoryData)){
-            FetchWithId(categoryData, setCategoryData, "category", 1);
-        }else{
-            setCategory(categoryData);
-        }
         if(_.isEmpty(articleByCategoryData) && !_.isEqual(articleByCategoryData, [])){
             FetchWithId(articleByCategoryData, setArticleByCategoryData, "article/category", 1);
         }else{
@@ -34,7 +29,7 @@ function ArticlesByCategory(){
     else {
     return (
         <div className='div-box'>
-            <b style={{ fontSize: "30px"}}> Category : {category?.name} </b>
+            <b style={{ fontSize: "30px"}}> Category : {category} </b>
             {_.isEmpty(articleByCategory) && 
                 <div> 
                     <b style={{fontSize: "30px"}}> No Articles </b>

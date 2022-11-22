@@ -3,7 +3,7 @@ import {useEffect} from "react";
 function Home() {
 
     useEffect(() => {
-        alert("어서오세요!");
+        alert("App_Board 테스트 홈페이지입니다.");
     }, []);
 
     return(

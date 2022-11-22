@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSessionListener;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -14,7 +15,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
+import com.example.restapi.repository.PersistentLoginRepository;
 import com.example.restapi.repository.UserRepository;
 import com.example.restapi.service.UserSecurityService;
 
@@ -26,9 +29,12 @@ import lombok.extern.log4j.Log4j2;
 public class SecurityConfig {
 	private final UserSecurityService userSecurityService;
 	private final UserRepository userRepository;
-	public SecurityConfig(UserSecurityService userSecurityService, UserRepository userRepository) {
+	private final PersistentTokenRepository tokenRepository;
+	public SecurityConfig(UserSecurityService userSecurityService, UserRepository userRepository,
+		@Lazy PersistentTokenRepository tokenRepository) {
 		this.userSecurityService = userSecurityService;
 		this.userRepository = userRepository;
+		this.tokenRepository = tokenRepository;
 	}
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -56,7 +62,7 @@ public class SecurityConfig {
 				.antMatchers(HttpMethod.POST, Constants.permitAllArrayPOST).permitAll()
 				.antMatchers(Constants.authenticatedArray).authenticated()
 				.antMatchers(Constants.adminArray).hasRole("ADMIN")
-				.anyRequest().permitAll()
+				.anyRequest().authenticated()
 
 			.and()
 
@@ -73,9 +79,21 @@ public class SecurityConfig {
 				.clearAuthentication(true)
 				.invalidateHttpSession(true)
 				.deleteCookies("JSESSIONID")
-				.logoutSuccessUrl("http://localhost:3000");
+				.deleteCookies("remember-me")
+				.logoutSuccessUrl("http://localhost:3000")
+
+			.and()
+
+			.rememberMe().key("key")
+			.userDetailsService(userSecurityService);
+		// .tokenRepository(tokenRepository);
 
 		return http.build();
+	}
+
+	@Bean
+	public PersistentTokenRepository persistentTokenRepository(final PersistentLoginRepository repository){
+		return new JpaPersistentTokenRepository(repository);
 	}
 
 	@Bean

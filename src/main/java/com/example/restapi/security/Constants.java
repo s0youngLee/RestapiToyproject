@@ -3,15 +3,15 @@ package com.example.restapi.security;
 public final class Constants {
 	// permit All
 	public static final String[] permitAllArrayGET = new String[] {
-		"/", "/login", "/board", "/board/**", "/comment/**", "/category/**", "/loginstatus"
+		"/", "/login", "/loginstatus", "/article/**", "/category"
 	};
 	public static final String[] permitAllArrayPOST = new String[] {
-		"/user", "/login",  "/login/**"
+		"/login", "/user"
 	};
 
 	// authenticated(USER AND ADMIN)
 	public static final String[] authenticatedArray = new String[] {
-		"/logout","/user/**", "/board/**"
+		"/logout","/user/**", "/article/**"
 	};
 
 	// ADMIN

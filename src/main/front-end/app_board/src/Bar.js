@@ -23,13 +23,14 @@ function Bar() {
             <div className="w3-bar w3-large" style={{backgroundColor:"#cab6ff"}}>
                 <div className="bar-left">
                     <Link to={'/'} className="none bar-item-left"><button className="w3-bar-item w3-button w3-hover-deep-purple" >Home</button></Link>
-                    <Link to={'/board'} className="none bar-item-left"><button className="w3-bar-item w3-button w3-hover-deep-purple">Board</button></Link>
+                    <button className="w3-bar-item w3-button w3-hover-deep-purple"
+                            onClick={() => {window.location.href = '/board'}}>Board</button>
                         
                     <div className="w3-dropdown-hover">
                         <button className="w3-button w3-hover-deep-purple" style={{marginLeft: "0"}}>Category</button>
                         <div className="w3-dropdown-content w3-bar-block barcontent">
                             {categoryList?.map((category, index) => (
-                                <Link className="none" key={index} to={`/board/category/${category.id}`}>
+                                <Link className="none" key={index} to={`/board/${category.name}/${category.id}`}>
                                     <button className="w3-bar-item w3-button w3-light-gray w3-hover-deep-purple w3-border"> {category.name} </button>
                                 </Link>
                             ))}
