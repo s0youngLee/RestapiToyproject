@@ -36,6 +36,7 @@ export function getUrlId(n){
 }
 
 export function suggestLogin(){
+    console.log(sessionStorage.getItem("login"));
     if(_.isEqual(sessionStorage.getItem("login"), "true")){
         const categoryId = getUrlId(1);
         if(_.isEqual(Number(categoryId), NaN)){
@@ -99,9 +100,37 @@ export function Delete(dataName, dataId){
     }
 }
 
+
+// DATA URL Version
+// export function Download(resource, dataname, id, filename){
+//     axios.get(`/${dataname}/${id}`, {responseType: "blob"})
+//     .then((res)=>{
+//         console.log("USING DATAURL");
+//         resource = res.data;
+//         const reader = new FileReader();
+//         reader.readAsDataURL(resource);
+//         reader.onloadend = () => {
+//             const anchor = document.createElement('a');
+//             document.body.appendChild(anchor);
+//             anchor.download = filename;
+//             anchor.href = reader.result;
+//             anchor.click();
+
+//             document.body.removeChild(anchor);
+//         }
+//         console.log(reader);
+//     }).catch((e) => {
+//         console.log(e);
+//     })
+//     if(_.isEmpty(resource)){ return <div> Loading ... </div>}
+//     else{ return resource;} 
+// }
+
+// BLOB Version
 export function Download(resource, dataname, id, filename){
     axios.get(`/${dataname}/${id}`, {responseType: "blob"})
     .then((res)=>{
+        console.log("USING BLOB");
         resource = res.data;
         const downloadUrl = window.URL.createObjectURL(resource);
         const anchor = document.createElement('a');

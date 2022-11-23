@@ -1,37 +1,39 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import _ from "lodash";
 import "../App.css";
 
 function LoginForm(){
     sessionStorage.setItem("dateAlert", false);
-    const remember = document.getElementsByName('remember-me');
-    const [account, setAccount] = useState({
-        username: "",
-        password: "",
-    });
+    const remember = document.getElementsByName('remember');
+    const [id, setId] = useState();
+    const [pw, setPw] = useState();
 
+    const inputId = useCallback(e => {
+        setId(e.target.value);
+    }, []);
 
-    console.log(remember);
-    const onChangeAccount = (e) => {
-        setAccount({
-        ...account,
-        [e.target.name]: e.target.value,
-        });
-    };
+    const inputPw = useCallback(e => {
+        setPw(e.target.value);
+    }, []);
+    
 
     let form = new FormData();
-        form.append('username', account.username);
-        form.append('password', account.password);
+        form.append('username', id);
+        form.append('password', pw);
 
     const userlogin = (e) => {
         e.preventDefault();
         if(remember[0].checked){
-            form.append('remember-me', remember[0].checked);
+            form.append('remember', remember[0].checked);
             console.log("appended");
         }
-        console.log(remember[0].checked);
+        if(_.isEmpty(id) || _.isEmpty(pw)){
+            alert("입력란을 채워주세요");
+            return Error;
+        }
+        
         axios.post('/login', form)
         .then((res) => {
             alert("성공적으로 로그인되었습니다.");
@@ -72,20 +74,29 @@ function LoginForm(){
             }
         })
     }
+    
+    const usernameSelected = _.isEmpty(document.getElementById("username")?.value);
+    const passwordSelected = _.isEmpty(document.getElementById("password")?.value);
 
     return (
     <div className="div-box" style={{marginLeft: "10px"}}>
         <br/>
         <form >
             <h2 > App_Board </h2> <hr/>
-            <p style={{marginBottom : "0"}}>
-                <input type="text" id="username" name="username" placeholder="ID (Email)" onChange={onChangeAccount} required autoFocus/>
-            </p>
-            <p style={{marginBottom : "0"}}>
-                <input type="password" id="password" name="password" placeholder="Password" onChange={onChangeAccount} required/><br/>
-            </p>
+            <div className="input-group">
+                <input type="text" id="username" name="username" className={ usernameSelected ? "input-default" : "input"}
+                        onChange={inputId} required autoFocus/>
+                <label htmlFor="username" className={ usernameSelected ? "input-label-default" : "input-label"}>
+                    ID(Email)</label>
+            </div>
+            <div className="input-group">
+                <input type="password" id="password" name="password" className={ passwordSelected ? "input-default" : "input"}
+                       onChange={inputPw} required/>
+                <label htmlFor="password" className={ passwordSelected ? "input-label-default" : "input-label"}>
+                    Password</label>
+            </div>
             <p>
-                <input type={'checkbox'} name='remember-me'/> &nbsp;자동 로그인
+                <input type={'checkbox'} name='remember'/> &nbsp;자동 로그인
             </p>
             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" type="submit" 
                     onClick={userlogin} >로그인</button>

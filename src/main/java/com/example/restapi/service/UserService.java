@@ -9,6 +9,7 @@ import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -85,12 +86,17 @@ public class UserService {
 		}
 	}
 
+	@Transactional
 	public ResponseEntity<UserInfo> userInfoEdit(UserInfo user, UserRequest request) {
-		user.setNickName(request.getNickName());
+		if(!Objects.equals(request.getNickName(), "")){
+			user.setNickName(request.getNickName());
+		}
 		if(!Objects.equals(request.getPassword(), "")){
 			user.setPassword(encoder.encode(request.getPassword()));
 		}
-		user.setPhone(request.getPhone());
+		if(!Objects.equals(request.getPhone(), "")){
+			user.setPhone(request.getPhone());
+		}
 		try{
 			userRepository.save(user);
 		}catch (IllegalArgumentException e){

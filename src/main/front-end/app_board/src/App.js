@@ -36,17 +36,17 @@ function App() {
         .then((res) => {
             if(_.isEqual(res.data, true)){
                 sessionStorage.setItem("login", true);
-                if(_.isEmpty(user)){
-                    axios.get("/user").then((res) => {
-                        const encode = Buffer.from(res.data.nick_name + "/"
-                                                    + res.data.auth + "/"
-                                                    + res.data.code + "/"
-                                                    + res.data.last_access ).toString('base64');
-                        sessionStorage.setItem("userinfo", encode);
-                    }).catch((e) => {
-                        console.log(e);
-                    })
-                }
+                // if(_.isEmpty(user)){
+                //     axios.get("/user").then((res) => {
+                //         const encode = Buffer.from(res.data.nick_name + "/"
+                //                                     + res.data.auth + "/"
+                //                                     + res.data.code + "/"
+                //                                     + res.data.last_access ).toString('base64');
+                //         sessionStorage.setItem("userinfo", encode);
+                //     }).catch((e) => {
+                //         console.log(e);
+                //     })
+                // }
             }else{
                 sessionStorage.setItem("login", false);
             }

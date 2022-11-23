@@ -9,8 +9,6 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import com.example.restapi.model.entity.UserInfo;
-
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -37,9 +35,10 @@ public class SessionListener implements HttpSessionListener {
 		String id = session.getId();
 
 		// log.info("Login info = {}", session.getAttribute("user"));
-		log.info("Expired Login info = {}", ((UserInfo)session.getAttribute("user")).getName());
+		log.info("JSESSIONID = {}\n", id);
+		// log.info("Expired Login info = {}", ((UserInfo)session.getAttribute("user")).getName());
 		log.warn("session expired in {} m {} s.", expiredTime / (1000 * 60), (expiredTime % (1000 * 60))/1000);
-		log.warn("JSESSIONID = {}\n", id);
 	}
+
 
 }

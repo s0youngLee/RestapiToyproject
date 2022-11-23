@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import MyInfoEditForm from "../Login/MyInfoEditForm";
+import MyInfoEditForm from "./MyInfoEditForm";
 import { isAdmin, FetchWithoutId, userAuth } from "../func";
 import MyArticles from "./MyArticles";
 import MyComments from "./MyComments";
@@ -84,6 +84,8 @@ function MyPage(){
                                 onClick={() => downloadExcel("user")}> Download Users </button>
                             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
                                 onClick={() => window.location.href="/user/manage"}> Manage Users </button>
+                            <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
+                                onClick={() => window.location.href="/article/manage"}> Manage Articles </button>
                         </div>
                     }                    
                 </div><hr/>

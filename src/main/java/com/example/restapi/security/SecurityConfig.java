@@ -45,14 +45,11 @@ public class SecurityConfig {
 			.csrf().disable()
 			.httpBasic().disable()
 
-			.sessionManagement(session -> {
-				session.maximumSessions(5)
-					.maxSessionsPreventsLogin(true);
-			})
 			.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
 				.sessionFixation().migrateSession()
 				.maximumSessions(30)
+				.maxSessionsPreventsLogin(true)
 			.and()
 
 			.and()
@@ -79,17 +76,20 @@ public class SecurityConfig {
 				.clearAuthentication(true)
 				.invalidateHttpSession(true)
 				.deleteCookies("JSESSIONID")
-				.deleteCookies("remember-me")
+				// .deleteCookies("remember-me")
 				.logoutSuccessUrl("http://localhost:3000")
 
 			.and()
 
-			.rememberMe().key("key")
-			.userDetailsService(userSecurityService);
-		// .tokenRepository(tokenRepository);
+			.rememberMe().rememberMeParameter("remember").key("key")
+				.alwaysRemember(false)
+				// .rememberMeServices(new PersistentTokenRememberMeServices())
+				.userDetailsService(userSecurityService)
+				.tokenRepository(tokenRepository);
 
 		return http.build();
 	}
+
 
 	@Bean
 	public PersistentTokenRepository persistentTokenRepository(final PersistentLoginRepository repository){

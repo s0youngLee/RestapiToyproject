@@ -96,7 +96,7 @@ function ArticleRegister(){
                     <input type="file" name={"upfile"} id="file" style={{display:"none"}} onChange={uploadFile} multiple/><br/>
                     
                     <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > 글쓰기 </button>
-                    <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
+                    <button type="reset" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
                             onClick={() => {window.location.href = "/board"}}> 돌아가기 </button><br/>
                 </div>
             </form>

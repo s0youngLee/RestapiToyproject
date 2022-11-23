@@ -1,6 +1,7 @@
 package com.example.restapi.security;
 
 import java.util.Date;
+import java.util.NoSuchElementException;
 
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -8,6 +9,9 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import com.example.restapi.model.entity.PersistentLogin;
 import com.example.restapi.repository.PersistentLoginRepository;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 public class JpaPersistentTokenRepository implements PersistentTokenRepository {
 
 	private final PersistentLoginRepository repository;
@@ -36,6 +40,11 @@ public class JpaPersistentTokenRepository implements PersistentTokenRepository {
 	// 쿠키에 담긴 시리즈로 데이터베이스를 검색
 	@Override
 	public PersistentRememberMeToken getTokenForSeries(final String seriesId) {
+		try{
+			log.info(repository.findBySeries(seriesId).get().getUsername());
+		}catch (NoSuchElementException e){
+			log.warn("No User");
+		}
 		return repository.findBySeries(seriesId)
 			.map(persistentLogin ->
 				new PersistentRememberMeToken(
@@ -47,7 +56,7 @@ public class JpaPersistentTokenRepository implements PersistentTokenRepository {
 			.orElseThrow(IllegalArgumentException::new);
 	}
 
-	// 세션이 종료될 경우 데이터베이스에서 영구 토큰을 제거
+	// 로그아웃 할 경우 데이터베이스에서 영구 토큰 삭제
 	@Override
 	public void removeUserTokens(final String username) {
 		repository.deleteAllInBatch(repository.findByUsername(username));

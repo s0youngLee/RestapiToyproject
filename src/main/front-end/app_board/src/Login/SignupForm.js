@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import "../App.css";
 import { autoHypenTel } from "../func";
+import _ from "lodash";
 
 
 function SignupForm(){
@@ -68,18 +69,48 @@ function SignupForm(){
         });
     }
 
+    const nameSelected = _.isEmpty(document.getElementById("name")?.value);
+    const emailSelected = _.isEmpty(document.getElementById("email")?.value);
+    const passwordSelected = _.isEmpty(document.getElementById("passwordregi")?.value);
+    const nicknameSelected = _.isEmpty(document.getElementById("nickname")?.value);
+    const phoneSelected = _.isEmpty(document.getElementById("phone")?.value);
+
     return (
         <div className="div-box">
             <br/>
             <h2>Sign Up</h2> <hr/>
 
             <form onSubmit={signUp}>
-                <input type="text" name="name" placeholder="name" onChange={inputRealName} required autoFocus/> <br/>
-                <input type="text" name="email" placeholder="E-Mail ( ID )" onChange={inputEmail} required/> <br/>
-                <input type="password" name="password" placeholder="Password" onChange={inputPassword} required/> <br/>
-                <input type="text" name="nickname" placeholder="nickname" onChange={inputNickName} required/> <br/>
-                <input type={"text"} placeholder="phone number (ex: 010-1234-1234)" onChange={inputPhoneNumber} value={phoneNumber} 
-                       maxLength="13" pattern="[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}"></input><br/>
+                <div className="input-group">
+                    <input type="text" name="name" id="name" className={ nameSelected ? "input-default" : "input"}
+                           onChange={inputRealName} required autoFocus/> 
+                    <label htmlFor="name" className={ nameSelected ? "input-label-default" : "input-label"}>
+                        Name</label>
+                </div>
+                <div className="input-group">
+                    <input type="text" name="email" id="email" className={ emailSelected ? "input-default" : "input"}
+                            onChange={inputEmail} required/>
+                    <label htmlFor="email" className={ emailSelected ? "input-label-default" : "input-label"}>
+                        ID(E-mail)</label>
+                </div>
+                <div className="input-group">
+                    <input type="password" name="password" id="passwordregi" className={ passwordSelected ? "input-default" : "input"}
+                             onChange={inputPassword} required/>
+                    <label htmlFor="password" className={ passwordSelected ? "input-label-default" : "input-label"}>
+                        Password</label>
+                </div>
+                <div className="input-group">
+                    <input type="text" name="nickname" id="nickname" className={ nicknameSelected ? "input-default" : "input"}
+                             onChange={inputNickName} required/>
+                    <label htmlFor="nickname" className={ nicknameSelected ? "input-label-default" : "input-label"}>
+                        Nickname</label>
+                </div>
+                <div className="input-group">
+                    <input type="tel" name="phone" id="phone" className={ phoneSelected ? "input-default" : "input"}
+                        onChange={inputPhoneNumber} value={phoneNumber}  maxLength="13" pattern="[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}"></input>
+                    <label htmlFor="phone" className={ phoneSelected ? "input-label-default" : "input-label"}>
+                        PhoneNumber</label>
+                </div>
                 <p> 권한 : &nbsp;&nbsp;
                     <input type="radio" className="w3-radio" name="auth" value="ROLE_USER" defaultChecked="checked" onChange={setUser}/> 사용자&nbsp;&nbsp;
                     <input type="radio" className="w3-radio" name="auth" value="ROLE_ADMIN" onChange={setAdmin}/> 관리자<br/>
