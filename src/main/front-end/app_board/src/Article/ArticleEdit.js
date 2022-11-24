@@ -1,5 +1,5 @@
 import {useState, useCallback, useMemo, useEffect} from "react";
-import { FetchWithoutId, userCode } from "../func";
+import { FetchWithoutId } from "../func";
 import axios from "axios";
 import _ from "lodash";
 
@@ -173,7 +173,6 @@ function ArticleEditForm({articleDetail, handleClose}){
         let data = {
             title : title,
             content : content,
-            created_id : userCode,
             category_id : selected
         }
         formData.append("article", new Blob([JSON.stringify(data)], {type: "application/json"}));

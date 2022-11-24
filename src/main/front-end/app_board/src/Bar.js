@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import 'w3-css';
-import { FetchWithoutId, ifError, isAdmin, userAuth, isLogin } from "./func";
+import { FetchWithoutId, ifError, isAdmin, isLogin } from "./func";
 import _ from "lodash";
 
 function Bar() {
@@ -36,7 +36,7 @@ function Bar() {
                             ))}
                         </div>
                     </div>
-                    {isAdmin(userAuth) && <Link to={"/category"} className="none bar-item-left">
+                    {isAdmin() && <Link to={"/category"} className="none bar-item-left">
                         <button className="w3-bar-item w3-button w3-hover-red">Setting</button></Link>}
                 </div>
                 

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
@@ -29,8 +30,8 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @RestController
-// @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/article")
+@SessionAttributes("user")
 public class ArticleController {
     private final ArticleService articleService;
     public ArticleController(@Lazy ArticleService articleService) {

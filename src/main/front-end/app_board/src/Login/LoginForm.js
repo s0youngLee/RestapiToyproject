@@ -34,7 +34,6 @@ function LoginForm(){
         
         axios.post('/login', form)
         .then((res) => {
-            sessionStorage.setItem("login", true);
             sessionStorage.setItem("userinfo", res.data);
             alert("성공적으로 로그인되었습니다.");
             
@@ -54,7 +53,6 @@ function LoginForm(){
             }
         })
         .catch((err) => {
-            sessionStorage.setItem("login", false);
             if(err.response.status === 401){
                 alert("잘못된 비밀번호입니다.\n다시 시도하세요.");
             }else if(err.response.status === 404){

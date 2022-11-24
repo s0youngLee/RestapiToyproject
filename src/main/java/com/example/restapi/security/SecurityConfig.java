@@ -62,7 +62,7 @@ public class SecurityConfig {
 				.antMatchers(HttpMethod.POST, Constants.permitAllArrayPOST).permitAll()
 				.antMatchers(Constants.authenticatedArray).authenticated()
 				.antMatchers(Constants.adminArray).hasRole("ADMIN")
-				.anyRequest().authenticated()
+				.anyRequest().permitAll()
 
 			.and()
 
@@ -109,6 +109,20 @@ public class SecurityConfig {
 		authenticationProvider.setHideUserNotFoundExceptions(false); // 보안 취약해진다고 하는데, 일단 사용하는 것으로 함. 추후 수정할 것
 		return authenticationProvider;
 	}
+
+	// @Bean
+	// public FilterRegistrationBean<CorsFilter> simpleCorsFilter() {
+	// 	UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	// 	CorsConfiguration config = new CorsConfiguration();
+	// 	// config.setAllowCredentials(true);
+	// 	config.setAllowedOrigins(Collections.singletonList("*"));
+	// 	config.setAllowedMethods(Collections.singletonList("*"));
+	// 	config.setAllowedHeaders(Collections.singletonList("*"));
+	// 	source.registerCorsConfiguration("/**", config);
+	// 	FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter());
+	// 	bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+	// 	return bean;
+	// }
 
 	@Bean
 	public UserDetailsService userDetailsService() {

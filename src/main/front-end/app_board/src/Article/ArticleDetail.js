@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { FetchWithId, Delete, canRemove, Download, isPublisher } from '../func';
+import { FetchWithId, Delete, canRemove, Download, isPublisher, isLogin } from '../func';
 import _ from 'lodash';
 import * as Modal from 'react-modal';
 import Comment from "../Comment/Comment";
@@ -65,7 +65,7 @@ function ArticleDetailData({data}) {
                     <span style={{fontSize:"17px", color:"gray"}}> Finally edited : {data?.final_edit_date} </span><br/>
                    
                     <b style={{fontSize: "17px"}}> File list </b>
-                    {(_.isEqual(sessionStorage.getItem("login"), "true") && !_.isEmpty(data.files)) &&
+                    {isLogin && !_.isEmpty(data.files) &&
                         <>
                         <button onClick={() => { downloadAll() }}
                             className="w3-button w3-border w3-round-xlarge w3-small w3-hover-light-blue"> Download All </button>
@@ -80,6 +80,8 @@ function ArticleDetailData({data}) {
                     <Modal isOpen={isOpen} onRequestClose={handleClose}>
                         <ArticleEditForm articleDetail={data} handleClose={handleClose} />
                     </Modal>
+                    <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
+                            onClick={() => { Delete("article", data.id) }}>Delete</button>
                     { canRemove(data.user_nickname) &&
                         <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
                                 onClick={() => { Delete("article", data.id) }}>Delete</button>

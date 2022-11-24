@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import axios from "axios";
-import { canRemove, Download } from "../func";
+import { canRemove, Download, isLogin } from "../func";
 import _ from "lodash";
 
 function Files({files, createdId}) {
@@ -28,7 +28,7 @@ function Files({files, createdId}) {
                                     style={{width:"20px", height:"20px", objectFit: "fill", verticalAlign: "middle", marginLeft: "10px"}}
                                     onClick={() => {deleteFile(file.id, file.origin_name)}} />
                             }
-                            { _.isEqual(sessionStorage.getItem("login"), "true") &&
+                            {isLogin &&
                                 <input type={"image"} src={require("../Icon/download.png").default} alt={"icon"}
                                     style={{width:"20px", height:"20px", objectFit: "fill", verticalAlign: "middle", marginLeft: "10px"}}
                                     onClick={() => {Download(resource, "file/download", file.id, file.origin_name)}} />

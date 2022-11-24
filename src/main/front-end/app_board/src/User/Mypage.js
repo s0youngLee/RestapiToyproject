@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import MyInfoEditForm from "./MyInfoEditForm";
-import { isAdmin, FetchWithoutId, userAuth } from "../func";
+import { isAdmin, FetchWithoutId } from "../func";
 import MyArticles from "./MyArticles";
 import MyComments from "./MyComments";
 import axios from "axios";
@@ -76,7 +76,7 @@ function MyPage(){
                     <b> Email : </b><span> {user.email} </span><br/>
                     <b> Nickname : </b><span> {user.nick_name} </span><br/>
                     <b> PhoneNumber : </b><span> {user.phone} </span><br/><br/>
-                    {isAdmin(userAuth) && 
+                    {isAdmin() && 
                         <div>
                             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
                                 onClick={() => downloadExcel("article")}> Download board </button>

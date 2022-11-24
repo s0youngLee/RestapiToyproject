@@ -18,6 +18,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +55,8 @@ public class UserService {
 			log.warn("Session condition : Invalid");
 			return ResponseEntity.notFound().build();
 		}else{
-			String userinfoValue = user.getNickName() + "/" + user.getAuth() + "/" + user.getCode() + "/" + user.getLastAccess();
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			String userinfoValue = user.getNickName() + "/" + user.getAuth()  + "/" + user.getLastAccess() + "/" + auth.getAuthorities();
 			String encoded = Base64.getEncoder().encodeToString(userinfoValue.getBytes());
 			response.addCookie(new Cookie("user", encoded));
 			return ResponseEntity.ok(encoded);
@@ -180,7 +183,9 @@ public class UserService {
 
 	public void downloadExcelUser(HttpServletResponse response) {
 		List<UserExcelResponseDto> dtoData = new ArrayList<>();
-		for(UserInfo user : userRepository.findAll()){
+		List<UserInfo> AllUsers = userRepository.findAll();
+		AllUsers.remove(0);
+		for(UserInfo user : AllUsers){
 			UserExcelResponseDto body = UserExcelResponseDto.builder()
 				.code(user.getCode())
 				.email(user.getEmail())

@@ -61,7 +61,7 @@ public class ArticleService {
             .visitCnt(0)
             .comment(new ArrayList<>())
             .files(new ArrayList<>())
-            .user(userRepository.getReferenceById(request.getCreatedId()))
+            .user(userRepository.findByNickName(request.getCreatedId()))
             .build();
 
         try{

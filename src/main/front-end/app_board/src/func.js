@@ -3,9 +3,8 @@ import axios from "axios";
 
 export const userNickname = !_.isEmpty(sessionStorage.getItem("userinfo")) ? Buffer.from(sessionStorage.getItem("userinfo"), 'base64').toString('ascii').split("/")[0] : undefined;
 export const userAuth = !_.isEmpty(sessionStorage.getItem("userinfo")) ? Buffer.from(sessionStorage.getItem("userinfo"), 'base64').toString('ascii').split("/")[1] : undefined;
-export const userCode = !_.isEmpty(sessionStorage.getItem("userinfo")) ? Buffer.from(sessionStorage.getItem("userinfo"), 'base64').toString('ascii').split("/")[2] : undefined;
-export const userLastAccess = !_.isEmpty(sessionStorage.getItem("userinfo")) ? Buffer.from(sessionStorage.getItem("userinfo"), 'base64').toString('ascii').split("/")[3] : undefined;
-export const isLogin = _.isEqual(sessionStorage.getItem("login"), "true");
+export const userLastAccess = !_.isEmpty(sessionStorage.getItem("userinfo")) ? Buffer.from(sessionStorage.getItem("userinfo"), 'base64').toString('ascii').split("/")[2] : undefined;
+export const isLogin = !_.isEmpty(userAuth);
 
 export const sliceArrayByLimit = (totalPage, limit) => {
     const totalPageArray = Array(totalPage)
@@ -20,8 +19,8 @@ export function isPublisher(publisher){
     return _.isEqual(publisher, userNickname);
 }
     
-export function isAdmin(auth){
-    return _.isEqual(auth, "ROLE_ADMIN");
+export function isAdmin(){
+    return _.isEqual(userAuth, "ROLE_ADMIN");
 }
 
 export function canRemove(publisher){
@@ -35,8 +34,8 @@ export function getUrlId(n){
 }
 
 export function suggestLogin(){
-    console.log(sessionStorage.getItem("login"));
-    if(_.isEqual(sessionStorage.getItem("login"), "true")){
+    console.log(isLogin);
+    if(isLogin){
         const categoryId = getUrlId(1);
         if(_.isEqual(Number(categoryId), NaN)){
             window.location.href=`/board/add/0`;
@@ -93,8 +92,9 @@ export function Delete(dataName, dataId){
                 window.location.replace(`/${dataName}`);
             }
         }).catch((e) => {
-            alert("삭제에 실패했습니다.");
-            window.location.reload();
+            ifError(e);
+            // alert("삭제에 실패했습니다.");
+            // window.location.reload();
         });
     }
 }
@@ -153,12 +153,9 @@ export function ifError(e){
     if(e.response.status === 400){
         alert("잘못된 접근입니다.\n홈으로 이동합니다.");
         window.location.replace("/");
-    }else if(e.response.status === 401){
+    }else if((e.response.status === 401) || (e.response.status === 403)){
         alert("권한이 없습니다.\n로그인 페이지로 이동합니다.");
         window.location.replace("/login");
-    }else if(e.response.status === 403){
-        alert("응답이 거부되었습니다.\n홈으로 이동합니다.");
-        window.location.replace("/");
     }else{
         alert("Error : " + e.response.status + " " + e.response.statusText + "\n홈으로 이동합니다.");
         window.location.href="/";

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { suggestLogin, isAdmin, userAuth } from "../func";
+import { suggestLogin, isAdmin } from "../func";
 import Pagination from "react-js-pagination";
 import axios from "axios";
 import "../App.css";
@@ -49,7 +49,7 @@ function ArticleList({articleList}){
 
     const handlePageChange = (currentPage) => {
         setCurrentPage(currentPage);
-        if(isAdmin(userAuth)){
+        if(isAdmin()){
             checkedItems.clear();
             changeAll(false);
         }
@@ -74,7 +74,7 @@ function ArticleList({articleList}){
             <div style={{marginTop: "100px", textAlign: "center"}}> 
                 <b style={{fontSize: "30px"}}>Data Not Found</b> <br/>
                 <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                        onClick={() => { suggestLogin() }}> Write article </button>
+                        onClick={() => { suggestLogin() }}> 글 작성 </button>
             </div>
         )
     }
@@ -82,8 +82,8 @@ function ArticleList({articleList}){
         return(
             <div className="totalPage">
                 <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                        onClick={() => { suggestLogin() }}> 글쓰기 </button>
-                {isAdmin(userAuth) && 
+                        onClick={() => { suggestLogin() }}> 글 작성 </button>
+                {isAdmin() && 
                     <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
                     onClick={() => DeleteArticles()}>  선택 삭제 </button>}
                 <SearchForm />
@@ -91,7 +91,7 @@ function ArticleList({articleList}){
                 <table>
                     <thead style={{backgroundColor: "#bdb5f6"}}>
                     <tr>
-                        {isAdmin(userAuth) && 
+                        {isAdmin() && 
                             <th> <input type={'checkbox'} checked={allChecked} 
                                         onChange={() => { changeAll(!allChecked); }}/></th>
                         }
@@ -108,7 +108,7 @@ function ArticleList({articleList}){
                         {articlesPerPage.map((article, index) => {
                         return (
                         <tr className="clickable" key={index}>
-                                {isAdmin(userAuth) && 
+                                {isAdmin() && 
                                     <td>
                                     <input  type={'checkbox'} onChange={(e) => {checkHandler(e, article.id);}}
                                     name="check" value={article.id}/>

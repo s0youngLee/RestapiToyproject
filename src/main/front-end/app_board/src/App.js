@@ -24,39 +24,34 @@ import PageNotFound from "./PageNotFound";
 import './App.css';
 import 'w3-css';
 import UserManage from "./User/ManageUser";
-import axios from "axios";
-import { userNickname } from "./func";
-import { useCookies } from "react-cookie";
+import { isLogin, userNickname } from "./func";
 
 function App() {
     const user = sessionStorage.getItem("userinfo");
     const login = sessionStorage.getItem("login");
-    const [cookies, , ] = useCookies();
-    console.log(cookies);
-    Array.from(cookies).forEach(cookie => {
-        console.log(cookie);
-    })
+    
+    console.log(isLogin);
+
+    // useEffect(() => {
+    //     axios.get("/loginstatus", {
+    //         headers : {
+    //             "Access-Control-Allow-Origin" : "*"
+    //         }
+    //     })
+    //     .then((res) => {
+    //         if(_.isEqual(res.data, true)){
+    //             sessionStorage.setItem("login", true);
+    //         }else{
+    //             sessionStorage.setItem("login", false);
+    //         }
+    //     }).catch((e) => {
+    //         console.log(e);
+    //         sessionStorage.setItem("login", false);
+    //     })
+    // }, [user])
 
     useEffect(() => {
-        axios.get("/loginstatus", {
-            headers : {
-                "Access-Control-Allow-Origin" : "*"
-            }
-        })
-        .then((res) => {
-            if(_.isEqual(res.data, true)){
-                sessionStorage.setItem("login", true);
-            }else{
-                sessionStorage.setItem("login", false);
-            }
-        }).catch((e) => {
-            console.log(e);
-            sessionStorage.setItem("login", false);
-        })
-    }, [user])
-
-    useEffect(() => {
-        if(_.isEqual(login, "true") && !_.isEmpty(user)){
+        if(isLogin && !_.isEmpty(user)){
             if(_.isEmpty(sessionStorage.getItem("dateAlert"))){
                 if(window.confirm("사용자 : " + userNickname + " / 자동 로그인 되었습니다.\n로그아웃하시겠습니까?")){
                     Logout();
@@ -67,7 +62,7 @@ function App() {
                 }
             }
         }
-        if(_.isEqual(login, "false") && _.isEqual(sessionStorage.getItem("dateAlert"), "true")){
+        if(!isLogin && _.isEqual(sessionStorage.getItem("dateAlert"), "true")){
             alert("로그인 정보가 만료되었습니다. 다시 로그인하세요.");
             sessionStorage.clear();
             window.location.href = "/login";
@@ -76,7 +71,7 @@ function App() {
     
     return(
         <Router>
-            <Bar isLogin={sessionStorage.getItem("login")}/>
+            <Bar/>
             <Routes>
                 <Route exact path="/" element={<Home />} />
 

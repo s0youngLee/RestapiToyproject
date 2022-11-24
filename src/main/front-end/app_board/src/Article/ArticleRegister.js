@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
-import { getUrlId, FetchWithoutId, userCode } from "../func";
+import { getUrlId, FetchWithoutId, userNickname, ifError } from "../func";
 import axios from "axios";
 import _ from 'lodash';
 
@@ -59,7 +59,7 @@ function ArticleRegister(){
         let data = {
             title : title,
             content : content,
-            created_id : userCode,
+            created_id : userNickname,
             category_id : selected
         }
         formData.append("article", new Blob([JSON.stringify(data)], {type: "application/json"}));
@@ -69,8 +69,7 @@ function ArticleRegister(){
             alert("게시글이 작성되었습니다.\n작성한 게시글로 이동합니다.");
             window.location.href=`/board/${res.data.id}`;
         }).catch((e) => {
-            console.log(e.response);
-            alert("게시글 등록을 실패하였습니다.\n다시 시도해주세요.");
+            ifError(e);
         });
     }
 
