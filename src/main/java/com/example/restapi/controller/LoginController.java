@@ -1,10 +1,10 @@
 package com.example.restapi.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
+import com.example.restapi.model.entity.UserInfo;
 import com.example.restapi.security.LoginService;
 
 import lombok.extern.log4j.Log4j2;
@@ -19,7 +19,7 @@ public class LoginController {
 	}
 
 	@GetMapping("/loginstatus")
-	public Boolean status(HttpServletRequest request){
-		return loginService.status(request);
+	public Boolean status(@SessionAttribute("user") UserInfo user){
+		return loginService.status(user);
 	}
 }

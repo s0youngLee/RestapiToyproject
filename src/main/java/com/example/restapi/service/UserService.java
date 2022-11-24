@@ -2,10 +2,12 @@ package com.example.restapi.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -44,12 +46,27 @@ public class UserService {
 		this.excelSetting = excelSetting;
 	}
 
+
+	public ResponseEntity<String> userinfo(UserInfo user, HttpServletRequest request, HttpServletResponse response) {
+		HttpSession session = request.getSession();
+		if(session == null || !request.isRequestedSessionIdValid() || user == null){
+			log.warn("Session condition : Invalid");
+			return ResponseEntity.notFound().build();
+		}else{
+			String userinfoValue = user.getNickName() + "/" + user.getAuth() + "/" + user.getCode() + "/" + user.getLastAccess();
+			String encoded = Base64.getEncoder().encodeToString(userinfoValue.getBytes());
+			response.addCookie(new Cookie("user", encoded));
+			return ResponseEntity.ok(encoded);
+		}
+	}
+
 	public ResponseEntity<UserResponseDto> userPage(UserInfo user, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		if(session == null || !request.isRequestedSessionIdValid() || user == null){
 			log.warn("Session condition : Invalid");
-			return ResponseEntity.badRequest().build();
+			return ResponseEntity.notFound().build();
 		}else{
+
 			return ResponseEntity.ok(buildUser(user));
 		}
 	}

@@ -48,7 +48,7 @@ function Bar() {
                     {isLogin && <Link to={'/mypage'} className="none">
                         <button className="w3-bar-item w3-button w3-hover-deep-purple w3-right">MyPage</button></Link>}
                     {isLogin && <button className="w3-bar-item w3-button w3-hover-red w3-right"
-                        onClick={() => Logout()}>Logout</button>}
+                        id="logout" onClick={() => Logout()}>Logout</button>}
                 </div>
             </div>
         </div>

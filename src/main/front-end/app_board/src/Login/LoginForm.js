@@ -3,6 +3,7 @@ import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import _ from "lodash";
 import "../App.css";
+import { useCookies } from "react-cookie";
 
 function LoginForm(){
     sessionStorage.setItem("dateAlert", false);
@@ -18,7 +19,7 @@ function LoginForm(){
         setPw(e.target.value);
     }, []);
     
-
+    const [cookie, ,] = useCookies();
     let form = new FormData();
         form.append('username', id);
         form.append('password', pw);
@@ -36,17 +37,10 @@ function LoginForm(){
         
         axios.post('/login', form)
         .then((res) => {
-            alert("성공적으로 로그인되었습니다.");
             sessionStorage.setItem("login", true);
-            axios.get("/user").then((res) => {
-                const encode = Buffer.from(res.data.nick_name + "/"
-                                            + res.data.auth + "/"
-                                            + res.data.code + "/"
-                                            + res.data.last_access ).toString('base64');
-                sessionStorage.setItem("userinfo", encode);
-            }).catch((e) => {
-                console.log(e);
-            })
+            sessionStorage.setItem("userinfo", res.data);
+            alert("성공적으로 로그인되었습니다.");
+            
             if(_.isEqual(res.headers.lastlogin, "true")){
                 if(window.confirm("비밀번호 변경을 추천합니다.\n확인을 누르면 마이페이지로 이동합니다.")){
                     sessionStorage.setItem("dateAlert", true);

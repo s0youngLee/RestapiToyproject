@@ -12,6 +12,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -81,11 +82,11 @@ public class SecurityConfig {
 
 			.and()
 
-			.rememberMe().rememberMeParameter("remember").key("key")
-				.alwaysRemember(false)
+			.rememberMe().rememberMeParameter("remember")
+				.userDetailsService(userDetailsService());
+				// .alwaysRemember(false)
 				// .rememberMeServices(new PersistentTokenRememberMeServices())
-				.userDetailsService(userSecurityService)
-				.tokenRepository(tokenRepository);
+				// .tokenRepository(tokenRepository);
 
 		return http.build();
 	}
@@ -108,6 +109,11 @@ public class SecurityConfig {
 		authenticationProvider.setPasswordEncoder(encoder());
 		authenticationProvider.setHideUserNotFoundExceptions(false); // 보안 취약해진다고 하는데, 일단 사용하는 것으로 함. 추후 수정할 것
 		return authenticationProvider;
+	}
+
+	@Bean
+	public UserDetailsService userDetailsService() {
+		return new UserSecurityService(userRepository);
 	}
 
 	@Bean

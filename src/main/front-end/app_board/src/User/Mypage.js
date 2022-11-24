@@ -22,7 +22,7 @@ function MyPage(){
 
     useEffect(() => {
         if(_.isEmpty(user)){
-            axios.get("/user").then((res) => {
+            axios.get("/user/info").then((res) => {
                 setUser(res.data);
             }).catch((e) => {
                 console.log(e);

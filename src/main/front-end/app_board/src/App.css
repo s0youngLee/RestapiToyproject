@@ -353,7 +353,7 @@ button{
   transform: translate(10px, 10px);
   transition: transform .3s;
   pointer-events: none;
-  background-color: white;
+  background-color: inherit;
 }
 
 .input-label{
@@ -366,22 +366,25 @@ button{
   transform: translate(10px, 10px);
   transition: transform .3s;
   pointer-events: none;
-  background-color: white;
+  background-color: inherit;
 }
 
 .input-default:focus+.input-label-default{
   transform: translate(10px, -14px) scale(.9);
   color: gray;
+  background-color: white;
   padding-inline: 5px;
 }
 .input:valid+.input-label{
   transform: translate(10px, -14px) scale(.9);
   color: #008080;
+  background-color: white;
   padding-inline: 5px;
 }
 .input:invalid+.input-label{
   transform: translate(10px, -14px) scale(.9);
   color: lightcoral;
+  background-color: white;
   padding-inline: 5px;
 }
 

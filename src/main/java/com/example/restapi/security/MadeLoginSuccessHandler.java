@@ -39,7 +39,7 @@ public class MadeLoginSuccessHandler implements AuthenticationSuccessHandler {
 	@Override
 	@Transactional
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-		Authentication authentication) {
+		Authentication authentication) throws IOException {
 		HttpSession session = request.getSession(false);
 		if(session != null){
 			UserDetails authenticated = userSecurityService.loadUserByUsername(authentication.getName());
@@ -53,8 +53,12 @@ public class MadeLoginSuccessHandler implements AuthenticationSuccessHandler {
 				e.printStackTrace();
 			}
 			session.setAttribute("user", authenticated);
-			log.info("Authenticated with " + authentication.getName());
 			session.setMaxInactiveInterval(1200);
+			log.info("Authenticated with " + authentication.getName());
+
+			if(authentication.isAuthenticated()){
+				response.sendRedirect("http://192.168.1.158:3000/user");
+			}
 		}else{
 			log.warn("No User. Login suggested.");
 		}

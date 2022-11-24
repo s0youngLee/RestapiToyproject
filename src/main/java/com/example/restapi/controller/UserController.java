@@ -35,7 +35,12 @@ public class UserController {
 	}
 
 	@GetMapping("")
-	public ResponseEntity<UserResponseDto> loadUserInfo(@SessionAttribute("user") UserInfo user, HttpServletRequest request){
+	public ResponseEntity<String> userinfo(@SessionAttribute("user") UserInfo user, HttpServletRequest request, HttpServletResponse response){
+		return userService.userinfo(user, request, response);
+	}
+
+	@GetMapping("/info")
+	public ResponseEntity<UserResponseDto> userPage(@SessionAttribute("user") UserInfo user, HttpServletRequest request){
 		return userService.userPage(user, request);
 	}
 
