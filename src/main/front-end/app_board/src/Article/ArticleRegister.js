@@ -69,6 +69,7 @@ function ArticleRegister(){
             alert("게시글이 작성되었습니다.\n작성한 게시글로 이동합니다.");
             window.location.href=`/board/${res.data.id}`;
         }).catch((e) => {
+            console.log(e.response);
             alert("게시글 등록을 실패하였습니다.\n다시 시도해주세요.");
         });
     }

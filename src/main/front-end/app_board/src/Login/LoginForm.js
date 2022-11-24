@@ -3,7 +3,6 @@ import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import _ from "lodash";
 import "../App.css";
-import { useCookies } from "react-cookie";
 
 function LoginForm(){
     sessionStorage.setItem("dateAlert", false);
@@ -19,7 +18,6 @@ function LoginForm(){
         setPw(e.target.value);
     }, []);
     
-    const [cookie, ,] = useCookies();
     let form = new FormData();
         form.append('username', id);
         form.append('password', pw);
@@ -28,7 +26,6 @@ function LoginForm(){
         e.preventDefault();
         if(remember[0].checked){
             form.append('remember', remember[0].checked);
-            console.log("appended");
         }
         if(_.isEmpty(id) || _.isEmpty(pw)){
             alert("입력란을 채워주세요");
@@ -64,7 +61,7 @@ function LoginForm(){
                 alert("존재하지 않는 아이디입니다.");
             }else {
                 alert(err + "\n로그인 실패.");
-                window.location.reload();
+                // window.location.reload();
             }
         })
     }

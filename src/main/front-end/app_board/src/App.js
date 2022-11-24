@@ -26,13 +26,23 @@ import 'w3-css';
 import UserManage from "./User/ManageUser";
 import axios from "axios";
 import { userNickname } from "./func";
+import { useCookies } from "react-cookie";
 
 function App() {
     const user = sessionStorage.getItem("userinfo");
     const login = sessionStorage.getItem("login");
+    const [cookies, , ] = useCookies();
+    console.log(cookies);
+    Array.from(cookies).forEach(cookie => {
+        console.log(cookie);
+    })
 
     useEffect(() => {
-        axios.get("/loginstatus")
+        axios.get("/loginstatus", {
+            headers : {
+                "Access-Control-Allow-Origin" : "*"
+            }
+        })
         .then((res) => {
             if(_.isEqual(res.data, true)){
                 sessionStorage.setItem("login", true);

@@ -42,7 +42,7 @@ public class PersistentLogin implements Serializable {
 		return token;
 	}
 
-	public Date getExpiredDate() {
+	public Date getLastUsed() {
 		return lastUsed;
 	}
 

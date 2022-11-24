@@ -18,8 +18,9 @@ public class SessionListener implements HttpSessionListener {
 	@Override
 	public void sessionCreated(HttpSessionEvent event) {
 		HttpSession session = event.getSession();
+
 		LocalDateTime present = Instant.ofEpochMilli(session.getCreationTime()).atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay();
-		;
+
 		String id = session.getId();
 		log.info("created at {}", present);
 		log.info("JSESSIONID = {}\n", id);
@@ -34,9 +35,7 @@ public class SessionListener implements HttpSessionListener {
 		long expiredTime = nowTime - lastTime;
 		String id = session.getId();
 
-		// log.info("Login info = {}", session.getAttribute("user"));
 		log.info("JSESSIONID = {}\n", id);
-		// log.info("Expired Login info = {}", ((UserInfo)session.getAttribute("user")).getName());
 		log.warn("session expired in {} m {} s.", expiredTime / (1000 * 60), (expiredTime % (1000 * 60))/1000);
 	}
 

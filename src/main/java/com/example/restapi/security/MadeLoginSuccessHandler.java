@@ -13,19 +13,19 @@ import javax.transaction.Transactional;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import com.example.restapi.model.entity.UserInfo;
 import com.example.restapi.repository.UserRepository;
-import com.example.restapi.service.UserSecurityService;
 
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class MadeLoginSuccessHandler implements AuthenticationSuccessHandler {
-	private final UserSecurityService userSecurityService;
+	private final UserDetailsService userSecurityService;
 	private final UserRepository userRepository;
-	public MadeLoginSuccessHandler(UserSecurityService userSecurityService, UserRepository userRepository) {
+	public MadeLoginSuccessHandler(UserDetailsService userSecurityService, UserRepository userRepository) {
 		this.userSecurityService = userSecurityService;
 		this.userRepository = userRepository;
 	}

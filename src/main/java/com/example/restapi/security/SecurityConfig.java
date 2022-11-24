@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.example.restapi.repository.PersistentLoginRepository;
 import com.example.restapi.repository.UserRepository;
@@ -26,16 +27,17 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Configuration
+@CrossOrigin("http://localhost:3000 , http://192.168.1.158:3000")
 @EnableWebSecurity
 public class SecurityConfig {
-	private final UserSecurityService userSecurityService;
 	private final UserRepository userRepository;
 	private final PersistentTokenRepository tokenRepository;
-	public SecurityConfig(UserSecurityService userSecurityService, UserRepository userRepository,
-		@Lazy PersistentTokenRepository tokenRepository) {
-		this.userSecurityService = userSecurityService;
+	private final LoginService loginService;
+	public SecurityConfig(UserRepository userRepository, @Lazy PersistentTokenRepository tokenRepository,
+		LoginService loginService) {
 		this.userRepository = userRepository;
 		this.tokenRepository = tokenRepository;
+		this.loginService = loginService;
 	}
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -48,9 +50,9 @@ public class SecurityConfig {
 
 			.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-				.sessionFixation().migrateSession()
-				.maximumSessions(30)
-				.maxSessionsPreventsLogin(true)
+				// .sessionFixation().migrateSession()
+				.maximumSessions(1)
+				// .expiredUrl("접속중인 사용자 목록을 보여주는 관리자용 페이지")
 			.and()
 
 			.and()
@@ -66,7 +68,7 @@ public class SecurityConfig {
 
 			.formLogin()
 				.loginPage("/login")
-				.successHandler(new MadeLoginSuccessHandler(userSecurityService, userRepository))
+				.successHandler(new MadeLoginSuccessHandler(userDetailsService(), userRepository))
 				.failureHandler(new MadeLoginFailureHandler())
 
 			.and()
@@ -77,16 +79,13 @@ public class SecurityConfig {
 				.clearAuthentication(true)
 				.invalidateHttpSession(true)
 				.deleteCookies("JSESSIONID")
-				// .deleteCookies("remember-me")
-				.logoutSuccessUrl("http://localhost:3000")
+				.deleteCookies("user")
 
 			.and()
 
 			.rememberMe().rememberMeParameter("remember")
-				.userDetailsService(userDetailsService());
-				// .alwaysRemember(false)
-				// .rememberMeServices(new PersistentTokenRememberMeServices())
-				// .tokenRepository(tokenRepository);
+				.userDetailsService(userDetailsService())
+				.tokenRepository(tokenRepository);
 
 		return http.build();
 	}
@@ -94,7 +93,7 @@ public class SecurityConfig {
 
 	@Bean
 	public PersistentTokenRepository persistentTokenRepository(final PersistentLoginRepository repository){
-		return new JpaPersistentTokenRepository(repository);
+		return new JpaPersistentTokenRepository(repository, loginService);
 	}
 
 	@Bean
@@ -105,7 +104,7 @@ public class SecurityConfig {
 	@Bean
 	public AuthenticationProvider daoAuthenticationProvider(){
 		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-		authenticationProvider.setUserDetailsService(userSecurityService);
+		authenticationProvider.setUserDetailsService(userDetailsService());
 		authenticationProvider.setPasswordEncoder(encoder());
 		authenticationProvider.setHideUserNotFoundExceptions(false); // 보안 취약해진다고 하는데, 일단 사용하는 것으로 함. 추후 수정할 것
 		return authenticationProvider;

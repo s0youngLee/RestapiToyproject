@@ -15,9 +15,11 @@ import lombok.extern.log4j.Log4j2;
 public class JpaPersistentTokenRepository implements PersistentTokenRepository {
 
 	private final PersistentLoginRepository repository;
+	private final LoginService loginService;
 
-	public JpaPersistentTokenRepository(final PersistentLoginRepository repository) {
+	public JpaPersistentTokenRepository(final PersistentLoginRepository repository, LoginService loginService) {
 		this.repository = repository;
+		this.loginService = loginService;
 	}
 
 	// remember-me 쿠키 발급시 담을 토큰을 생성
@@ -41,7 +43,7 @@ public class JpaPersistentTokenRepository implements PersistentTokenRepository {
 	@Override
 	public PersistentRememberMeToken getTokenForSeries(final String seriesId) {
 		try{
-			log.info(repository.findBySeries(seriesId).get().getUsername());
+			log.info("Remember-Me Login Request : " + repository.findBySeries(seriesId).get().getUsername());
 		}catch (NoSuchElementException e){
 			log.warn("No User");
 		}
@@ -51,9 +53,11 @@ public class JpaPersistentTokenRepository implements PersistentTokenRepository {
 					persistentLogin.getUsername(),
 					persistentLogin.getSeries(),
 					persistentLogin.getToken(),
-					persistentLogin.getExpiredDate()
+					persistentLogin.getLastUsed()
 				))
 			.orElseThrow(IllegalArgumentException::new);
+
+
 	}
 
 	// 로그아웃 할 경우 데이터베이스에서 영구 토큰 삭제
