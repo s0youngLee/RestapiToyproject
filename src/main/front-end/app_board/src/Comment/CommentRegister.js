@@ -1,5 +1,5 @@
 import React,{useState, useCallback} from "react";
-import { getUrlId } from "../func";
+import { getUrlId, USER } from "../func";
 import axios from "axios";
 
 function CommentRegister(){
@@ -12,11 +12,9 @@ function CommentRegister(){
     const addComment = (e) => {        
         e.preventDefault();
         axios.post(`/comment`, {
-            data: {
-                user_id: sessionStorage.getItem("username"),
-                content: content,
-                article_id: getUrlId(1)
-            }
+            user_id: USER.nickname,
+            content: content,
+            article_id: getUrlId(1)
         }).then((res) => {
             alert("댓글이 등록되었습니다.");
             window.location.reload();

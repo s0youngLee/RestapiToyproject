@@ -11,7 +11,7 @@ function ArticleEditForm({articleDetail, handleClose}){
         if(_.isEmpty(categoryData)){
             FetchWithoutId(categoryData, setCategoryData, "category");
         }else{
-            setCategoryList(categoryData.data);
+            setCategoryList(categoryData);
         }
     }, [categoryData]);
 
@@ -24,9 +24,7 @@ function ArticleEditForm({articleDetail, handleClose}){
     const [selected, setSelected] = useState(articleDetail.category_id);
 
     // 파일 업로드용 formdata
-    // let formData = new FormData();
     const inputFile = document.getElementsByName("upfile"); // file input
-    // const fileName = useMemo(() => {return new Array("Selecte Files")},[]); // 파일 입력란에 띄울 선택된 파일 이름 리스트
     const fileName = useMemo(() => {return new Array("파일 선택")},[]); // 파일 입력란에 띄울 선택된 파일 이름 리스트
     const [files, setFiles] = useState({data : {}}); // 파일 목록
     const [visible, setVisible] = useState(false); // 선택된 파일 또는 첨부된 파일이 없을 경우 visible false
@@ -93,7 +91,7 @@ function ArticleEditForm({articleDetail, handleClose}){
                 const fileType = name[name.length-1];
                 
                 if(isImage(fileType)){
-                    axios.get(`/download/${file.id}`, {responseType: "blob"})
+                    axios.get(`/file/download/${file.id}`, {responseType: "blob"})
                     .then((res)=>{
                         previewImage(res.data, file.id, file.name, "", "", document.getElementById('preview-img'), "infile");
                     });
@@ -173,20 +171,17 @@ function ArticleEditForm({articleDetail, handleClose}){
         }
 
         let data = {
-            data: {
-                title : title,
-                content : content,
-                created_id : sessionStorage.getItem("usercode"),
-                category_id : selected
-            }
+            title : title,
+            content : content,
+            category_id : selected
         }
         formData.append("article", new Blob([JSON.stringify(data)], {type: "application/json"}));
         
-        axios.put(`/article/withfile/${articleDetail?.id}`, formData)
+        axios.put(`/article/${articleDetail?.id}`, formData)
         .then((res) => {
             Array.from(checkedInfile).map(async fileId => {
                 try {
-                    return await axios.delete(`/delete/${fileId}`);
+                    return await axios.delete(`/file/delete/${fileId}`);
                 } catch (e) {
                     console.log(e.response.status + " : " + e.response.statusText);
                 }

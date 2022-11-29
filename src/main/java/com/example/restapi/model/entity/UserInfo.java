@@ -3,6 +3,7 @@ package com.example.restapi.model.entity;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -13,6 +14,9 @@ import javax.persistence.Id;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.example.restapi.model.network.request.UserRequest;
 
 import lombok.Builder;
 
@@ -36,8 +40,7 @@ public class UserInfo implements UserDetails {
 	}
 
 	public UserInfo(Integer code, String email, String password, String auth, String nickName, String name,
-		String phone,
-		LocalDateTime lastAccess) {
+		String phone, LocalDateTime lastAccess) {
 		this.code = code;
 		this.email = email;
 		this.password = password;
@@ -48,64 +51,43 @@ public class UserInfo implements UserDetails {
 		this.lastAccess = lastAccess;
 	}
 
-	public LocalDateTime getLastAccess() {
-		return lastAccess;
+	public void update(UserRequest request){
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		this.nickName = !Objects.equals(request.getNickName(), "") ? request.getNickName() : this.nickName;
+		this.phone = !Objects.equals(request.getPhone(), "") ? request.getPhone() : this.phone;
+		this.password = !Objects.equals(request.getPassword(), "") ? encoder.encode(request.getPassword()) : this.password;
 	}
 
-	public void setLastAccess(LocalDateTime lastAccess) {
-		this.lastAccess = lastAccess;
+	public void updateAuth(UserRequest request){
+		this.auth = request.getAuth();
 	}
 
-	public String getNickName() {
-		return nickName;
-	}
-
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	public void setCode(Integer code) {
-		this.code = code;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public void setAuth(String auth) {
-		this.auth = auth;
+	public void updateLastAccess(){
+		this.lastAccess = LocalDateTime.now();
 	}
 
 	public Integer getCode() {
 		return code;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
 	public String getAuth() {
 		return auth;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public LocalDateTime getLastAccess() {
+		return lastAccess;
 	}
 
 	// 사용자의 권한을 콜렉션 형태로 반환
@@ -125,7 +107,7 @@ public class UserInfo implements UserDetails {
 		return email;
 	}
 
-	// 사용자의 password를 반환
+	// 사용자의 password 반환
 	@Override
 	public String getPassword() {
 		return password;

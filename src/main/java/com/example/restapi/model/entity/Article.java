@@ -28,7 +28,6 @@ public class Article {
     private Integer id;
     private String title;
     private String content;
-    // private Integer createdId;
     private LocalDateTime createdAt;
     private Integer visitCnt;
     private LocalDateTime finalEditDate;
@@ -111,14 +110,6 @@ public class Article {
     public void setContent(String content) {
         this.content = content;
     }
-
-    // public Integer getCreatedId() {
-    //     return createdId;
-    // }
-    //
-    // public void setCreatedId(Integer createdId) {
-    //     this.createdId = createdId;
-    // }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;

@@ -26,7 +26,7 @@ public class UserSecurityService implements UserDetailsService {
 		if(user == null){
 			UsernameNotFoundException e = new UsernameNotFoundException(email + " doesn't exist.");
 			logger.error(e.getMessage());
-			throw e;
+			throw (e);
 		}
 		return user;
 	}

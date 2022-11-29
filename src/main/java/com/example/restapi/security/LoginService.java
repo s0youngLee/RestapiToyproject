@@ -1,28 +1,25 @@
 package com.example.restapi.security;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@Log4j2
 public class LoginService {
 
 	public Boolean status(HttpServletRequest request){
 		HttpSession session = request.getSession(false);
-		return session != null;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if((session.getAttribute("user") == null) && !auth.getAuthorities().equals("ROLE_ANONYMOUS")){
+			session.setAttribute("user", auth.getPrincipal());
+		}
+		return session.getAttribute("user") != null;
 	}
 
-	public void sessionExpired(HttpServletRequest request){
-		SecurityContextHolder.clearContext();
-		HttpSession session = request.getSession(false);
-		if(session!=null){
-			session.invalidate();
-		}
-		for(Cookie cookie : request.getCookies()){
-			cookie.setMaxAge(0);
-		}
-	}
 }

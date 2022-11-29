@@ -12,7 +12,7 @@ function UserManage(){
         if(_.isEmpty(userData)){
             FetchWithoutId(userData, setUserData, "user/manage");
         }else{
-            setManage(userData.data);
+            setManage(userData);
         }
     }, [userData]);
 
@@ -31,32 +31,30 @@ function UserManage(){
             });
         })
         return list;
-    }, [manage]);
+    }, [usersPerPage]);
 
     const handlePageChange = (currentPage) => {
         setCurrentPage(currentPage);
     };
 
     function SaveAll(){
-        let check = false;
-        usersPerPage.map((origin, index) => {
-            if(!_.isEqual(origin.auth, editList[index].auth)){
-                axios.put(`/user/manage/${origin.code}`, {
-                    data : {
+        // let check = true;
+        try{
+            usersPerPage.map((origin, index) => {
+                if(!_.isEqual(origin.auth, editList[index].auth)){
+                    axios.put(`/user/manage/${origin.code}`, {
                         auth : editList[index].auth
-                    }
-                }).catch((e) => {
-                    check = true;
-                    console.log(e.response);
-                })
-            }
-            return null;
-        })
-        if(check){
-            alert("유저 정보 변경에 실패했습니다.");
-            window.location.reload();
-        }else{
+                    }).catch((e) => {
+                        console.log(e.response);
+                    })
+                }
+                return null;
+            });
             alert("변경된 정보가 모두 저장되었습니다.");
+            window.location.reload();
+        }catch(e){
+            console.log(e.response);
+            alert("유저 정보 변경에 실패했습니다.");
             window.location.reload();
         }
     }
@@ -65,7 +63,7 @@ function UserManage(){
     else{
         return (
             <>
-            <div className="div-box">
+            <div className="div-box" style={{marginLeft: "10px"}}>
                 <b style={{fontSize: "30px"}}> User List </b>
                 {usersPerPage?.map((userinfo, index) => {
                     return (
@@ -83,11 +81,10 @@ function UserManage(){
                     totalItemsCount={manage.length} 
                     pageRangeDisplayed={pageLimit} 
                     onChange={handlePageChange}
-                    innerClass={""}
+                    innerClass={"paginate"}
                     activeClass={"w3-button w3-round-xxlarge w3-small w3-deep-purple"}
                     itemClass={"w3-button w3-round-xxlarge w3-small w3-hover-deep-purple"}
                     linkClass={"none"}
-                    className={"paginate"}
                 />
             </div>
             </>
@@ -97,7 +94,7 @@ function UserManage(){
 
 function EditUser({index, userinfo, editList}){
     const authList = ["ROLE_USER", "ROLE_ADMIN"];
-    const [userAuth, setAuth] = useState("USER");
+    const [userAuth, setAuth] = useState("권한 변경");
     const [visible, setVisible] = useState(false);
     
     function changeAuth(){
@@ -122,15 +119,13 @@ function EditUser({index, userinfo, editList}){
     
     function editAuth(){
         axios.put(`/user/manage/${userinfo.code}`, {
-            data : {
-                auth : "ROLE_" + userAuth
-            }
+            auth : "ROLE_" + userAuth
         }).then(() => {
             console.log("ROLE_" + userAuth);
-            alert("User's auth edited.");
+            alert("사용자 \"" + userinfo.name + "\"의 권한이 변경되었습니다.");
             window.location.reload();
         }).catch((e) => {
-            alert("Failed to edit auth.\nPlease try again.");
+            alert("권한 변경에 실패했습니다.");
             console.log(e.response);
         })
     }
@@ -148,7 +143,7 @@ function EditUser({index, userinfo, editList}){
                         style={{width:"20px", verticalAlign: "middle"}}
                         onClick={() => {changeAuth()}} /><br/>
                 <button onClick={() => {editAuth()}} className="w3-button w3-border w3-round-xlarge w3-tiny w3-hover-teal"> 저장 </button>
-                <button onClick={() => {Delete("user",userinfo.code)}} className="w3-button w3-border w3-round-xlarge w3-tiny w3-hover-red"> 삭제 </button>
+                <button onClick={() => {Delete("user", userinfo.code)}} className="w3-button w3-border w3-round-xlarge w3-tiny w3-hover-red"> 삭제 </button>
             </p>
         </li>
     )

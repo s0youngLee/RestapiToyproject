@@ -20,10 +20,8 @@ function CategoryRegister(){
         setName(name);
 
         axios.post('/category', {
-            data : {
-                id : id,
-                name : name
-            }
+            id : id,
+            name : name
         }).then(() => {
             alert("카테고리가 등록되었습니다.\n 새로 등록한 카테고리 " + name + " 로 이동합니다.");
             window.location.href=`/board/category/${id}`;

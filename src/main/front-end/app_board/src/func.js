@@ -1,6 +1,45 @@
 import _ from "lodash";
 import axios from "axios";
 
+export function Cookie(cookies, removeCookies){
+    try{
+        if(!_.isEmpty(cookies.user)){
+            if(_.isEqual(localStorage.getItem("dateAlert"), "false")){
+                console.log("Don't Remember");
+                sessionStorage.setItem("userinfo", cookies.user);
+                removeCookies("user");
+                window.location.reload();
+            }else{
+                console.log("Remember");
+                localStorage.setItem("userinfo", cookies.user);
+                removeCookies("user");
+                window.location.reload();
+            }
+        }
+    }catch(e){
+        console.log(e);
+    }
+}
+
+export function getUserInfo(){
+    if(!_.isEmpty(localStorage.getItem("userinfo"))){
+        return Buffer.from(localStorage.getItem("userinfo"), 'base64').toString('ascii').split("/");
+    }else if(!_.isEmpty(sessionStorage.getItem("userinfo"))){
+        return Buffer.from(sessionStorage.getItem("userinfo"), 'base64').toString('ascii').split("/");
+    }else{
+        return undefined;
+    }
+}
+
+export const userinfo = getUserInfo();
+export const USER = {
+    nickname : !_.isEmpty(userinfo) ? userinfo[0] : undefined,
+    auth : !_.isEmpty(userinfo) ? userinfo[1] : undefined,
+    lastAccess : !_.isEmpty(userinfo) ? userinfo[2] : undefined
+}
+
+export const isLogin = !_.isEmpty(USER.auth);
+
 export const sliceArrayByLimit = (totalPage, limit) => {
     const totalPageArray = Array(totalPage)
       .fill()
@@ -11,15 +50,15 @@ export const sliceArrayByLimit = (totalPage, limit) => {
   };
   
 export function isPublisher(publisher){
-    return _.isEqual(publisher, sessionStorage.getItem("username"));
+    return _.isEqual(publisher, USER.nickname);
 }
     
 export function isAdmin(){
-    return _.isEqual(sessionStorage.getItem("userauth"), "ROLE_ADMIN");
+    return _.isEqual(USER.auth, "ROLE_ADMIN");
 }
 
 export function canRemove(publisher){
-    return isAdmin() || isPublisher(publisher);
+    return isAdmin(USER.auth) || isPublisher(publisher);
 }
 
 export function getUrlId(n){
@@ -29,7 +68,8 @@ export function getUrlId(n){
 }
 
 export function suggestLogin(){
-    if(_.isEqual(sessionStorage.getItem("login"), "true")){
+    console.log(isLogin);
+    if(isLogin){
         const categoryId = getUrlId(1);
         if(_.isEqual(Number(categoryId), NaN)){
             window.location.href=`/board/add/0`;
@@ -44,11 +84,7 @@ export function suggestLogin(){
 }
 
 export function FetchWithoutId(data, setData, dataName){
-    axios.get(`/${dataName}`, { 
-        headers : {
-            "cache" : "no-store"
-        }
-    })
+    axios.get(`/${dataName}`)
     .then((res) => {
         setData(res.data);
     })
@@ -60,13 +96,9 @@ export function FetchWithoutId(data, setData, dataName){
 
 export function FetchWithId(data, setData, dataName, n){
     const id = getUrlId(n);
-    axios.get(`/${dataName}/${id}`, { 
-        headers : {
-            "cache" : "no-store"
-        }
-    })
+    axios.get(`/${dataName}/${id}`)
     .then((res) => {
-        setData(res?.data);
+        setData(res.data);
     })
     .catch((e) => {
         ifError(e);
@@ -86,15 +118,41 @@ export function Delete(dataName, dataId){
                 window.location.replace(`/${dataName}`);
             }
         }).catch((e) => {
-            alert("삭제에 실패했습니다.");
-            window.location.reload();
+            ifError(e);
         });
     }
 }
 
+// DATA URL Version
+// export function Download(resource, dataname, id, filename){
+//     axios.get(`/${dataname}/${id}`, {responseType: "blob"})
+//     .then((res)=>{
+//         console.log("USING DATAURL");
+//         resource = res.data;
+//         const reader = new FileReader();
+//         reader.readAsDataURL(resource);
+//         reader.onloadend = () => {
+//             const anchor = document.createElement('a');
+//             document.body.appendChild(anchor);
+//             anchor.download = filename;
+//             anchor.href = reader.result;
+//             anchor.click();
+
+//             document.body.removeChild(anchor);
+//         }
+//         console.log(reader);
+//     }).catch((e) => {
+//         console.log(e);
+//     })
+//     if(_.isEmpty(resource)){ return <div> Loading ... </div>}
+//     else{ return resource;} 
+// }
+
+// BLOB Version
 export function Download(resource, dataname, id, filename){
     axios.get(`/${dataname}/${id}`, {responseType: "blob"})
     .then((res)=>{
+        console.log("USING BLOB");
         resource = res.data;
         const downloadUrl = window.URL.createObjectURL(resource);
         const anchor = document.createElement('a');
@@ -117,16 +175,13 @@ export function Download(resource, dataname, id, filename){
 export function ifError(e){
     if(e.response.status === 400){
         alert("잘못된 접근입니다.\n홈으로 이동합니다.");
-        window.location.replace("/");
-    }else if(e.response.status === 401){
+        // window.location.replace("/");
+    }else if((e.response.status === 401) || (e.response.status === 403)){
         alert("권한이 없습니다.\n로그인 페이지로 이동합니다.");
         window.location.replace("/login");
-    }else if(e.response.status === 403){
-        alert("응답이 거부되었습니다.\n홈으로 이동합니다.");
-        window.location.replace("/");
     }else{
         alert("Error : " + e.response.status + " " + e.response.statusText + "\n홈으로 이동합니다.");
-        window.location.href="/";
+        // window.location.href="/";
     }
 }
 

@@ -9,7 +9,7 @@ function CommentData({index, data}){
         <><li className="filelist" key={index}>
             <span> <b> {data?.user_id} </b> / <span style={{color: "gray"}}> {data?.created_at} </span> </span><br/>
             <div className="info-box"> 
-                {data?.content} 
+                <pre style={{marginBottom: "0"}}>{data?.content} </pre>
                 {canRemove(data?.user_id) && 
                     <input type={"image"} src={require("../Icon/remove.png").default} alt={"icon"}
                         style={{float: "right", width:"20px"}}
@@ -38,9 +38,7 @@ function CommentEditForm({data, visible, setVisible}){
         if(_.isEmpty(e.target.value)){ setContent(data.content); }
 
         axios.put(`/comment/${data.id}`, {
-            data : {
-                content : content
-            }
+            content : content
         }).then(() => {
             alert("댓글이 수정되었습니다.");
             window.location.href=`/board/${data?.article_id}`;
@@ -52,12 +50,14 @@ function CommentEditForm({data, visible, setVisible}){
     }
 
     return (
-        <form onSubmit={editComment} className="div-box" style={{textAlign: "left", height: "10%", marginTop: "0", border: "1px solid mediumslateblue", borderRadius: "5px", padding: "10px", width: "80%"}}>
-            <b style={{textAlign: "center", color: "mediumslateblue"}}> Edit comment </b> <br/>
-            <input type={"text"} value={content} onChange={editcontent} style={{borderColor: "#b6a9ff"}}/>
-            <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red"
-                    onClick={() => {setVisible(!visible)}}> Cancel </button>
-            <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> Save </button>
+        <form onSubmit={editComment} className="form-box">
+            <b> Edit comment </b> <br/>
+            <textarea style={{width:"100%", height: "50%", borderRadius: "5px"}} value={content} onChange={editcontent} /> <br/>
+            <div style={{textAlign: "right", marginTop: "2px"}}>
+                <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red"
+                        onClick={() => {setVisible(!visible)}}> Cancel </button>
+                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> Save </button>
+            </div>
         </form>
     )
 }

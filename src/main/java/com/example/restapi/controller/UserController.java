@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.example.restapi.model.entity.UserInfo;
-import com.example.restapi.model.network.Status;
 import com.example.restapi.model.network.request.UserRequest;
 import com.example.restapi.model.network.response.UserResponseDto;
 import com.example.restapi.service.UserService;
@@ -34,37 +35,41 @@ public class UserController {
 	}
 
 	@GetMapping("")
-	public Status<UserResponseDto> loadUserInfo(@SessionAttribute("user") UserInfo user, HttpServletRequest request){
+	public ResponseEntity<String> userinfo(@SessionAttribute("user") UserResponseDto user, HttpServletRequest request, HttpServletResponse response){
+		return userService.userinfo(user, request, response);
+	}
+
+	@GetMapping("/info")
+	public ResponseEntity<UserResponseDto> userPage(@SessionAttribute("user") UserResponseDto user, HttpServletRequest request){
 		return userService.userPage(user, request);
 	}
 
 	@GetMapping("/manage")
-	public Status<List<UserResponseDto>> manageUser(@SessionAttribute("user") UserInfo user){
-		return Status.OK(userService.userList(user.getAuth()));
+	public ResponseEntity<List<UserResponseDto>> manageUser(@SessionAttribute("user") UserResponseDto user){
+		return userService.userList(user.auth());
 	}
 
 	@PostMapping("")
-	public Status<UserInfo> signup(@RequestBody Status<UserRequest> request, HttpServletResponse response) {
-		return userService.register(request, response);
+	public ResponseEntity<UserInfo> signup(@RequestBody UserRequest request) {
+		return userService.register(request);
 	}
 
 	@PutMapping("")
-	public Status<UserInfo> userInfoEdit(@SessionAttribute("user") UserInfo user, @RequestBody Status<UserRequest> request) {
+	public ResponseEntity<UserResponseDto> userInfoEdit(@SessionAttribute("user") UserResponseDto user, @RequestBody UserRequest request) {
 		return userService.userInfoEdit(user, request);
 	}
 	@PutMapping("/manage/{code}")
-	public Status<UserInfo> changeAuth(@SessionAttribute("user") UserInfo user, @PathVariable int code, @RequestBody Status<UserRequest> request){
-		return userService.changeAuth(user.getAuth(), request, code);
-	}
-
-	@PutMapping("/lastaccess")
-	public Status<UserInfo> updateAccessDate(@SessionAttribute("user") UserInfo user){
-		return userService.updateAccessDate(user);
+	public ResponseEntity<UserResponseDto> changeAuth(@SessionAttribute("user") UserResponseDto user, @PathVariable int code, @RequestBody UserRequest request){
+		return userService.changeAuth(user, request, code);
 	}
 
 	@DeleteMapping("/{code}")
-	public Status deleteUser(@PathVariable Integer code){
-		return userService.deleteUser(code);
+	public ResponseEntity<UserInfo> deleteUser(@PathVariable Integer code){
+		if(code!=0){
+			return userService.deleteUser(code);
+		}else{
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
 	}
 
 	@GetMapping("/excel/download")

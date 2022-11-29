@@ -3,65 +3,64 @@ package com.example.restapi.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
+
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.example.restapi.controller.AbstractCrudMethod;
 import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.Category;
-import com.example.restapi.model.network.Status;
 import com.example.restapi.model.network.request.CategoryRequest;
 import com.example.restapi.model.network.response.CategoryResponseDto;
 import com.example.restapi.repository.ArticleRepository;
 import com.example.restapi.repository.CategoryRepository;
 
 @Service
-public class CategoryService extends AbstractCrudMethod<CategoryRequest, CategoryResponseDto> {
+public class CategoryService{
     private final CategoryRepository categoryRepository;
     private final ArticleRepository articleRepository;
 
-    public CategoryService(@Lazy CategoryRepository categoryRepository, @Lazy ArticleRepository articleRepository) {
+    public CategoryService(CategoryRepository categoryRepository, @Lazy ArticleRepository articleRepository) {
         this.categoryRepository = categoryRepository;
         this.articleRepository = articleRepository;
     }
 
-    @Override
-    public Status<CategoryResponseDto> create(Status<CategoryRequest> request) {
-        System.out.println(request);
-        CategoryRequest body = request.getData();
-
+    public ResponseEntity<CategoryResponseDto> create(CategoryRequest request) {
         Category category = Category.builder()
-                .id(body.getId())
-                .name(body.getName())
+                .id(request.getId())
+                .name(request.getName())
                 .build();
 
-        return Status.OK(buildCategory(categoryRepository.save(category)));
+        return ResponseEntity.ok(buildCategory(categoryRepository.save(category)));
     }
 
-    @Override
-    public Status<CategoryResponseDto> read(int id) {
-        return categoryRepository.findById(id)
-                .map(category -> Status.OK(buildCategory(categoryRepository.save(category))))
-                .orElseGet(()-> Status.ERROR("No DATA"));
+    public ResponseEntity<CategoryResponseDto> read(int id) {
+        try{
+            return ResponseEntity.ok(buildCategory(categoryRepository.getReferenceById(id)));
+        }catch (IllegalArgumentException | EntityNotFoundException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    // category 목록
-    @Override
-    public Status<CategoryResponseDto> update(Status<CategoryRequest> request, int id) {
-        CategoryRequest body = request.getData();
 
-        return categoryRepository.findById(id)
+    public ResponseEntity<CategoryResponseDto> update(CategoryRequest request, int id) {
+        try{
+            categoryRepository.findById(id)
                 .map(category -> {
-                    category.setName(body.getName());
+                    category.setName(request.getName());
                     return category;
                 })
-                .map(categoryRepository::save)
-                .map(category -> Status.OK(buildCategory(categoryRepository.save(category))))
-                .orElseGet(()-> Status.ERROR("No DATA"));
+                .map(categoryRepository::save);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.noContent().build();
     }
 
-    @Override
-    public Status delete(int categoryId) {
+    @Transactional
+    public ResponseEntity<CategoryResponseDto> delete(int categoryId) {
         List<Article> articleList = articleRepository.findAll();
 
         for(Article article : articleList){
@@ -70,20 +69,21 @@ public class CategoryService extends AbstractCrudMethod<CategoryRequest, Categor
                                 .id(0).build());
             }
         }
-        return categoryRepository.findById(categoryId)
-                .map(category -> {
-                    categoryRepository.delete(category);
-                    return Status.OK();
-                })
-                .orElseGet(()-> Status.ERROR("NO DATA"));
+
+        try {
+            categoryRepository.delete(categoryRepository.getReferenceById(categoryId));
+        }catch (IllegalArgumentException | EntityNotFoundException e){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.noContent().build();
     }
 
-    public List<CategoryResponseDto> getList() {
+    public ResponseEntity<List<CategoryResponseDto>> getList() {
         List<CategoryResponseDto> newList = new ArrayList<>();
         for(Category category: categoryRepository.findAll()){
             newList.add(buildCategory(category));
         }
-        return newList;
+        return ResponseEntity.ok(newList);
     }
 
     private CategoryResponseDto buildCategory(Category category){

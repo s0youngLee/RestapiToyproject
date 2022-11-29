@@ -5,6 +5,7 @@ import axios from "axios";
 import "../App.css";
 import SearchForm from "./SearchForm";
 import _ from "lodash";
+import { Link } from "react-router-dom";
 
 
 function ArticleList({articleList}){
@@ -73,7 +74,7 @@ function ArticleList({articleList}){
             <div style={{marginTop: "100px", textAlign: "center"}}> 
                 <b style={{fontSize: "30px"}}>Data Not Found</b> <br/>
                 <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                        onClick={() => { suggestLogin() }}> Write article </button>
+                        onClick={() => { suggestLogin() }}> 글 작성 </button>
             </div>
         )
     }
@@ -81,10 +82,10 @@ function ArticleList({articleList}){
         return(
             <div className="totalPage">
                 <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                        onClick={() => { suggestLogin() }}> Write article </button>
+                        onClick={() => { suggestLogin() }}> 글 작성 </button>
                 {isAdmin() && 
                     <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
-                    onClick={() => DeleteArticles()}>  Delete </button>}
+                    onClick={() => DeleteArticles()}>  선택 삭제 </button>}
                 <SearchForm />
         
                 <table>
@@ -113,13 +114,13 @@ function ArticleList({articleList}){
                                     name="check" value={article.id}/>
                                     </td>
                                 }
-                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.id} </td>
-                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.title} </td>
-                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.category_name} </td>
-                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.user_nickname} </td>
-                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.created_at} </td>
-                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.visit_cnt} </td>
-                                <td onClick={() => {window.location.href=`/board/${article.id}`}}> {article.comment_cnt} </td>
+                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.id} </Link></td>
+                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.title} </Link></td>
+                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.category_name} </Link></td>
+                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.user_nickname} </Link></td>
+                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.created_at} </Link></td>
+                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.visit_cnt} </Link></td>
+                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.comment_cnt} </Link></td>
                             </tr>
                         )
                         })}
@@ -131,7 +132,7 @@ function ArticleList({articleList}){
                     totalItemsCount={articleList.length} 
                     pageRangeDisplayed={pageLimit} 
                     onChange={handlePageChange}
-                    innerClass={""}
+                    innerClass={"paginate"}
                     activeClass={"w3-button w3-round-xxlarge w3-small w3-deep-purple"}
                     itemClass={"w3-button w3-round-xxlarge w3-small w3-hover-deep-purple"}
                     linkClass={"none"}

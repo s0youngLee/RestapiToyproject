@@ -11,14 +11,14 @@ function CategoryDeatil () {
         if(_.isEmpty(categoryData)){
             FetchWithoutId(categoryData, setCategoryData, "category");
         }else{
-            setCategoryList(categoryData.data);
+            setCategoryList(categoryData);
         }
     }, [categoryData]);
 
     if(_.isEmpty(categoryList)){ return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div>}
     else {
         return (
-            <div className='div-box'>
+            <div className='div-box' style={{marginLeft: "10px"}}>
                 <b style={{ fontSize: "40px"}}> Category Setting </b>
                 <Link to={`/category/add`} className="none">
                     <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> Add Category </button>

@@ -9,14 +9,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.restapi.service.FileService;
 
 import lombok.extern.log4j.Log4j2;
 
-@RestController
 @Log4j2
+@RestController
+@RequestMapping("/file")
 public class FileController {
 	private final FileService fileService;
 
@@ -29,14 +31,9 @@ public class FileController {
 		return fileService.downloadFile(id);
 	}
 
-	@GetMapping(value = "/download/zip/{articleId}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	@GetMapping(value = "/downloadzip/{articleId}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	public ResponseEntity<Resource> downloadZipFile(@PathVariable Integer articleId) throws IOException {
 		return fileService.downloadZipFile(articleId);
-	}
-
-	@GetMapping("/download/complete/{articleId}")
-	public void deleteZipFile(@PathVariable Integer articleId) throws IOException {
-		fileService.deleteZipFile(articleId);
 	}
 
 	@DeleteMapping("/delete/{id}")

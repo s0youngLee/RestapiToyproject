@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import MyInfoEditForm from "../Login/MyInfoEditForm";
+import MyInfoEditForm from "./MyInfoEditForm";
 import { isAdmin, FetchWithoutId } from "../func";
 import MyArticles from "./MyArticles";
 import MyComments from "./MyComments";
@@ -14,24 +14,24 @@ function MyPage(){
     let resource = useMemo(() => { return new Blob(); },[])
     
     const [user, setUser] = useState();
-    const [articles, setArticles] = useState();
-    const [comments, setComments] = useState();
+    const [articlesData, setArticlesData] = useState();
+    const [commentsData, setCommentsData] = useState();
 
     useEffect(() => {
         if(_.isEmpty(user)){
-            axios.get("/user").then((res) => {
-                setUser(res.data.data);
+            axios.get("/user/info").then((res) => {
+                setUser(res.data);
             }).catch((e) => {
                 console.log(e);
             })
         }
-        if(_.isEmpty(articles) && !_.isEqual(articles, [])){
-            FetchWithoutId(articles, setArticles, "article/user");
+        if(_.isEmpty(articlesData) && !_.isEqual(articlesData, [])){
+            FetchWithoutId(articlesData, setArticlesData, "article/user");
         }
-        if(_.isEmpty(comments) && !_.isEqual(comments, [])){
-            FetchWithoutId(comments, setComments, "comment/user");
+        if(_.isEmpty(commentsData) && !_.isEqual(commentsData, [])){
+            FetchWithoutId(commentsData, setCommentsData, "comment/user");
         }
-    },[articles, comments, user]);
+    },[articlesData, commentsData, user]);
 
     function setClicked(){
         setVisibleArticle(false);
@@ -63,8 +63,8 @@ function MyPage(){
     }else {
         return (
             <div className="div-box" style={{marginLeft: "10px"}}>
-                <b style={{ fontSize: "40px"}}>MY PAGE</b> <hr/>
-                <div style={{textAlign: "left",padding: "10px", margin: "20px", marginBottom: 0}}>
+                <b style={{ fontSize: "40px"}}>MY PAGE</b>
+                <div style={{textAlign: "left", padding: "20px", margin: "10px", marginBottom: 0, backgroundColor: "#f3f3f3"}}>
                     <b> Name : </b><span> {user.name} </span><br/>
                     <b> Email : </b><span> {user.email} </span><br/>
                     <b> Nickname : </b><span> {user.nick_name} </span><br/>
@@ -77,6 +77,8 @@ function MyPage(){
                                 onClick={() => downloadExcel("user")}> Download Users </button>
                             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
                                 onClick={() => window.location.href="/user/manage"}> Manage Users </button>
+                            {/* <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
+                                onClick={() => window.location.href="/article/manage"}> Manage Articles </button> */}
                         </div>
                     }                    
                 </div><hr/>
@@ -100,8 +102,8 @@ function MyPage(){
                             setVisible(true);
                             }}> Change MyInfo </div>
                 </div><hr/>
-                {visibleArticle && <MyArticles articles={articles}/>}
-                {visibleComment && <MyComments comments={comments}/>}
+                {visibleArticle && <MyArticles articles={articlesData}/>}
+                {visibleComment && <MyComments comments={commentsData}/>}
                 {visible && <MyInfoEditForm user={user} />}
             </div>
         )

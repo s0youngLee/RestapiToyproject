@@ -1,11 +1,11 @@
 import { useState, useMemo, useEffect } from 'react';
-import { FetchWithId, Delete, canRemove, Download, isPublisher } from '../func';
+import { FetchWithId, Delete, canRemove, Download, isPublisher, isLogin } from '../func';
 import _ from 'lodash';
 import * as Modal from 'react-modal';
 import Comment from "../Comment/Comment";
 import Files from './FileForm';
 import ArticleEditForm from './ArticleEdit';
-import axios from 'axios';
+import PageNotFound from '../PageNotFound';
 
 function ArticleDeatil(){
     const [articleDetailData, setArticleDetailData] = useState();
@@ -15,22 +15,21 @@ function ArticleDeatil(){
         if(_.isEmpty(articleDetailData)){
             FetchWithId(articleDetailData, setArticleDetailData, "article", 1);
         }else {
-            setArticleDetail(articleDetailData.data);
+            setArticleDetail(articleDetailData);
         }
     }, [articleDetailData, articleDetail]);
 
-    if(_.isEmpty(articleDetail)) { return <div> Loading .. </div>}
+    if(_.isEmpty(articleDetail)) { return <div style={{marginTop : "100px"}}> Loading .. </div>}
     else { return <ArticleDetailData data={articleDetail} />; }
 }
 
 function ArticleDetailData({data}) {
     const [isOpen, setIsOpen] = useState(false);
     const handleClose = () => {setIsOpen(false);}
-    let resource = useMemo(() => { return new Blob(); },[])
+    let resource = useMemo(() => { return new Blob(); },[]);
 
     function downloadAll(){
-        Download(resource, "download/zip", data.id, data.title);
-        axios.get(`/download/complete/${data.id}`);
+        Download(resource, "file/downloadzip", data.id, data.title);
     }
 
     function copyToClipboard(content){
@@ -48,6 +47,7 @@ function ArticleDetailData({data}) {
 
 
     if(_.isEmpty(data)){ return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div> }
+    else if(_.isEqual(data, "No DATA")){ return <PageNotFound /> }
     else {
         return (
             <><div className='div-box' style={{padding: "10px", overflow: "auto", marginLeft: "10px", textAlign: "left", height: "80vh"}}>
@@ -63,7 +63,7 @@ function ArticleDetailData({data}) {
                     <span style={{fontSize:"17px", color:"gray"}}> Finally edited : {data?.final_edit_date} </span><br/>
                    
                     <b style={{fontSize: "17px"}}> File list </b>
-                    {(_.isEqual(sessionStorage.getItem("login"), "true") && !_.isEmpty(data.files)) &&
+                    {isLogin && !_.isEmpty(data.files) &&
                         <>
                         <button onClick={() => { downloadAll() }}
                             className="w3-button w3-border w3-round-xlarge w3-small w3-hover-light-blue"> Download All </button>
@@ -83,7 +83,7 @@ function ArticleDetailData({data}) {
                                 onClick={() => { Delete("article", data.id) }}>Delete</button>
                     }
                 </div><hr/>
-                <Comment article={data}/>
+                <Comment comments={data.comment}/>
             </>
         )
     }

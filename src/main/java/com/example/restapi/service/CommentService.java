@@ -5,15 +5,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.example.restapi.controller.AbstractCrudMethod;
 import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.Comment;
-import com.example.restapi.model.network.Status;
 import com.example.restapi.model.network.request.CommentRequest;
 import com.example.restapi.model.network.response.CommentResponseDto;
 import com.example.restapi.repository.ArticleRepository;
@@ -23,7 +23,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Service
-public class CommentService extends AbstractCrudMethod<CommentRequest, CommentResponseDto> {
+public class CommentService {
     private final CommentRepository commentRepository;
     private final ArticleRepository articleRepository;
 
@@ -32,56 +32,69 @@ public class CommentService extends AbstractCrudMethod<CommentRequest, CommentRe
         this.articleRepository = articleRepository;
     }
 
-    @Override
-    public Status<CommentResponseDto> create(Status<CommentRequest> request) {
-        CommentRequest body = request.getData();
-        if(body.getUserId()==null){
-            body.setUserId("unknown");
+    public ResponseEntity<CommentResponseDto> create(CommentRequest request) {
+        if(request.getUserId()==null){
+            request.setUserId("unknown");
         }
 
         Comment comment = Comment.builder()
-                .userId(body.getUserId())
-                .content(body.getContent())
+                .userId(request.getUserId())
+                .content(request.getContent())
                 .createdAt(LocalDateTime.now())
-                .article(articleRepository.getReferenceById(body.getArticleId()))
+                .article(articleRepository.getReferenceById(request.getArticleId()))
                 .build();
-
-        return Status.OK(buildComment(commentRepository.save(comment)));
+        try {
+            commentRepository.save(comment);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(buildComment(comment));
     }
 
-    @Override
     @Transactional
-    public Status<CommentResponseDto> read(int id) {
-        return commentRepository.findById(id)
-            .map(comment -> Status.OK(buildComment(comment)))
-            .orElseGet(()-> Status.ERROR("No DATA"));
+    public ResponseEntity<CommentResponseDto> read(int id) {
+        try{
+            return ResponseEntity.ok(buildComment(commentRepository.getReferenceById(id)));
+        }catch (IllegalArgumentException | EntityNotFoundException e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
-    @Override
     @Transactional
-    public Status<CommentResponseDto> update(Status<CommentRequest> request, int id) {
-        CommentRequest body = request.getData();
-        return commentRepository.findById(id)
-            .map(comment -> {
-                comment.setUserId(body.getUserId() == null ? comment.getUserId() : body.getUserId());
-                comment.setContent(body.getContent());
-                comment.setCreatedAt(LocalDateTime.now());
-                comment.setArticleId(body.getArticleId());
-                return comment;
-            })
-            .map(commentRepository::save)
-            .map(comment -> Status.OK(buildComment(comment)))
-            .orElseGet(()-> Status.ERROR("No DATA"));
-    }
-
-    @Override
-    public Status delete(int id) {
-        return commentRepository.findById((id))
+    public ResponseEntity<CommentResponseDto> update(CommentRequest request, int id) {
+        try{
+            commentRepository.findById(id)
                 .map(comment -> {
-                    commentRepository.delete(comment);
-                    return Status.OK();
+                    comment.setUserId(request.getUserId() == null ? comment.getUserId() : request.getUserId());
+                    comment.setContent(request.getContent());
+                    comment.setCreatedAt(LocalDateTime.now());
+                    comment.setArticleId(request.getArticleId());
+                    return comment;
                 })
-                .orElseGet(()-> Status.ERROR("No DATA"));
+                .map(commentRepository::save);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+    public ResponseEntity<CommentResponseDto> delete(int id) {
+        try{
+            commentRepository.delete(commentRepository.getReferenceById(id));
+        }catch (IllegalArgumentException | EntityNotFoundException e){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+
+    public ResponseEntity<List<CommentResponseDto>> getUserComment(String nickName){
+        List<CommentResponseDto> commentList = new ArrayList<>();
+        for(Comment comment : commentRepository.findAllByUserId(nickName)){
+            commentList.add(buildComment(comment));
+        }
+
+        return ResponseEntity.ok(commentList);
     }
 
     public List<CommentResponseDto> getList(Article article){
@@ -89,15 +102,6 @@ public class CommentService extends AbstractCrudMethod<CommentRequest, CommentRe
         for(Comment comment : commentRepository.findAllByArticleId(article.getId())){
             commentList.add(buildComment(comment));
         }
-        return commentList;
-    }
-
-    public List<CommentResponseDto> getUserComment(String nickName){
-        List<CommentResponseDto> commentList = new ArrayList<>();
-        for(Comment comment : commentRepository.findAllByUserId(nickName)){
-            commentList.add(buildComment(comment));
-        }
-        log.warn(commentList);
         return commentList;
     }
 

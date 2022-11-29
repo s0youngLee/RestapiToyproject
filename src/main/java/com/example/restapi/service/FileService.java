@@ -220,9 +220,4 @@ public class FileService {
 				.body(resource);
 		}
 	}
-
-	public void deleteZipFile(Integer articleId) throws IOException {
-		Files.deleteIfExists(Paths.get(System.getProperty("user.dir") + File.separator + articleRepository.getReferenceById(articleId).getTitle() + ".zip"));
-		log.info(System.getProperty("user.dir") + File.separator + articleRepository.getReferenceById(articleId).getTitle() + ".zip");
-	}
 }

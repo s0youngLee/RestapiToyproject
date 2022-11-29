@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import axios from "axios";
-import { canRemove, Download } from "../func";
+import { canRemove, Download, isLogin } from "../func";
 import _ from "lodash";
 
 function Files({files, createdId}) {
@@ -8,10 +8,15 @@ function Files({files, createdId}) {
 
     function deleteFile(id, filename){
         if(window.confirm(filename + " 을 삭제하시겠습니까? ")){
-            axios.delete(`/delete/${id}`).catch((e) => {
-                console.log(e.response.status + " : " + e.response.statusText);
-            })
-            window.location.reload();
+            const test = prompt("\"test\" 를 입력하세요");
+            if(_.isEqual(test, "test")){
+                axios.delete(`/file/delete/${id}`).catch((e) => {
+                    console.log(e.response.status + " : " + e.response.statusText);
+                })
+                window.location.reload();
+            }else{
+                alert("입력값이 올바르지 않습니다.\n삭제에 실패했습니다.");
+            }
         }
     }
 
@@ -28,10 +33,10 @@ function Files({files, createdId}) {
                                     style={{width:"20px", height:"20px", objectFit: "fill", verticalAlign: "middle", marginLeft: "10px"}}
                                     onClick={() => {deleteFile(file.id, file.origin_name)}} />
                             }
-                            { _.isEqual(sessionStorage.getItem("login"), "true") &&
+                            {isLogin &&
                                 <input type={"image"} src={require("../Icon/download.png").default} alt={"icon"}
                                     style={{width:"20px", height:"20px", objectFit: "fill", verticalAlign: "middle", marginLeft: "10px"}}
-                                    onClick={() => {Download(resource, "download", file.id, file.origin_name)}} />
+                                    onClick={() => {Download(resource, "file/download", file.id, file.origin_name)}} />
                             }
                         </li>
                     )

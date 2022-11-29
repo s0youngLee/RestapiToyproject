@@ -10,7 +10,7 @@ li {
   margin: 10px;
 }
 
-input[type=text], input[type=password] {
+input[type=text], input[type=password], input[type=tel] {
   padding: 6px;
   margin: 8px;
   font-size: 17px;
@@ -85,7 +85,7 @@ td, tr, th {
 }
 
 button{
-  margin-left: 5px!important;
+  margin-left: 5px;
   font-weight: bolder!important;
 } 
 
@@ -93,8 +93,8 @@ button{
 .none {
   text-decoration-line: none;
   color: inherit; 
-}.none:hover {
-  color: slateblue;
+}.none:hover{
+  color: inherit;
 }
 
 .mypage-none {
@@ -251,10 +251,20 @@ button{
   color: black;
 }
 
+.form-box{
+  text-align: left;
+  height: 10%;
+  margin-top: 0;
+  background-color: #f3f3f3;
+  border-radius: 5px;
+  padding: 10px;
+  width: 80%;
+}
+
 @media only screen and (max-device-width: 400px) {
   .div-box{
     width: 370px;
-    margin-top: 110px;
+    margin-top: 100px;
   }
 
   .modal-box{
@@ -262,6 +272,14 @@ button{
     margin-top: 10px;
     width: 265px;
     height: 400px;
+  }
+
+  .form-box{
+    width: 95%;
+  }
+
+  .info-box {
+    width: 95%;
   }
 
   .bar-top{
@@ -273,11 +291,11 @@ button{
   }
 
   th {
-    font-size: small;
+    font-size: x-small;
   }
 
   td {
-    font-size: smaller;
+    font-size: xx-small;
   }
 
   .image-label, .image-label-uploaded{
@@ -297,4 +315,85 @@ button{
     margin-top: 10px;
   }
 
+  .paginate li{
+    margin: 0;
+  }
+
+  .bar-left{
+    display: flex;
+  }
+  
+  .bar-item-left{
+    width: 25%;
+  }
+
+}
+
+.input-group{
+  position: relative;
+  margin-left: 20%;
+}
+
+.input{
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  font: inherit;
+  background-color: white;
+  outline: 2px solid inherit;
+}
+
+.input-label-default{
+  display: inline-block;
+  position: absolute;
+  top: 8px;
+  left: 7px;
+  font-size: 14px;
+  padding: 0px 5px;
+  transform: translate(10px, 10px);
+  transition: transform .3s;
+  pointer-events: none;
+  background-color: inherit;
+}
+
+.input-label{
+  display: inline-block;
+  position: absolute;
+  top: 8px;
+  left: 7px;
+  font-size: 14px;
+  padding: 0px 5px;
+  transform: translate(10px, 10px);
+  transition: transform .3s;
+  pointer-events: none;
+  background-color: inherit;
+}
+
+.input-default:focus+.input-label-default{
+  transform: translate(10px, -14px) scale(.9);
+  color: gray;
+  background-color: white;
+  padding-inline: 5px;
+}
+.input:valid+.input-label{
+  transform: translate(10px, -14px) scale(.9);
+  color: #008080;
+  background-color: white;
+  padding-inline: 5px;
+}
+.input:invalid+.input-label{
+  transform: translate(10px, -14px) scale(.9);
+  color: lightcoral;
+  background-color: white;
+  padding-inline: 5px;
+}
+
+.input-default:is(:focus){
+  outline-color: gray;
+}
+.input:is(:focus:valid){
+  outline-color: #008080;
+}
+.input:is(:focus:invalid){
+  outline-color: lightcoral;
 }
