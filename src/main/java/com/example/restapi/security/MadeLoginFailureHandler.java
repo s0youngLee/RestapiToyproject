@@ -1,5 +1,7 @@
 package com.example.restapi.security;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,7 +15,7 @@ import lombok.extern.log4j.Log4j2;
 public class MadeLoginFailureHandler implements AuthenticationFailureHandler {
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-		AuthenticationException exception) {
+		AuthenticationException exception) throws IOException {
 
 		// unauthorized 시 usenamenotfound -> badcredential -> 403
 		// password incorrenct -> badcredentail -> 403..
@@ -26,5 +28,6 @@ public class MadeLoginFailureHandler implements AuthenticationFailureHandler {
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		}
 		log.error("Exception - " + exceptionName);
+		response.sendRedirect("http://192.168.1.158:3000/login");
 	}
 }

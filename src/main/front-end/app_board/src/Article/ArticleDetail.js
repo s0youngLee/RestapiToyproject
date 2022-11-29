@@ -5,7 +5,6 @@ import * as Modal from 'react-modal';
 import Comment from "../Comment/Comment";
 import Files from './FileForm';
 import ArticleEditForm from './ArticleEdit';
-import axios from 'axios';
 import PageNotFound from '../PageNotFound';
 
 function ArticleDeatil(){
@@ -31,7 +30,6 @@ function ArticleDetailData({data}) {
 
     function downloadAll(){
         Download(resource, "file/downloadzip", data.id, data.title);
-        axios.get(`/download/complete/${data.id}`);
     }
 
     function copyToClipboard(content){
@@ -80,8 +78,6 @@ function ArticleDetailData({data}) {
                     <Modal isOpen={isOpen} onRequestClose={handleClose}>
                         <ArticleEditForm articleDetail={data} handleClose={handleClose} />
                     </Modal>
-                    <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
-                            onClick={() => { Delete("article", data.id) }}>Delete</button>
                     { canRemove(data.user_nickname) &&
                         <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
                                 onClick={() => { Delete("article", data.id) }}>Delete</button>

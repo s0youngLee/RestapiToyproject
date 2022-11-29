@@ -15,7 +15,6 @@ public class PersistentLogin implements Serializable {
 	private String username;
 	private String token;
 	private Date lastUsed;
-
 	protected PersistentLogin() {
 	}
 

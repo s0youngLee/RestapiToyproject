@@ -19,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import com.example.restapi.repository.PersistentLoginMobileRepository;
 import com.example.restapi.repository.PersistentLoginRepository;
 import com.example.restapi.repository.UserRepository;
 import com.example.restapi.service.UserSecurityService;
@@ -31,14 +32,12 @@ import lombok.extern.log4j.Log4j2;
 @EnableWebSecurity
 public class SecurityConfig {
 	private final UserRepository userRepository;
-	private final PersistentTokenRepository tokenRepository;
-	private final LoginService loginService;
-	public SecurityConfig(UserRepository userRepository, @Lazy PersistentTokenRepository tokenRepository,
-		LoginService loginService) {
+	private final JpaPersistentTokenRepository tokenRepository;
+	public SecurityConfig(@Lazy UserRepository userRepository, @Lazy JpaPersistentTokenRepository tokenRepository) {
 		this.userRepository = userRepository;
 		this.tokenRepository = tokenRepository;
-		this.loginService = loginService;
 	}
+
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
@@ -48,12 +47,13 @@ public class SecurityConfig {
 			.csrf().disable()
 			.httpBasic().disable()
 
+			.sessionManagement(session -> session
+				.maximumSessions(1)
+				.maxSessionsPreventsLogin(false)
+			)
 			.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-				// .sessionFixation().migrateSession()
-				.maximumSessions(1)
-				// .expiredUrl("접속중인 사용자 목록을 보여주는 관리자용 페이지")
-			.and()
+				.sessionFixation().migrateSession()
 
 			.and()
 
@@ -62,7 +62,7 @@ public class SecurityConfig {
 				.antMatchers(HttpMethod.POST, Constants.permitAllArrayPOST).permitAll()
 				.antMatchers(Constants.authenticatedArray).authenticated()
 				.antMatchers(Constants.adminArray).hasRole("ADMIN")
-				.anyRequest().permitAll()
+				.anyRequest().authenticated()
 
 			.and()
 
@@ -75,7 +75,7 @@ public class SecurityConfig {
 
 			.logout()
 				.logoutUrl("/logout")
-				.addLogoutHandler(new MadeLogoutHandler())
+				.addLogoutHandler(new MadeLogoutHandler(userRepository))
 				.clearAuthentication(true)
 				.invalidateHttpSession(true)
 				.deleteCookies("JSESSIONID")
@@ -83,17 +83,18 @@ public class SecurityConfig {
 
 			.and()
 
-			.rememberMe().rememberMeParameter("remember")
-				.userDetailsService(userDetailsService())
-				.tokenRepository(tokenRepository);
+			.rememberMe().key("UniqueAndSecret")
+				.rememberMeServices(new CustomRememberMeServices("UniqueAndSecret", userDetailsService(), tokenRepository))
+				.authenticationSuccessHandler(new MadeLoginSuccessHandler(userDetailsService(), userRepository));
 
 		return http.build();
 	}
 
 
 	@Bean
-	public PersistentTokenRepository persistentTokenRepository(final PersistentLoginRepository repository){
-		return new JpaPersistentTokenRepository(repository, loginService);
+	public PersistentTokenRepository persistentTokenRepository(final PersistentLoginRepository repository,
+		final PersistentLoginMobileRepository mobileRepository){
+		return new JpaPersistentTokenRepository(repository, mobileRepository);
 	}
 
 	@Bean

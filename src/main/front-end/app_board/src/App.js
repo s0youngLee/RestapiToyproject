@@ -1,9 +1,10 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useEffect } from "react";
+import { useCookies } from "react-cookie";
 import _ from "lodash";
 
 import Home from "./Home";
-import Bar, { Logout } from "./Bar";
+import Bar from "./Bar";
 
 import Board from "./Article/Board";
 import ArticleDetail from "./Article/ArticleDetail";
@@ -20,81 +21,82 @@ import SignupForm from "./Login/SignupForm";
 
 import MyPage from "./User/Mypage";
 import PageNotFound from "./PageNotFound";
+import UserManage from "./User/ManageUser";
 
+import { isLogin, USER, Cookie } from "./func";
 import './App.css';
 import 'w3-css';
-import UserManage from "./User/ManageUser";
-import { isLogin, userNickname } from "./func";
+
 
 function App() {
-    const user = sessionStorage.getItem("userinfo");
-    const login = sessionStorage.getItem("login");
-    
-    console.log(isLogin);
-
-    // useEffect(() => {
-    //     axios.get("/loginstatus", {
-    //         headers : {
-    //             "Access-Control-Allow-Origin" : "*"
-    //         }
-    //     })
-    //     .then((res) => {
-    //         if(_.isEqual(res.data, true)){
-    //             sessionStorage.setItem("login", true);
-    //         }else{
-    //             sessionStorage.setItem("login", false);
-    //         }
-    //     }).catch((e) => {
-    //         console.log(e);
-    //         sessionStorage.setItem("login", false);
-    //     })
-    // }, [user])
+    const [cookies, ,removeCookies] = useCookies();
+    useEffect(() => {
+        Cookie(cookies, removeCookies);
+    }, [cookies, removeCookies])
 
     useEffect(() => {
-        if(isLogin && !_.isEmpty(user)){
-            if(_.isEmpty(sessionStorage.getItem("dateAlert"))){
-                if(window.confirm("사용자 : " + userNickname + " / 자동 로그인 되었습니다.\n로그아웃하시겠습니까?")){
-                    Logout();
-                }else{
-                    alert("마이페이지로 이동합니다.");
-                    sessionStorage.setItem("dateAlert", true);
-                    window.location.href = '/mypage';
-                }
+        if(_.isEqual(USER.lastAccess, "true")){
+            if(window.confirm("비밀번호 변경을 추천합니다.\n확인을 누르면 마이페이지로 이동합니다.")){
+                localStorage.setItem("dateAlert", true);
+                window.location.replace("/mypage");
             }
         }
-        if(!isLogin && _.isEqual(sessionStorage.getItem("dateAlert"), "true")){
-            alert("로그인 정보가 만료되었습니다. 다시 로그인하세요.");
-            sessionStorage.clear();
-            window.location.href = "/login";
+        if(!_.isEmpty(USER.auth)){
+            if(!isLogin && _.isEqual(localStorage.getItem("dateAlert"), "true")){
+                alert("로그인 정보가 만료되었습니다. 다시 로그인하세요.");
+                localStorage.clear();
+                window.location.href = "/login";
+            }
         }
-    }, [login, user]);
+    }, [isLogin]);
     
-    return(
-        <Router>
-            <Bar/>
-            <Routes>
-                <Route exact path="/" element={<Home />} />
-
-                <Route exact path="/board" element={<Board  />} />
-                <Route path="/board/:articleId" element={<ArticleDetail  />} /> 
-                <Route path="/board/:categoryname/:categoryId" element={<ArticlesByCategory />} />
-                <Route path="/board/add/:categoryId" element={<ArticleRegister />} />
-                <Route path="/search/:keyword" element={<ArticleSearchList  />} />
-
-                <Route exact path="/category" element={<CategoryDeatil />} />
-                <Route path="/category/add/" element={<CategoryRegister />} />
-                <Route path="/category/edit/:categoryId" element={<CategoryEdit />} />
-
-                <Route exact path="/login" element={<LoginForm/>} />
-                <Route path="/login/signup" element={<SignupForm />} />
-                
-                <Route path="/mypage" element={<MyPage />} />
-                <Route path="/user/manage" element={<UserManage />} />
-
-                <Route exact path="*" element={<PageNotFound />} /> {/* No route match location Handle */}
-            </Routes>
-        </Router>
-    )
+    if(_.isEmpty(USER)){
+        return (
+            <Router>
+                <Bar/>
+                <Routes>
+                    <Route exact path="/" element={<Home />} />
+    
+                    <Route exact path="/board" element={<Board  />} />
+                    <Route path="/board/:articleId" element={<ArticleDetail  />} /> 
+                    <Route path="/board/:categoryname/:categoryId" element={<ArticlesByCategory />} />
+                    <Route path="/search/:keyword" element={<ArticleSearchList  />} />
+    
+                    <Route exact path="/login" element={<LoginForm/>} />
+                    <Route path="/login/signup" element={<SignupForm />} />
+    
+                    <Route exact path="*" element={<PageNotFound />} /> {/* No route match location Handle */}
+                </Routes>
+            </Router>
+        )
+    }else{
+        return(
+            <Router>
+                <Bar/>
+                <Routes>
+                    <Route exact path="/" element={<Home />} />
+    
+                    <Route exact path="/board" element={<Board  />} />
+                    <Route path="/board/:articleId" element={<ArticleDetail  />} /> 
+                    <Route path="/board/:categoryname/:categoryId" element={<ArticlesByCategory />} />
+                    <Route path="/board/add/:categoryId" element={<ArticleRegister />} />
+                    <Route path="/search/:keyword" element={<ArticleSearchList  />} />
+    
+                    <Route exact path="/category" element={<CategoryDeatil />} />
+                    <Route path="/category/add/" element={<CategoryRegister />} />
+                    <Route path="/category/edit/:categoryId" element={<CategoryEdit />} />
+    
+                    <Route exact path="/login" element={<LoginForm/>} />
+                    <Route path="/login/signup" element={<SignupForm />} />
+                    
+                    <Route path="/mypage" element={<MyPage />} />
+                    <Route path="/user/manage" element={<UserManage />} />
+    
+                    <Route exact path="*" element={<PageNotFound />} /> {/* No route match location Handle */}
+                </Routes>
+            </Router>
+        )
+    }
 }
 
 export default App;

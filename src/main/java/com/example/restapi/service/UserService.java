@@ -11,7 +11,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.transaction.Transactional;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -49,28 +48,29 @@ public class UserService {
 	}
 
 
-	public ResponseEntity<String> userinfo(UserInfo user, HttpServletRequest request, HttpServletResponse response) {
+	public ResponseEntity<String> userinfo(UserResponseDto user, HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
 		if(session == null || !request.isRequestedSessionIdValid() || user == null){
 			log.warn("Session condition : Invalid");
 			return ResponseEntity.notFound().build();
 		}else{
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			String userinfoValue = user.getNickName() + "/" + user.getAuth()  + "/" + user.getLastAccess() + "/" + auth.getAuthorities();
+			boolean suggestLogin = (LocalDateTime.now().minusDays(7)).isAfter(user.lastAccess());
+			String userinfoValue = user.nickName() + "/" + user.auth()  + "/" + suggestLogin + "/" + auth.getAuthorities();
 			String encoded = Base64.getEncoder().encodeToString(userinfoValue.getBytes());
 			response.addCookie(new Cookie("user", encoded));
-			return ResponseEntity.ok(encoded);
+			return ResponseEntity.noContent().build();
 		}
 	}
 
-	public ResponseEntity<UserResponseDto> userPage(UserInfo user, HttpServletRequest request) {
+	public ResponseEntity<UserResponseDto> userPage(UserResponseDto user, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		if(session == null || !request.isRequestedSessionIdValid() || user == null){
 			log.warn("Session condition : Invalid");
 			return ResponseEntity.notFound().build();
 		}else{
 
-			return ResponseEntity.ok(buildUser(user));
+			return ResponseEntity.ok(user);
 		}
 	}
 
@@ -106,18 +106,10 @@ public class UserService {
 		}
 	}
 
-	@Transactional
-	public ResponseEntity<UserInfo> userInfoEdit(UserInfo user, UserRequest request) {
-		if(!Objects.equals(request.getNickName(), "")){
-			user.setNickName(request.getNickName());
-		}
-		if(!Objects.equals(request.getPassword(), "")){
-			user.setPassword(encoder.encode(request.getPassword()));
-		}
-		if(!Objects.equals(request.getPhone(), "")){
-			user.setPhone(request.getPhone());
-		}
+	public ResponseEntity<UserResponseDto> userInfoEdit(UserResponseDto userDto, UserRequest request) {
 		try{
+			UserInfo user = userRepository.getReferenceById(userDto.code());
+			user.update(request);
 			userRepository.save(user);
 		}catch (IllegalArgumentException e){
 			return ResponseEntity.badRequest().build();
@@ -126,12 +118,10 @@ public class UserService {
 	}
 
 
-
-	public ResponseEntity<UserInfo> changeAuth(String auth, UserRequest request, Integer code) {
-		if(Objects.equals(auth, "ROLE_ADMIN")){
+	public ResponseEntity<UserResponseDto> changeAuth(UserResponseDto userDto, UserRequest request, Integer code) {
+		if(Objects.equals(userDto.auth(), "ROLE_ADMIN")){
 			UserInfo user = userRepository.getReferenceById(code);
-
-			user.setAuth(request.getAuth());
+			user.updateAuth(request);
 			try{
 				userRepository.save(user);
 			}catch (IllegalArgumentException e){
@@ -139,18 +129,8 @@ public class UserService {
 			}
 			return ResponseEntity.noContent().build();
 		}else {
-			throw new PermissionDeniedDataAccessException("Permission Denied.", new Throwable(auth));
+			throw new PermissionDeniedDataAccessException("Permission Denied.", new Throwable(userDto.auth()));
 		}
-	}
-
-	public ResponseEntity<UserInfo> updateAccessDate(UserInfo user) {
-		user.setLastAccess(LocalDateTime.now());
-		try{
-			userRepository.save(user);
-		}catch (IllegalArgumentException e){
-			return ResponseEntity.badRequest().build();
-		}
-		return ResponseEntity.noContent().build();
 	}
 
 
@@ -172,7 +152,7 @@ public class UserService {
 	public UserResponseDto buildUser(UserInfo user){
 		return UserResponseDto.builder()
 			.code(user.getCode())
-			.email(user.getEmail())
+			.email(user.getUsername())
 			.name(user.getName())
 			.nickName(user.getNickName())
 			.phone(user.getPhone())
@@ -188,7 +168,7 @@ public class UserService {
 		for(UserInfo user : AllUsers){
 			UserExcelResponseDto body = UserExcelResponseDto.builder()
 				.code(user.getCode())
-				.email(user.getEmail())
+				.email(user.getUsername())
 				.name(user.getName())
 				.nickName(user.getNickName())
 				.phone(user.getPhone())

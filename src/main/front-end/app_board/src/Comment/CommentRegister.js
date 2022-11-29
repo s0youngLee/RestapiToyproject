@@ -1,5 +1,5 @@
 import React,{useState, useCallback} from "react";
-import { getUrlId, userNickname } from "../func";
+import { getUrlId, USER } from "../func";
 import axios from "axios";
 
 function CommentRegister(){
@@ -12,7 +12,7 @@ function CommentRegister(){
     const addComment = (e) => {        
         e.preventDefault();
         axios.post(`/comment`, {
-            user_id: userNickname,
+            user_id: USER.nickname,
             content: content,
             article_id: getUrlId(1)
         }).then((res) => {

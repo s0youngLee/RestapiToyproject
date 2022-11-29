@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
-import { getUrlId, FetchWithoutId, userNickname, ifError } from "../func";
+import { getUrlId, FetchWithoutId, USER, ifError } from "../func";
 import axios from "axios";
 import _ from 'lodash';
 
@@ -59,7 +59,7 @@ function ArticleRegister(){
         let data = {
             title : title,
             content : content,
-            created_id : userNickname,
+            created_id : USER.nickname,
             category_id : selected
         }
         formData.append("article", new Blob([JSON.stringify(data)], {type: "application/json"}));

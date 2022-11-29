@@ -22,7 +22,7 @@ public class CategoryService{
     private final CategoryRepository categoryRepository;
     private final ArticleRepository articleRepository;
 
-    public CategoryService(@Lazy CategoryRepository categoryRepository, @Lazy ArticleRepository articleRepository) {
+    public CategoryService(CategoryRepository categoryRepository, @Lazy ArticleRepository articleRepository) {
         this.categoryRepository = categoryRepository;
         this.articleRepository = articleRepository;
     }

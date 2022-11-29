@@ -93,6 +93,7 @@ public class CommentService {
         for(Comment comment : commentRepository.findAllByUserId(nickName)){
             commentList.add(buildComment(comment));
         }
+
         return ResponseEntity.ok(commentList);
     }
 

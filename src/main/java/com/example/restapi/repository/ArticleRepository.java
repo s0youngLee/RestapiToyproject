@@ -13,8 +13,7 @@ import com.example.restapi.model.entity.UserInfo;
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Integer> {
 	List<Article> findAllByCategoryId(Integer id);
-	// List<Article> findAllByCreatedId(String nickName);
-	List<Article> findAllByUser(UserInfo nickName);
+	List<Article> findAllByUser(UserInfo user);
     @Modifying
     @Query("update Article a set a.visitCnt = a.visitCnt + 1 where a.id = :articleId")
     void updateVisitCnt(int articleId);

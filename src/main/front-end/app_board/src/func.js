@@ -1,10 +1,44 @@
 import _ from "lodash";
 import axios from "axios";
 
-export const userNickname = !_.isEmpty(sessionStorage.getItem("userinfo")) ? Buffer.from(sessionStorage.getItem("userinfo"), 'base64').toString('ascii').split("/")[0] : undefined;
-export const userAuth = !_.isEmpty(sessionStorage.getItem("userinfo")) ? Buffer.from(sessionStorage.getItem("userinfo"), 'base64').toString('ascii').split("/")[1] : undefined;
-export const userLastAccess = !_.isEmpty(sessionStorage.getItem("userinfo")) ? Buffer.from(sessionStorage.getItem("userinfo"), 'base64').toString('ascii').split("/")[2] : undefined;
-export const isLogin = !_.isEmpty(userAuth);
+export function Cookie(cookies, removeCookies){
+    try{
+        if(!_.isEmpty(cookies.user)){
+            if(_.isEqual(localStorage.getItem("dateAlert"), "false")){
+                console.log("Don't Remember");
+                sessionStorage.setItem("userinfo", cookies.user);
+                removeCookies("user");
+                window.location.reload();
+            }else{
+                console.log("Remember");
+                localStorage.setItem("userinfo", cookies.user);
+                removeCookies("user");
+                window.location.reload();
+            }
+        }
+    }catch(e){
+        console.log(e);
+    }
+}
+
+export function getUserInfo(){
+    if(!_.isEmpty(localStorage.getItem("userinfo"))){
+        return Buffer.from(localStorage.getItem("userinfo"), 'base64').toString('ascii').split("/");
+    }else if(!_.isEmpty(sessionStorage.getItem("userinfo"))){
+        return Buffer.from(sessionStorage.getItem("userinfo"), 'base64').toString('ascii').split("/");
+    }else{
+        return undefined;
+    }
+}
+
+export const userinfo = getUserInfo();
+export const USER = {
+    nickname : !_.isEmpty(userinfo) ? userinfo[0] : undefined,
+    auth : !_.isEmpty(userinfo) ? userinfo[1] : undefined,
+    lastAccess : !_.isEmpty(userinfo) ? userinfo[2] : undefined
+}
+
+export const isLogin = !_.isEmpty(USER.auth);
 
 export const sliceArrayByLimit = (totalPage, limit) => {
     const totalPageArray = Array(totalPage)
@@ -16,15 +50,15 @@ export const sliceArrayByLimit = (totalPage, limit) => {
   };
   
 export function isPublisher(publisher){
-    return _.isEqual(publisher, userNickname);
+    return _.isEqual(publisher, USER.nickname);
 }
     
 export function isAdmin(){
-    return _.isEqual(userAuth, "ROLE_ADMIN");
+    return _.isEqual(USER.auth, "ROLE_ADMIN");
 }
 
 export function canRemove(publisher){
-    return isAdmin(userAuth) || isPublisher(publisher);
+    return isAdmin(USER.auth) || isPublisher(publisher);
 }
 
 export function getUrlId(n){
@@ -50,11 +84,7 @@ export function suggestLogin(){
 }
 
 export function FetchWithoutId(data, setData, dataName){
-    axios.get(`/${dataName}`, { 
-        headers : {
-            "cache" : "no-store"
-        }
-    })
+    axios.get(`/${dataName}`)
     .then((res) => {
         setData(res.data);
     })
@@ -66,11 +96,7 @@ export function FetchWithoutId(data, setData, dataName){
 
 export function FetchWithId(data, setData, dataName, n){
     const id = getUrlId(n);
-    axios.get(`/${dataName}/${id}`, { 
-        headers : {
-            "cache" : "no-store"
-        }
-    })
+    axios.get(`/${dataName}/${id}`)
     .then((res) => {
         setData(res.data);
     })
@@ -93,12 +119,9 @@ export function Delete(dataName, dataId){
             }
         }).catch((e) => {
             ifError(e);
-            // alert("삭제에 실패했습니다.");
-            // window.location.reload();
         });
     }
 }
-
 
 // DATA URL Version
 // export function Download(resource, dataname, id, filename){
@@ -152,13 +175,13 @@ export function Download(resource, dataname, id, filename){
 export function ifError(e){
     if(e.response.status === 400){
         alert("잘못된 접근입니다.\n홈으로 이동합니다.");
-        window.location.replace("/");
+        // window.location.replace("/");
     }else if((e.response.status === 401) || (e.response.status === 403)){
         alert("권한이 없습니다.\n로그인 페이지로 이동합니다.");
         window.location.replace("/login");
     }else{
         alert("Error : " + e.response.status + " " + e.response.statusText + "\n홈으로 이동합니다.");
-        window.location.href="/";
+        // window.location.href="/";
     }
 }
 

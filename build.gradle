@@ -27,8 +27,6 @@ dependencies {
 	implementation 'junit:junit:4.13.2'
 
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.jetbrains:annotations:20.1.0'
-	implementation 'com.auth0:java-jwt:4.0.0'
     runtimeOnly 'com.h2database:h2'
 
 	implementation group: 'commons-io', name: 'commons-io', version: '2.7'

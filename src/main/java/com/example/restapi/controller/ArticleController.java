@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
-import com.example.restapi.model.entity.UserInfo;
 import com.example.restapi.model.network.request.ArticleRequest;
 import com.example.restapi.model.network.response.ArticleListResponseDto;
 import com.example.restapi.model.network.response.ArticleResponseDto;
+import com.example.restapi.model.network.response.UserResponseDto;
 import com.example.restapi.service.ArticleService;
 
 import lombok.extern.log4j.Log4j2;
@@ -59,7 +59,7 @@ public class ArticleController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<List<ArticleListResponseDto>> getMyArticles(@SessionAttribute("user") UserInfo user){
+    public ResponseEntity<List<ArticleListResponseDto>> getMyArticles(@SessionAttribute("user") UserResponseDto user){
         return articleService.getUserArticles(user);
     }
 

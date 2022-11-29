@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
-import com.example.restapi.model.entity.UserInfo;
 import com.example.restapi.model.network.request.CommentRequest;
 import com.example.restapi.model.network.response.CommentResponseDto;
+import com.example.restapi.model.network.response.UserResponseDto;
 import com.example.restapi.service.CommentService;
 
 @RestController
@@ -49,8 +49,8 @@ public class CommentController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<List<CommentResponseDto>> getMyComments(@SessionAttribute("user") UserInfo user){
-        return commentService.getUserComment(user.getNickName());
+    public ResponseEntity<List<CommentResponseDto>> getMyComments(@SessionAttribute("user") UserResponseDto user){
+        return commentService.getUserComment(user.nickName());
     }
 
 }

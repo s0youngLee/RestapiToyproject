@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import 'w3-css';
-import { FetchWithoutId, ifError, isAdmin, isLogin } from "./func";
+import { FetchWithoutId, isAdmin, isLogin } from "./func";
 import _ from "lodash";
 
 function Bar() {
@@ -17,6 +17,7 @@ function Bar() {
         }
     },[categoryData]);
 
+    if(categoryList)
     return ( 
         <>
         <div className="bar-top">
@@ -57,16 +58,13 @@ function Bar() {
 }
 
 export function Logout() {
-    axios.put("/user/lastaccess")
-    .then(() => {
-        sessionStorage.clear();
-        axios.post('/logout');
-        alert("로그아웃되었습니다. 로그인 페이지로 이동합니다.");
-        window.location.replace('/login');
-    })
-    .catch((e) => {
-        ifError(e);
+    axios.post('/logout').catch((e) => {
+        console.log(e);
     });
+    alert("로그아웃되었습니다. 로그인 페이지로 이동합니다.");
+    sessionStorage.clear();
+    localStorage.clear();
+    window.location.replace('/login');
 };
 
 export default Bar;

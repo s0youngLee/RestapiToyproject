@@ -35,18 +35,18 @@ public class UserController {
 	}
 
 	@GetMapping("")
-	public ResponseEntity<String> userinfo(@SessionAttribute("user") UserInfo user, HttpServletRequest request, HttpServletResponse response){
+	public ResponseEntity<String> userinfo(@SessionAttribute("user") UserResponseDto user, HttpServletRequest request, HttpServletResponse response){
 		return userService.userinfo(user, request, response);
 	}
 
 	@GetMapping("/info")
-	public ResponseEntity<UserResponseDto> userPage(@SessionAttribute("user") UserInfo user, HttpServletRequest request){
+	public ResponseEntity<UserResponseDto> userPage(@SessionAttribute("user") UserResponseDto user, HttpServletRequest request){
 		return userService.userPage(user, request);
 	}
 
 	@GetMapping("/manage")
-	public ResponseEntity<List<UserResponseDto>> manageUser(@SessionAttribute("user") UserInfo user){
-		return userService.userList(user.getAuth());
+	public ResponseEntity<List<UserResponseDto>> manageUser(@SessionAttribute("user") UserResponseDto user){
+		return userService.userList(user.auth());
 	}
 
 	@PostMapping("")
@@ -55,17 +55,12 @@ public class UserController {
 	}
 
 	@PutMapping("")
-	public ResponseEntity<UserInfo> userInfoEdit(@SessionAttribute("user") UserInfo user, @RequestBody UserRequest request) {
+	public ResponseEntity<UserResponseDto> userInfoEdit(@SessionAttribute("user") UserResponseDto user, @RequestBody UserRequest request) {
 		return userService.userInfoEdit(user, request);
 	}
 	@PutMapping("/manage/{code}")
-	public ResponseEntity<UserInfo> changeAuth(@SessionAttribute("user") UserInfo user, @PathVariable int code, @RequestBody UserRequest request){
-		return userService.changeAuth(user.getAuth(), request, code);
-	}
-
-	@PutMapping("/lastaccess")
-	public ResponseEntity<UserInfo> updateAccessDate(@SessionAttribute("user") UserInfo user){
-		return userService.updateAccessDate(user);
+	public ResponseEntity<UserResponseDto> changeAuth(@SessionAttribute("user") UserResponseDto user, @PathVariable int code, @RequestBody UserRequest request){
+		return userService.changeAuth(user, request, code);
 	}
 
 	@DeleteMapping("/{code}")

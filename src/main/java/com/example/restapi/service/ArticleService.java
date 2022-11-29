@@ -18,11 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.restapi.model.entity.Article;
 import com.example.restapi.model.entity.Category;
-import com.example.restapi.model.entity.UserInfo;
 import com.example.restapi.model.network.request.ArticleRequest;
 import com.example.restapi.model.network.response.ArticleExcelResponseDto;
 import com.example.restapi.model.network.response.ArticleListResponseDto;
 import com.example.restapi.model.network.response.ArticleResponseDto;
+import com.example.restapi.model.network.response.UserResponseDto;
 import com.example.restapi.repository.ArticleRepository;
 import com.example.restapi.repository.CategoryRepository;
 import com.example.restapi.repository.UserRepository;
@@ -133,8 +133,8 @@ public class ArticleService {
         return ResponseEntity.ok(listResponse(articleRepository.findAllByCategoryId(categoryId)));
     }
 
-    public ResponseEntity<List<ArticleListResponseDto>> getUserArticles(UserInfo user){
-        return ResponseEntity.ok(listResponse(articleRepository.findAllByUser(user)));
+    public ResponseEntity<List<ArticleListResponseDto>> getUserArticles(UserResponseDto user){
+        return ResponseEntity.ok(listResponse(articleRepository.findAllByUser(userRepository.getReferenceById(user.code()))));
     }
 
     public ResponseEntity<List<ArticleListResponseDto>> getSearchResults(String type, String keyword){

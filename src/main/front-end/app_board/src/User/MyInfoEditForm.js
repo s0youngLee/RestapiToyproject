@@ -88,7 +88,6 @@ function MyInfoEditForm({user}) {
                         비밀번호 확인</label>
                 </div>
                 <div className="input-group">
-                    {console.log(document.getElementById("newPhone")?.click())}
                     <input type="tel" name="newPhone" id="newPhone" className={ phoneSelected ? "input-default" : "input"} 
                      value={newPhone} onChange={inputPhone} 
                            maxLength="13" pattern="[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}"/>

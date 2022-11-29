@@ -3,10 +3,11 @@ import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import _ from "lodash";
 import "../App.css";
+import { useCookies } from "react-cookie";
 
 function LoginForm(){
-    sessionStorage.setItem("dateAlert", false);
-    const remember = document.getElementsByName('remember');
+    const [cookies, ,] = useCookies();
+    const remember = document.getElementsByName('remember-me');
     const [id, setId] = useState();
     const [pw, setPw] = useState();
 
@@ -25,7 +26,7 @@ function LoginForm(){
     const userlogin = (e) => {
         e.preventDefault();
         if(remember[0].checked){
-            form.append('remember', remember[0].checked);
+            form.append('remember-me', remember[0].checked);
         }
         if(_.isEmpty(id) || _.isEmpty(pw)){
             alert("입력란을 채워주세요");
@@ -34,23 +35,16 @@ function LoginForm(){
         
         axios.post('/login', form)
         .then((res) => {
-            sessionStorage.setItem("userinfo", res.data);
             alert("성공적으로 로그인되었습니다.");
-            
-            if(_.isEqual(res.headers.lastlogin, "true")){
-                if(window.confirm("비밀번호 변경을 추천합니다.\n확인을 누르면 마이페이지로 이동합니다.")){
-                    sessionStorage.setItem("dateAlert", true);
-                    window.location.replace("/mypage");
-                }else{
-                    alert("게시판 페이지로 이동합니다.");
-                    sessionStorage.setItem("dateAlert", true);
-                    window.location.replace("/board");
-                }
+            if(remember[0].checked){
+                localStorage.setItem("userinfo", cookies.user);
+                localStorage.setItem("dateAlert", "true");
             }else{
-                alert("게시판 페이지로 이동합니다.");
-                sessionStorage.setItem("dateAlert", true);
-                window.location.href = "/board";
+                sessionStorage.setItem("userinfo", cookies.user);
+                localStorage.setItem("dateAlert", "false");
             }
+            alert("게시판 페이지로 이동합니다.");
+            window.location.href = "/board";
         })
         .catch((err) => {
             if(err.response.status === 401){
@@ -59,7 +53,6 @@ function LoginForm(){
                 alert("존재하지 않는 아이디입니다.");
             }else {
                 alert(err + "\n로그인 실패.");
-                // window.location.reload();
             }
         })
     }
@@ -85,7 +78,7 @@ function LoginForm(){
                     Password</label>
             </div>
             <p>
-                <input type={'checkbox'} name='remember'/> &nbsp;자동 로그인
+                <input type={'checkbox'} name='remember-me'/> &nbsp;자동 로그인
             </p>
             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" type="submit" 
                     onClick={userlogin} >로그인</button>

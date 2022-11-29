@@ -14,11 +14,8 @@ function MyPage(){
     let resource = useMemo(() => { return new Blob(); },[])
     
     const [user, setUser] = useState();
-    const [articles, setArticles] = useState();
     const [articlesData, setArticlesData] = useState();
-    const [comments, setComments] = useState();
     const [commentsData, setCommentsData] = useState();
-    
 
     useEffect(() => {
         if(_.isEmpty(user)){
@@ -30,13 +27,9 @@ function MyPage(){
         }
         if(_.isEmpty(articlesData) && !_.isEqual(articlesData, [])){
             FetchWithoutId(articlesData, setArticlesData, "article/user");
-        }else{
-            setArticles(articlesData);
         }
         if(_.isEmpty(commentsData) && !_.isEqual(commentsData, [])){
             FetchWithoutId(commentsData, setCommentsData, "comment/user");
-        }else{
-            setComments(commentsData);
         }
     },[articlesData, commentsData, user]);
 
@@ -84,8 +77,8 @@ function MyPage(){
                                 onClick={() => downloadExcel("user")}> Download Users </button>
                             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
                                 onClick={() => window.location.href="/user/manage"}> Manage Users </button>
-                            <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                                onClick={() => window.location.href="/article/manage"}> Manage Articles </button>
+                            {/* <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
+                                onClick={() => window.location.href="/article/manage"}> Manage Articles </button> */}
                         </div>
                     }                    
                 </div><hr/>
@@ -109,8 +102,8 @@ function MyPage(){
                             setVisible(true);
                             }}> Change MyInfo </div>
                 </div><hr/>
-                {visibleArticle && <MyArticles articles={articles}/>}
-                {visibleComment && <MyComments comments={comments}/>}
+                {visibleArticle && <MyArticles articles={articlesData}/>}
+                {visibleComment && <MyComments comments={commentsData}/>}
                 {visible && <MyInfoEditForm user={user} />}
             </div>
         )
