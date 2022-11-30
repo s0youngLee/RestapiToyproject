@@ -15,8 +15,8 @@ function ArticleEditForm({articleDetail, handleClose}){
         }
     }, [categoryData]);
 
-    const [checkedInfile, setCheckedInfile] = useState(new Set()); // db에 올라가 있는 파일 (이미 첨부된 파일 중 체크 - 삭제해야함)
-    const [checkedUpload, setCheckedUpload] = useState(new Set()); // input file로 선택한 파일 (첨부되어 있지 않은 파일 - 전송할 formdata에 올리지 않아야함)
+    const [checkedInfile, setCheckedInfile] = useState(new Set()); 
+    const [checkedUpload, setCheckedUpload] = useState(new Set()); 
 
     // article title, content, category 수정
     const [title, setTitle] = useState(articleDetail.title);
@@ -24,10 +24,10 @@ function ArticleEditForm({articleDetail, handleClose}){
     const [selected, setSelected] = useState(articleDetail.category_id);
 
     // 파일 업로드용 formdata
-    const inputFile = document.getElementsByName("upfile"); // file input
-    const fileName = useMemo(() => {return new Array("파일 선택")},[]); // 파일 입력란에 띄울 선택된 파일 이름 리스트
-    const [files, setFiles] = useState({data : {}}); // 파일 목록
-    const [visible, setVisible] = useState(false); // 선택된 파일 또는 첨부된 파일이 없을 경우 visible false
+    const inputFile = document.getElementsByName("upfile"); 
+    const fileName = useMemo(() => {return new Array("파일 선택")},[]); 
+    const [files, setFiles] = useState({data : {}}); 
+    const [visible, setVisible] = useState(false); 
 
     const checkedItemHandler = useCallback((id, type, isChecked) => {
         if(isChecked) {
@@ -215,19 +215,19 @@ function ArticleEditForm({articleDetail, handleClose}){
                         <input type="file" name={"upfile"} id="file" style={{display:"none"}} onChange={uploadFile} multiple/>
 
                         <div style={{textAlign: "center", marginTop: "5px"}}>
-                            <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > Save </button>
+                            <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > 저장 </button>
                             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red"
-                                    onClick={handleClose}> Back </button>
+                                    onClick={handleClose}> 뒤로가기 </button>
                         </div>
                     </div>
                 </form>
                 <div id='preview-zone'>
-                    <b style={{fontSize: "medium"}}> File Preview </b><br/>
+                    <b style={{fontSize: "medium"}}> 파일 미리보기 </b><br/>
                     <div id='preview-img' style={visible ? {} : {display: "none"}}>
-                        <b style={{fontSize: "small"}}> [ Image ] </b><br/>
+                        <b style={{fontSize: "small"}}> [ 이미지 ] </b><br/>
                     </div>
                     <div id='preview-file' style={visible ? {} : {display: "none"}}>
-                        <b style={{fontSize: "small"}}> [ File ] </b><br/>
+                        <b style={{fontSize: "small"}}> [ 파일 ] </b><br/>
                     </div>
                 </div>
             </div>

@@ -35,7 +35,7 @@ function ArticleSearchList() {
     else {
         return (
             <div className='div-box'>
-                <b style={{ fontSize: "30px"}}> "{decodeParam}" 에 대한 검색 결과</b>
+                <b style={{ fontSize: "30px"}}> "{decodeParam}" 에 대한 검색 결과</b> 
                 <ArticleList articleList={Array.from(searchResults)} />
             </div>
         )

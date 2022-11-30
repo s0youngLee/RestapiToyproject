@@ -35,7 +35,7 @@ function App() {
     }, [cookies, removeCookies])
 
     useEffect(() => {
-        if(_.isEqual(USER.lastAccess, "true")){
+        if(_.isEqual(USER.lastAccess, "true") && _.isEqual(localStorage.getItem("dateAlert"), "false")){
             if(window.confirm("비밀번호 변경을 추천합니다.\n확인을 누르면 마이페이지로 이동합니다.")){
                 localStorage.setItem("dateAlert", true);
                 window.location.replace("/mypage");
@@ -92,7 +92,7 @@ function App() {
                     <Route path="/mypage" element={<MyPage />} />
                     <Route path="/user/manage" element={<UserManage />} />
     
-                    <Route exact path="*" element={<PageNotFound />} /> {/* No route match location Handle */}
+                    <Route exact path="*" element={<PageNotFound />} /> {/* No route match location Handle */} 
                 </Routes>
             </Router>
         )

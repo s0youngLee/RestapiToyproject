@@ -29,12 +29,12 @@ function ArticlesByCategory(){
     else {
     return (
         <div className='div-box'>
-            <b style={{ fontSize: "30px"}}> Category : {category} </b>
+            <b style={{ fontSize: "30px"}}> 카테고리 : {category} </b>
             {_.isEmpty(articleByCategory) && 
                 <div> 
                     <b style={{fontSize: "30px"}}> No Articles </b>
                     <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                        onClick={() => { suggestLogin() }}> Write article </button>
+                        onClick={() => { suggestLogin() }}> 글 작성 </button>
                 </div>}
             {!_.isEmpty(articleByCategory) && <ArticleList articleList={Array.from(articleByCategory).reverse()} />}
         </div>

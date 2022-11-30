@@ -32,6 +32,6 @@ public class MadeLogoutHandler implements LogoutHandler {
 		for(Cookie cookie : cookies){
 			cookie.setMaxAge(0);
 		}
-		log.info("User {} Logout successful.\n", authentication != null ? authentication.getName() : "Not Found");
+		log.info("User {} Logout successful.\n", authentication.getName() != null ? authentication.getName() : "Not Found");
 	}
 }

@@ -26,10 +26,10 @@ function CommentRegister(){
 
     return(
         <form onSubmit={addComment} style={{marginLeft: "10px", height: "160px"}}>
-            <b> Add Comment</b> <br/>
+            <b> 댓글 작성 </b> <br/>
             <textarea className="text-box" style={{width: "80%"}} placeholder="Add a comment" required
                       onChange={addContent}></textarea> 
-            <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > Add </button>
+            <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > 등록 </button>
         </form>
     )
 }

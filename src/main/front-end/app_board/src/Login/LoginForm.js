@@ -83,7 +83,7 @@ function LoginForm(){
             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" type="submit" 
                     onClick={userlogin} >로그인</button>
             <Link className="none" to="/login/signup">
-                <button className="w3-button w3-round-xlarge w3-small w3-hover-deep-purple w3-border">회원가입</button>
+                <button className="w3-button w3-round-xlarge w3-small w3-hover-deep-purple w3-border">회원 가입</button>
             </Link>
         </form> 
     </div>

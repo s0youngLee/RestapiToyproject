@@ -74,7 +74,7 @@ function ArticleList({articleList}){
             <div style={{marginTop: "100px", textAlign: "center"}}> 
                 <b style={{fontSize: "30px"}}>Data Not Found</b> <br/>
                 <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                        onClick={() => { suggestLogin() }}> 글 작성 </button>
+                        onClick={() => { suggestLogin() }}> 새 게시물 </button>
             </div>
         )
     }
@@ -82,7 +82,7 @@ function ArticleList({articleList}){
         return(
             <div className="totalPage">
                 <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                        onClick={() => { suggestLogin() }}> 글 작성 </button>
+                        onClick={() => { suggestLogin() }}> 새 게시물 </button>
                 {isAdmin() && 
                     <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
                     onClick={() => DeleteArticles()}>  선택 삭제 </button>}
@@ -90,7 +90,7 @@ function ArticleList({articleList}){
         
                 <table>
                     <thead style={{backgroundColor: "#bdb5f6"}}>
-                    <tr>
+                    <tr> {/* 입부분 수정 - Article 컴포넌트로 빼던지... */}
                         {isAdmin() && 
                             <th> <input type={'checkbox'} checked={allChecked} 
                                         onChange={() => { changeAll(!allChecked); }}/></th>

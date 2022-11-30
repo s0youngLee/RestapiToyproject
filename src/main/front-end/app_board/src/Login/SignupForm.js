@@ -117,7 +117,7 @@ function SignupForm(){
                 </p>
                 <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal">가입</button>
                 <Link className="none" to="/login">
-                    <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-deep-purple">로그인 페이지 →</button>
+                    <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-deep-purple">로그인 페이지</button>
                 </Link>
             </form>
 

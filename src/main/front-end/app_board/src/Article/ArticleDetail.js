@@ -4,7 +4,7 @@ import _ from 'lodash';
 import * as Modal from 'react-modal';
 import Comment from "../Comment/Comment";
 import Files from './FileForm';
-import ArticleEditForm from './ArticleEdit';
+import ArticleEditForm from './ArticleEdit'; 
 import PageNotFound from '../PageNotFound';
 
 function ArticleDeatil(){
@@ -53,34 +53,35 @@ function ArticleDetailData({data}) {
             <><div className='div-box' style={{padding: "10px", overflow: "auto", marginLeft: "10px", textAlign: "left", height: "80vh"}}>
                     <b style={{fontSize: "30px"}}>{data?.title}</b><br/>
                     <span style={{fontSize: "17px", color: "gray"}}> {data?.created_at} </span><br/>
-                    <span style={{fontSize: "17px"}}> Posted in <b>{data?.category_name} </b> by <b> {data.user_nickname} </b> / visit : <b>{data?.visit_cnt}</b></span>
+                    <span style={{fontSize: "17px"}}> Posted in <b>{data?.category_name} </b> by <b> {data.user_nickname} </b></span>
+                    <span style={{fontSize: "15px", float: "right"}}> 조회수 : <b>{data?.visit_cnt}</b></span>
                     <div className='content-box'> 
                         <input type={"image"} src={require("../Icon/copy.png").default} alt={"icon"}
                             style={{width:"20px", height:"20px", objectFit: "fill", verticalAlign: "bottom", float: 'right', marginLeft: "10px"}}
                             onClick={() => { copyToClipboard(data.content) }} />
                         <br/>{data.content}
                     </div>
-                    <span style={{fontSize:"17px", color:"gray"}}> Finally edited : {data?.final_edit_date} </span><br/>
+                    <span style={{fontSize:"17px", color:"gray"}}> 최종 수정일 : {data?.final_edit_date} </span><br/>
                    
-                    <b style={{fontSize: "17px"}}> File list </b>
+                    <b style={{fontSize: "17px"}}> 파일 목록 </b>
                     {isLogin && !_.isEmpty(data.files) &&
                         <>
                         <button onClick={() => { downloadAll() }}
-                            className="w3-button w3-border w3-round-xlarge w3-small w3-hover-light-blue"> Download All </button>
+                            className="w3-button w3-border w3-round-xlarge w3-small w3-hover-light-blue"> 모든 파일 다운로드(.zip) </button>
                         <br/>
                         </>
                     }
                     <Files files={data.files}  createdId={data.user_nickname}/>
                     { isPublisher(data.user_nickname) &&
                         <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                                onClick={() => setIsOpen(true)}>Edit</button>
+                                onClick={() => setIsOpen(true)}>수정</button>
                     }
                     <Modal isOpen={isOpen} onRequestClose={handleClose}>
                         <ArticleEditForm articleDetail={data} handleClose={handleClose} />
                     </Modal>
                     { canRemove(data.user_nickname) &&
                         <button style={{float: "right"}} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
-                                onClick={() => { Delete("article", data.id) }}>Delete</button>
+                                onClick={() => { Delete("article", data.id) }}>삭제</button>
                     }
                 </div><hr/>
                 <Comment comments={data.comment}/>

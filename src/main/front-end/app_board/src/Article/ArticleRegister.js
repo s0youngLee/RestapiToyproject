@@ -50,7 +50,7 @@ function ArticleRegister(){
         
     }, [inputFile, fileName]);
     
-    for(let i = 0;i < files.length; i++){
+    for(let i = 0;i < files.length; i++){ 
         formData.append("file", files[i]);
     }
     
@@ -78,7 +78,7 @@ function ArticleRegister(){
         return(
             <form onSubmit={addArticle}>
                 <div className="div-box" style={{height: "55vh"}}>
-                    <b style={{ fontSize: "30px"}}> 게시물 작성 </b> <hr/>
+                    <b style={{ fontSize: "30px"}}> 새 게시물 </b> <hr/>
                     <b> 카테고리 : </b>
                     <select onChange={handleSelect} value={selected}>
                         {Array.from(categoryList)?.map((category, index) => {
@@ -95,7 +95,7 @@ function ArticleRegister(){
                     </label> 
                     <input type="file" name={"upfile"} id="file" style={{display:"none"}} onChange={uploadFile} multiple/><br/>
                     
-                    <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > 글쓰기 </button>
+                    <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > 등록 </button>
                     <button type="reset" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
                             onClick={() => {window.location.href = "/board"}}> 돌아가기 </button><br/>
                 </div>

@@ -95,7 +95,7 @@ function MyInfoEditForm({user}) {
                         전화번호 변경</label>
                 </div>
                 <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> 변경사항 저장 </button>
-            </form>
+            </form> 
         )
     }
 }

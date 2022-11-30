@@ -32,7 +32,7 @@ function Files({files, createdId}) {
                                 <input type={"image"} src={require("../Icon/remove.png").default} alt={"icon"}
                                     style={{width:"20px", height:"20px", objectFit: "fill", verticalAlign: "middle", marginLeft: "10px"}}
                                     onClick={() => {deleteFile(file.id, file.origin_name)}} />
-                            }
+                            } 
                             {isLogin &&
                                 <input type={"image"} src={require("../Icon/download.png").default} alt={"icon"}
                                     style={{width:"20px", height:"20px", objectFit: "fill", verticalAlign: "middle", marginLeft: "10px"}}

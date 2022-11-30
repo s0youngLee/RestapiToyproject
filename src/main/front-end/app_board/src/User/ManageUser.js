@@ -38,7 +38,6 @@ function UserManage(){
     };
 
     function SaveAll(){
-        // let check = true;
         try{
             usersPerPage.map((origin, index) => {
                 if(!_.isEqual(origin.auth, editList[index].auth)){
@@ -71,9 +70,9 @@ function UserManage(){
                     )
                 })}
                 <button onClick={() => window.location.href="/mypage"}
-                        className="w3-button w3-border w3-round-xlarge w3-small w3-hover-deep-purple"> Go to mypage →</button>
+                        className="w3-button w3-border w3-round-xlarge w3-small w3-hover-deep-purple">내 정보</button>
                 <button onClick={() => SaveAll()}
-                        className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal">Save All</button>
+                        className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal">모두 저장</button>
                 <br/>
                 <Pagination
                     activePage={currentPage} 

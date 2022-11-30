@@ -36,12 +36,12 @@ function CategoryRegister(){
 
         <div className="div-box">
             <form onSubmit={addCategory}>
-                    <b style={{ fontSize: "40px"}}> Add Category </b> <hr/>
+                    <b style={{ fontSize: "40px"}}> 새 카테고리 </b> <hr/>
                     <input type={"text"} placeholder="Category ID" onChange={addId} required></input> <br/>
                     <input type={"text"} placeholder="Category Name" onChange={addName} required></input> <br/>
-                    <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > Add </button>
+                    <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > 등록 </button>
                     <button onClick={() => {window.location.href='/category'}} 
-                            className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red"> Back </button>
+                            className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red"> 뒤로가기 </button>
             </form>
         </div>
     )
