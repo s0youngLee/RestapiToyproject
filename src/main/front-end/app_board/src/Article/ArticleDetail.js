@@ -6,21 +6,24 @@ import Comment from "../Comment/Comment";
 import Files from './FileForm';
 import ArticleEditForm from './ArticleEdit'; 
 import PageNotFound from '../PageNotFound';
+import { useLocation } from 'react-router-dom';
 
 function ArticleDeatil(){
     const [articleDetailData, setArticleDetailData] = useState();
-    const [articleDetail, setArticleDetail] = useState();
+
+    const currentloaction = useLocation();
+    useEffect(() => {
+        console.log(currentloaction);
+    }, [currentloaction]);
 
     useEffect(() => {
         if(_.isEmpty(articleDetailData)){
             FetchWithId(articleDetailData, setArticleDetailData, "article", 1);
-        }else {
-            setArticleDetail(articleDetailData);
         }
-    }, [articleDetailData, articleDetail]);
+    }, [articleDetailData]);
 
-    if(_.isEmpty(articleDetail)) { return <div style={{marginTop : "100px"}}> Loading .. </div>}
-    else { return <ArticleDetailData data={articleDetail} />; }
+    if(_.isEmpty(articleDetailData)) { return <div style={{marginTop : "100px"}}> Loading .. </div>}
+    else { return <ArticleDetailData data={articleDetailData} />; }
 }
 
 function ArticleDetailData({data}) {

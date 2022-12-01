@@ -1,21 +1,22 @@
 import { useState, useEffect } from "react";
 import _ from 'lodash';
-import {Link} from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
 import { Delete, FetchWithoutId }from '../func';
 
 function CategoryDeatil () {
-    const [categoryList, setCategoryList] = useState();
     const [categoryData, setCategoryData] = useState();
+    const currentloaction = useLocation();
+    useEffect(() => {
+        console.log(currentloaction);
+    }, [currentloaction]); 
 
     useEffect(() => {
         if(_.isEmpty(categoryData)){
             FetchWithoutId(categoryData, setCategoryData, "category");
-        }else{
-            setCategoryList(categoryData);
         }
     }, [categoryData]);
 
-    if(_.isEmpty(categoryList)){ return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div>}
+    if(_.isEmpty(categoryData)){ return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div>}
     else {
         return (
             <div className='div-box' style={{marginLeft: "10px"}}>
@@ -23,11 +24,11 @@ function CategoryDeatil () {
                 <Link to={`/category/add`} className="none">
                     <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> 새 카테고리 </button>
                 </Link>
-                <Link to={`/board/category/${categoryList.splice(0,1)[0].id}`} className="none">
+                <Link to={`/board/category/${categoryData.splice(0,1)[0].id}`} className="none">
                     <button className='w3-button w3-border w3-round-xlarge w3-small  w3-hover-deep-purple'> Default로 이동 </button>
                 </Link>
                 <hr/>
-                {categoryList?.map((category, index) => {
+                {categoryData?.map((category, index) => {
                     return <li key={index}><CategoryDeatilData data={category} /></li>
                 })}
             </div>

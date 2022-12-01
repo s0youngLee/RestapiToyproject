@@ -3,10 +3,16 @@ import _ from "lodash";
 import { Delete, FetchWithoutId } from "../func";
 import axios from "axios";
 import Pagination from "react-js-pagination";
+import { useLocation } from "react-router-dom";
 
 function UserManage(){
     const [manage, setManage] = useState();
     const [userData, setUserData] = useState();
+    
+    const currentloaction = useLocation();
+    useEffect(() => {
+        console.log(currentloaction);
+    }, [currentloaction]);
 
     useEffect(() => {
         if(_.isEmpty(userData)){

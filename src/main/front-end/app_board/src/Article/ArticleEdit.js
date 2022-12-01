@@ -6,6 +6,7 @@ import _ from "lodash";
 function ArticleEditForm({articleDetail, handleClose}){
     const [categoryList, setCategoryList] = useState();
     const [categoryData, setCategoryData] = useState();
+
     
     useEffect(() => {
         if(_.isEmpty(categoryData)){

@@ -6,18 +6,15 @@ import { FetchWithoutId, isAdmin, isLogin } from "./func";
 import _ from "lodash";
 
 function Bar() {
-    const [categoryList, setCategoryList] = useState();
     const [categoryData, setCategorydata] = useState();
 
     useEffect(() => {
         if(_.isEmpty(categoryData)){
             FetchWithoutId(categoryData, setCategorydata, "category");
-        }else{
-            setCategoryList(categoryData);
         }
     },[categoryData]);
 
-    if(categoryList)
+    if(categoryData)
     return ( 
         <>
         <div className="bar-top">
@@ -30,7 +27,7 @@ function Bar() {
                     <div className="w3-dropdown-hover">
                         <button className="w3-button w3-hover-deep-purple" style={{marginLeft: "0"}}>Category</button>
                         <div className="w3-dropdown-content w3-bar-block barcontent">
-                            {categoryList?.map((category, index) => (
+                            {categoryData?.map((category, index) => (
                                 <Link className="none" key={index} to={`/board/${category.name}/${category.id}`}>
                                     <button className="w3-bar-item w3-button w3-light-gray w3-hover-deep-purple w3-border"> {category.name} </button>
                                 </Link>

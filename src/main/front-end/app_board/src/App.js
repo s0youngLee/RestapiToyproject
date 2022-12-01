@@ -32,7 +32,7 @@ function App() {
     const [cookies, ,removeCookies] = useCookies();
     useEffect(() => {
         Cookie(cookies, removeCookies);
-    }, [cookies, removeCookies])
+    }, [cookies, removeCookies]);
 
     useEffect(() => {
         if(_.isEqual(USER.lastAccess, "true") && _.isEqual(localStorage.getItem("dateAlert"), "false")){
@@ -48,7 +48,7 @@ function App() {
                 window.location.href = "/login";
             }
         }
-    }, [isLogin]);
+    }, []);
     
     if(_.isEmpty(USER)){
         return (

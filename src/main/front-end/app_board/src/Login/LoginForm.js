@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useState, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { useState, useCallback, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import _ from "lodash";
 import "../App.css";
 import { useCookies } from "react-cookie";
@@ -10,6 +10,11 @@ function LoginForm(){
     const remember = document.getElementsByName('remember-me');
     const [id, setId] = useState();
     const [pw, setPw] = useState();
+    
+    const currentloaction = useLocation();
+    useEffect(() => {
+        console.log(currentloaction);
+    }, [currentloaction]);
 
     const inputId = useCallback(e => {
         setId(e.target.value);

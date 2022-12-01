@@ -3,13 +3,18 @@ import axios from "axios";
 import _ from "lodash";
 import { getUrlId, ifError } from "../func";
 import ArticleList from "./ArticleList";
+import { useLocation } from "react-router-dom";
 
 function ArticleSearchList() {
     const searchParam = useMemo(() => getUrlId(1).split("-"), []);
-    
     const decodeParam = decodeURI(searchParam[2]);
-
     const [searchResults, setSearchResults] = useState({ data : {} });
+
+    
+    const currentloaction = useLocation();
+    useEffect(() => {
+        console.log(currentloaction);
+    }, [currentloaction]);
     
     useEffect(() => {
         axios.get(`/article/search/${searchParam[0]}-${searchParam[1]}/${searchParam[2]}`)

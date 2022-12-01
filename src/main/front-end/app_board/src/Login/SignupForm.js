@@ -1,5 +1,5 @@
-import { useState, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { useState, useCallback, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import "../App.css";
 import { autoHypenTel } from "../func";
@@ -13,6 +13,11 @@ function SignupForm(){
     const [nickname, setNickName] = useState("");
     const [realName, setRealName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
+    
+    const currentloaction = useLocation();
+    useEffect(() => {
+        console.log(currentloaction);
+    }, [currentloaction]);
 
     const inputEmail = useCallback(e => {
         setEmail(e.target.value);

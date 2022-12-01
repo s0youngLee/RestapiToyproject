@@ -2,11 +2,17 @@ import axios from "axios";
 import { useState, useCallback, useEffect } from "react";
 import { FetchWithId } from "../func";
 import _ from 'lodash';
+import { useLocation } from "react-router-dom";
 
 
 function CategoryEdit(){
     const [category, setCategory] = useState();
     const [categoryData, setCategoryData] = useState();
+    
+    const currentloaction = useLocation();
+    useEffect(() => {
+        console.log(currentloaction);
+    }, [currentloaction]);
 
     useEffect(() => {
         if(_.isEmpty(categoryData)){

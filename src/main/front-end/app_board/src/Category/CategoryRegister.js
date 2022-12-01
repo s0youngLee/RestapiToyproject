@@ -1,9 +1,15 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 function CategoryRegister(){    
     const [id, setId] = useState("");
     const [name, setName] = useState("");
+    
+    const currentloaction = useLocation();
+    useEffect(() => {
+        console.log(currentloaction);
+    }, [currentloaction]);
 
     const addId = useCallback(e => {
         setId(e.target.value);

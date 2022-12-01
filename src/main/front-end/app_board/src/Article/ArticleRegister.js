@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useMemo } from 'react';
 import { getUrlId, FetchWithoutId, USER, ifError } from "../func";
 import axios from "axios";
 import _ from 'lodash';
+import { useLocation } from 'react-router-dom';
 
 function ArticleRegister(){
     const urlId = getUrlId(1);
@@ -9,6 +10,11 @@ function ArticleRegister(){
     const [content, setContent] = useState("");
     const [selected, setSelected] = useState(urlId);
 
+    
+    const currentloaction = useLocation();
+    useEffect(() => {
+        console.log(currentloaction);
+    }, [currentloaction]);
 
     const [categoryList, setCategoryList] = useState();
     const [categoryData, setCategoryData] = useState();
