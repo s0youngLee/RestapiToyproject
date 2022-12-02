@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import MyInfoEditForm from "./MyInfoEditForm";
-import { isAdmin, FetchWithoutId } from "../func";
+import { isAdmin, FetchWithoutId, pageviewCount } from "../func";
 import MyArticles from "./MyArticles";
 import MyComments from "./MyComments";
 import axios from "axios";
@@ -12,10 +12,10 @@ function MyPage(){
     const [visibleArticle, setVisibleArticle] = useState(true);
     const [visibleComment, setVisibleComment] = useState(false);
     
-    const currentloaction = useLocation();
+    const currentlocation = useLocation();
     useEffect(() => {
-        console.log(currentloaction);
-    }, [currentloaction]);
+        pageviewCount(currentlocation.pathname, "user page");
+    }, [currentlocation]);
     
     let resource = useMemo(() => { return new Blob(); },[])
     

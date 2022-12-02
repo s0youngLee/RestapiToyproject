@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import _ from 'lodash';
-import { FetchWithoutId } from '../func';
+import { FetchWithoutId, pageviewCount } from '../func';
 import ArticleList from './ArticleList';
 import '../App.css'
 import { useLocation } from "react-router-dom";
@@ -9,10 +9,10 @@ function Board(){
     const [article, setArticle] = useState();
     const [articleData, setArticleData] = useState();
 
-    const currentloaction = useLocation();
+    const currentlocation = useLocation();
     useEffect(() => {
-        console.log(currentloaction);
-    }, [currentloaction]);
+        pageviewCount(currentlocation.pathname, "board");
+    }, [currentlocation]);
 
     useEffect(() => {
         if(_.isEmpty(articleData)){

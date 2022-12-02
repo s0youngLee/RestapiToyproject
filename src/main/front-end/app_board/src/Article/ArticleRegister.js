@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
-import { getUrlId, FetchWithoutId, USER, ifError } from "../func";
+import { getUrlId, FetchWithoutId, USER, ifError, pageviewCount } from "../func";
 import axios from "axios";
 import _ from 'lodash';
 import { useLocation } from 'react-router-dom';
@@ -11,10 +11,10 @@ function ArticleRegister(){
     const [selected, setSelected] = useState(urlId);
 
     
-    const currentloaction = useLocation();
+    const currentlocation = useLocation();
     useEffect(() => {
-        console.log(currentloaction);
-    }, [currentloaction]);
+        pageviewCount(currentlocation.pathname, "article register");
+    }, [currentlocation]);
 
     const [categoryList, setCategoryList] = useState();
     const [categoryData, setCategoryData] = useState();

@@ -1,15 +1,16 @@
 import { useState, useCallback, useEffect } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import { pageviewCount } from "../func";
 
 function CategoryRegister(){    
     const [id, setId] = useState("");
     const [name, setName] = useState("");
     
-    const currentloaction = useLocation();
+    const currentlocation = useLocation();
     useEffect(() => {
-        console.log(currentloaction);
-    }, [currentloaction]);
+        pageviewCount(currentlocation.pathname, "category register");
+    }, [currentlocation]);
 
     const addId = useCallback(e => {
         setId(e.target.value);

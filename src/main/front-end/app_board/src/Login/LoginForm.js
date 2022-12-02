@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import _ from "lodash";
 import "../App.css";
 import { useCookies } from "react-cookie";
+import { pageviewCount } from "../func";
 
 function LoginForm(){
     const [cookies, ,] = useCookies();
@@ -11,10 +12,10 @@ function LoginForm(){
     const [id, setId] = useState();
     const [pw, setPw] = useState();
     
-    const currentloaction = useLocation();
+    const currentlocation = useLocation();
     useEffect(() => {
-        console.log(currentloaction);
-    }, [currentloaction]);
+        pageviewCount(currentlocation.pathname, "login");
+    }, [currentlocation]);
 
     const inputId = useCallback(e => {
         setId(e.target.value);

@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import "../App.css";
-import { autoHypenTel } from "../func";
+import { autoHypenTel, pageviewCount } from "../func";
 import _ from "lodash";
 
 
@@ -14,10 +14,10 @@ function SignupForm(){
     const [realName, setRealName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     
-    const currentloaction = useLocation();
+    const currentlocation = useLocation();
     useEffect(() => {
-        console.log(currentloaction);
-    }, [currentloaction]);
+        pageviewCount(currentlocation.pathname, "signup");
+    }, [currentlocation]);
 
     const inputEmail = useCallback(e => {
         setEmail(e.target.value);

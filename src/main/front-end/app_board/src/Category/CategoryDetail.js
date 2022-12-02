@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import _ from 'lodash';
 import {Link, useLocation} from 'react-router-dom';
-import { Delete, FetchWithoutId }from '../func';
+import { Delete, FetchWithoutId, pageviewCount }from '../func';
 
 function CategoryDeatil () {
     const [categoryData, setCategoryData] = useState();
-    const currentloaction = useLocation();
+    const currentlocation = useLocation();
     useEffect(() => {
-        console.log(currentloaction);
-    }, [currentloaction]); 
+        pageviewCount(currentlocation.pathname, "category setting");
+    }, [currentlocation]); 
 
     useEffect(() => {
         if(_.isEmpty(categoryData)){

@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { FetchWithId, Delete, canRemove, Download, isPublisher, isLogin } from '../func';
+import { FetchWithId, Delete, canRemove, Download, isPublisher, isLogin, pageviewCount } from '../func';
 import _ from 'lodash';
 import * as Modal from 'react-modal';
 import Comment from "../Comment/Comment";
@@ -11,10 +11,10 @@ import { useLocation } from 'react-router-dom';
 function ArticleDeatil(){
     const [articleDetailData, setArticleDetailData] = useState();
 
-    const currentloaction = useLocation();
+    const currentlocation = useLocation();
     useEffect(() => {
-        console.log(currentloaction);
-    }, [currentloaction]);
+        pageviewCount(currentlocation.pathname, "article detail");
+    }, [currentlocation]);
 
     useEffect(() => {
         if(_.isEmpty(articleDetailData)){

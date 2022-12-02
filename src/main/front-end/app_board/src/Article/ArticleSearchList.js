@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import _ from "lodash";
-import { getUrlId, ifError } from "../func";
+import { getUrlId, ifError, pageviewCount } from "../func";
 import ArticleList from "./ArticleList";
 import { useLocation } from "react-router-dom";
 
@@ -11,10 +11,10 @@ function ArticleSearchList() {
     const [searchResults, setSearchResults] = useState({ data : {} });
 
     
-    const currentloaction = useLocation();
+    const currentlocation = useLocation();
     useEffect(() => {
-        console.log(currentloaction);
-    }, [currentloaction]);
+        pageviewCount("/search/:parameter", "search");
+    }, [currentlocation]);
     
     useEffect(() => {
         axios.get(`/article/search/${searchParam[0]}-${searchParam[1]}/${searchParam[2]}`)

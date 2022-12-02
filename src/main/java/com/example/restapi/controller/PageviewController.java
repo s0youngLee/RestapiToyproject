@@ -1,24 +1,31 @@
 package com.example.restapi.controller;
 
-import com.example.restapi.model.entity.PageviewCount;
 import com.example.restapi.model.network.request.PageviewCountRequest;
-import com.example.restapi.repository.PageviewRepository;
+import com.example.restapi.model.network.response.PageviewCountResponseDto;
+import com.example.restapi.service.PageviewService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("/pageview")
-public class PageviewController {
-    private final PageviewRepository pageviewRepository;
+import java.util.Date;
+import java.util.List;
 
-    public PageviewController(PageviewRepository pageviewRepository) {
-        this.pageviewRepository = pageviewRepository;
+@RestController
+@RequestMapping("/pageview")
+public class PageviewController {
+    private final PageviewService pageviewService;
+
+    public PageviewController(PageviewService pageviewService) {
+        this.pageviewService = pageviewService;
     }
 
-    @PostMapping("/{url}")
-    public ResponseEntity<Integer> updatePageview(@RequestBody PageviewCountRequest request, @PathVariable String url){
-        PageviewCount page = new PageviewCount(request.getPageUrl(), request.getPageName());
-        page.update();
-        pageviewRepository.save(page);
-        return ResponseEntity.noContent().build();
+    @PostMapping("")
+    public ResponseEntity<Integer> updatePageview(@RequestBody PageviewCountRequest request){
+        return pageviewService.updatePageview(request);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<PageviewCountResponseDto>> todayCount(){
+        return pageviewService.getCountByDate();
     }
 }

@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import _ from 'lodash';
 import { useLocation } from "react-router-dom";
 import ArticleList from '../Article/ArticleList';
-import { FetchWithId, getUrlId, ifError, suggestLogin } from "../func";
-import axios from "axios";
+import { FetchWithId, getUrlId, pageviewCount, suggestLogin } from "../func";
 
 
 function ArticlesByCategory(){
@@ -11,7 +10,7 @@ function ArticlesByCategory(){
     const [articleByCategory, setArticleByCategory] = useState();
     const [categoryData, setCategoryData] = useState();
     const [articleByCategoryData, setArticleByCategoryData] = useState();
-    const currentloaction = useLocation();
+    const currentlocation = useLocation();
 
     useEffect(() => {
         if(_.isEmpty(articleByCategoryData) && !_.isEqual(articleByCategoryData, [])){
@@ -22,20 +21,10 @@ function ArticlesByCategory(){
     }, [categoryData, articleByCategoryData]);
 
     useEffect(() => {
+        pageviewCount(currentlocation.pathname, category);
         setCategoryData(undefined);
         setArticleByCategoryData(undefined);
-        console.log(currentloaction);
-        pageviewCount();
-    },[currentloaction]);
-
-    function pageviewCount(){
-        axios.post(`/pageview/${("{"+currentloaction.pathname+"}")}`, {
-            page_url : 
-        })
-        .catch((e) => {
-            ifError(e);
-        });
-    }
+    },[currentlocation, category]);
     
     if(_.isEmpty(category)) { return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div> }
     else {

@@ -123,6 +123,16 @@ export function Delete(dataName, dataId){
     }
 }
 
+export function pageviewCount(currentlocation, pagename){
+    axios.post(`/pageview`, {
+        page_url : currentlocation,
+        page_name : pagename
+    })
+    .catch((e) => {
+        ifError(e);
+    });
+}
+
 // DATA URL Version
 // export function Download(resource, dataname, id, filename){
 //     axios.get(`/${dataname}/${id}`, {responseType: "blob"})
