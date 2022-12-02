@@ -25,12 +25,14 @@ public class PageviewService {
 
     public ResponseEntity<Integer> updatePageview(PageviewCountRequest request) {
         PageviewCount page;
-        if(pageviewRepository.findByPageUrl(request.getPageUrl()) != null){
-            page = pageviewRepository.findByPageUrl(request.getPageUrl());
+        if(pageviewRepository.existsById(request.getPageUrl())){
+            page = pageviewRepository.getReferenceById(request.getPageUrl());
             page.update();
         }else{
             page = new PageviewCount(request.getPageUrl(), request.getPageName());
         }
+        log.info("Page info : {} , {}, {}", page.getPageName(), page.getCount(), page.getDate());
+//        page.update();
         pageviewRepository.save(page);
         return ResponseEntity.noContent().build();
     }

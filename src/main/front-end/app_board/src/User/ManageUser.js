@@ -136,7 +136,7 @@ function EditUser({index, userinfo, editList}){
     }
 
     return (
-        <li style={{padding: "5px"}} onClick={() => setVisible(!visible)}>
+        <li className="list" style={{padding: "5px"}} onClick={() => setVisible(!visible)}>
             <p className="p-user"> 
                 번호 : <b className="b-user">{userinfo.code}</b> <br/>
                 아이디 : <b className="b-user"> {userinfo.email} </b> <br/>

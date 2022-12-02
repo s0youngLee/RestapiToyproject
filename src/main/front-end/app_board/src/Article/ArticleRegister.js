@@ -11,10 +11,10 @@ function ArticleRegister(){
     const [selected, setSelected] = useState(urlId);
 
     
-    const currentlocation = useLocation();
-    useEffect(() => {
-        pageviewCount(currentlocation.pathname, "article register");
-    }, [currentlocation]);
+    // const currentlocation = useLocation();
+    // useEffect(() => {
+    //     pageviewCount(currentlocation.pathname, "article register");
+    // }, [currentlocation]);
 
     const [categoryList, setCategoryList] = useState();
     const [categoryData, setCategoryData] = useState();
@@ -87,6 +87,7 @@ function ArticleRegister(){
                     <b style={{ fontSize: "30px"}}> 새 게시물 </b> <hr/>
                     <b> 카테고리 : </b>
                     <select onChange={handleSelect} value={selected}>
+                        <option value={null}>선택안함</option>
                         {Array.from(categoryList)?.map((category, index) => {
                             return <option key={index} value={category.id}>{category.name}</option>;
                         })}

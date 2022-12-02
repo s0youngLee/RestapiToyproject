@@ -202,6 +202,7 @@ function ArticleEditForm({articleDetail, handleClose}){
                     <div className="modal-box">
                         <b style={{fontSize: "small"}}> 카테고리 : </b>
                         <select onChange={handleSelect} value={selected}>
+                            <option value={null}>선택안함</option> 
                             {categoryList?.map((category, index) => {
                                 return <option key={index} value={category.id}>{category.name}</option>;
                             })}

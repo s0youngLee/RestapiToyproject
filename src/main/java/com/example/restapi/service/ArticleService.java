@@ -52,12 +52,13 @@ public class ArticleService {
 
     @Transactional
     public ResponseEntity<ArticleResponseDto> register(List<MultipartFile> uploadFiles, ArticleRequest request) throws Exception {
+        log.info(request.getCategoryId());
         Article article = Article.builder()
             .title(request.getTitle())
             .content(request.getContent())
             .createdAt(LocalDateTime.now())
             .finalEditDate(LocalDateTime.now())
-            .category(categoryRepository.getReferenceById(request.getCategoryId()))
+            .category(request.getCategoryId() != null ? categoryRepository.getReferenceById(request.getCategoryId()) : null)
             .visitCnt(0)
             .comment(new ArrayList<>())
             .files(new ArrayList<>())
@@ -100,10 +101,11 @@ public class ArticleService {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    article.setCategory(Category.builder()
-                        .id(request.getCategoryId())
-                        .name(categoryRepository.findById(request.getCategoryId()).orElseThrow().getName())
-                        .build());
+                    article.setCategory(request.getCategoryId() != null ? categoryRepository.getReferenceById(request.getCategoryId()) : null);
+//                            Category.builder()
+//                        .id(request.getCategoryId())
+//                        .name(categoryRepository.findById(request.getCategoryId()).orElseThrow().getName())
+//                        .build());
                     return article;
                 })
                 .map(articleRepository::save)
@@ -214,8 +216,8 @@ public class ArticleService {
                 .title(article.getTitle())
                 .content(article.getContent())
                 .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
-                .categoryName(article.getCategory().getName())
-                .categoryId(article.getCategory().getId())
+                .categoryName(article.getCategory() != null ? article.getCategory().getName() : null)
+                .categoryId(article.getCategory() != null ? article.getCategory().getId() : null)
                 .visitCnt(article.getVisitCnt())
                 .finalEditDate(article.getFinalEditDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")))
                 .comment(commentService.getList(article))
@@ -233,7 +235,7 @@ public class ArticleService {
             .id(article.getId())
             .title(article.getTitle())
             .finalEditDate(article.getFinalEditDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-            .categoryName(article.getCategory().getName())
+            .categoryName(article.getCategory() != null ? article.getCategory().getName() : "선택 안함")
             .createdAt(article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
             .visitCnt(article.getVisitCnt())
             .commentCnt(article.getComment().size())

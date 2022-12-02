@@ -12,10 +12,10 @@ function LoginForm(){
     const [id, setId] = useState();
     const [pw, setPw] = useState();
     
-    const currentlocation = useLocation();
-    useEffect(() => {
-        pageviewCount(currentlocation.pathname, "login");
-    }, [currentlocation]);
+    // const currentlocation = useLocation();
+    // useEffect(() => {
+    //     pageviewCount(currentlocation.pathname, "login");
+    // }, [currentlocation]);
 
     const inputId = useCallback(e => {
         setId(e.target.value);
@@ -88,9 +88,10 @@ function LoginForm(){
             </p>
             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" type="submit" 
                     onClick={userlogin} >로그인</button>
-            <Link className="none" to="/login/signup">
-                <button className="w3-button w3-round-xlarge w3-small w3-hover-deep-purple w3-border">회원 가입</button>
-            </Link>
+            {/* <Link className="none" to="/login/signup"> */}
+                <button className="w3-button w3-round-xlarge w3-small w3-hover-deep-purple w3-border"
+                        onClick={() => window.location.href="/login/signup"}>회원 가입</button>
+            {/* </Link> */}
         </form> 
     </div>
     )

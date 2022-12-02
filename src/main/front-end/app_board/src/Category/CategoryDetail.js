@@ -5,10 +5,10 @@ import { Delete, FetchWithoutId, pageviewCount }from '../func';
 
 function CategoryDeatil () {
     const [categoryData, setCategoryData] = useState();
-    const currentlocation = useLocation();
-    useEffect(() => {
-        pageviewCount(currentlocation.pathname, "category setting");
-    }, [currentlocation]); 
+    // const currentlocation = useLocation();
+    // useEffect(() => {
+    //     pageviewCount(currentlocation.pathname, "category setting");
+    // }, [currentlocation]); 
 
     useEffect(() => {
         if(_.isEmpty(categoryData)){
@@ -29,7 +29,7 @@ function CategoryDeatil () {
                 </Link>
                 <hr/>
                 {categoryData?.map((category, index) => {
-                    return <li key={index}><CategoryDeatilData data={category} /></li>
+                    return <li className="list" key={index}><CategoryDeatilData data={category} /></li>
                 })}
             </div>
         ) 

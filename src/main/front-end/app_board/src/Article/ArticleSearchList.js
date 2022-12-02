@@ -11,10 +11,10 @@ function ArticleSearchList() {
     const [searchResults, setSearchResults] = useState({ data : {} });
 
     
-    const currentlocation = useLocation();
-    useEffect(() => {
-        pageviewCount("/search/:parameter", "search");
-    }, [currentlocation]);
+    // const currentlocation = useLocation();
+    // useEffect(() => {
+    //     pageviewCount("/search/:parameter", "search");
+    // }, [currentlocation]);
     
     useEffect(() => {
         axios.get(`/article/search/${searchParam[0]}-${searchParam[1]}/${searchParam[2]}`)

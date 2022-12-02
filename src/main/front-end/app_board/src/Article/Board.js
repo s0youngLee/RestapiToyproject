@@ -9,10 +9,10 @@ function Board(){
     const [article, setArticle] = useState();
     const [articleData, setArticleData] = useState();
 
-    const currentlocation = useLocation();
-    useEffect(() => {
-        pageviewCount(currentlocation.pathname, "board");
-    }, [currentlocation]);
+    // const currentlocation = useLocation();
+    // useEffect(() => {
+    //     pageviewCount(currentlocation.pathname, "board");
+    // }, [currentlocation]);
 
     useEffect(() => {
         if(_.isEmpty(articleData)){

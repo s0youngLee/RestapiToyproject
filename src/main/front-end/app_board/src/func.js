@@ -5,7 +5,7 @@ export function Cookie(cookies, removeCookies){
     try{
         if(!_.isEmpty(cookies.user)){
             if(_.isEqual(localStorage.getItem("dateAlert"), "false")){
-                console.log("Don't Remember");
+                console.log("Not Remember");
                 sessionStorage.setItem("userinfo", cookies.user);
                 removeCookies("user");
                 window.location.reload();
@@ -72,7 +72,7 @@ export function suggestLogin(){
     if(isLogin){
         const categoryId = getUrlId(1);
         if(_.isEqual(Number(categoryId), NaN)){
-            window.location.href=`/board/add/0`;
+            window.location.href=`/board/add/${null}`;
         }else{
             window.location.href=`/board/add/${categoryId}`;
         }

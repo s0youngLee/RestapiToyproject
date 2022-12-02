@@ -14,10 +14,10 @@ function SignupForm(){
     const [realName, setRealName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     
-    const currentlocation = useLocation();
-    useEffect(() => {
-        pageviewCount(currentlocation.pathname, "signup");
-    }, [currentlocation]);
+    // const currentlocation = useLocation();
+    // useEffect(() => {
+    //     pageviewCount(currentlocation.pathname, "signup");
+    // }, [currentlocation]);
 
     const inputEmail = useCallback(e => {
         setEmail(e.target.value);

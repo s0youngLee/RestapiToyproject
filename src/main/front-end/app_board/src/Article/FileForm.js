@@ -26,7 +26,7 @@ function Files({files, createdId}) {
             <div style={{textAlign: "left"}}>
                 {Array.from(files).map((file, index) => {
                     return (
-                        <li key={index} style={{margin: "0", marginTop: "5px", padding: "5px"}}>
+                        <li className="list" key={index} style={{margin: "0", marginTop: "5px", padding: "5px"}}>
                             {file.origin_name}  <br/> ( {Number(file.file_size).toFixed(2)} MB )
                             { canRemove(createdId) && 
                                 <input type={"image"} src={require("../Icon/remove.png").default} alt={"icon"}

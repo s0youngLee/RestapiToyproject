@@ -13,7 +13,7 @@ function ArticleDeatil(){
 
     const currentlocation = useLocation();
     useEffect(() => {
-        pageviewCount(currentlocation.pathname, "article detail");
+        pageviewCount(currentlocation.pathname, "게시물 조회");
     }, [currentlocation]);
 
     useEffect(() => {

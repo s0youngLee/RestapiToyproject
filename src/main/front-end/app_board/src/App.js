@@ -31,6 +31,7 @@ import axios from "axios";
 
 function App() {
     const [cookies, ,removeCookies] = useCookies();
+    
     useEffect(() => {
         Cookie(cookies, removeCookies);
     }, [cookies, removeCookies]);
@@ -61,7 +62,6 @@ function App() {
     
     return(
         <Router>
-            <Bar/>
             <Routes>
                 <Route exact path="/" element={<Home />} />
 

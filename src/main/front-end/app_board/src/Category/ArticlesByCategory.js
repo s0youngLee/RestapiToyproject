@@ -6,11 +6,11 @@ import { FetchWithId, getUrlId, pageviewCount, suggestLogin } from "../func";
 
 
 function ArticlesByCategory(){
-    const category = getUrlId(2);
+    const category = decodeURI(getUrlId(2));
     const [articleByCategory, setArticleByCategory] = useState();
     const [categoryData, setCategoryData] = useState();
     const [articleByCategoryData, setArticleByCategoryData] = useState();
-    const currentlocation = useLocation();
+    // const currentlocation = useLocation();
 
     useEffect(() => {
         if(_.isEmpty(articleByCategoryData) && !_.isEqual(articleByCategoryData, [])){
@@ -21,16 +21,16 @@ function ArticlesByCategory(){
     }, [categoryData, articleByCategoryData]);
 
     useEffect(() => {
-        pageviewCount(currentlocation.pathname, category);
+        // pageviewCount(currentlocation.pathname, category);
         setCategoryData(undefined);
         setArticleByCategoryData(undefined);
-    },[currentlocation, category]);
+    },[category]);
     
     if(_.isEmpty(category)) { return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div> }
     else {
     return (
         <div className='div-box'>
-            <b style={{ fontSize: "30px"}}> 카테고리 : {category} </b>
+            <b style={{ fontSize: "30px"}}> {category} </b>
             {_.isEmpty(articleByCategory) && 
                 <div> 
                     <b style={{fontSize: "30px"}}> No Articles </b>
