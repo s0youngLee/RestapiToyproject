@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
 import _ from 'lodash';
-import {Link, useLocation} from 'react-router-dom';
-import { Delete, FetchWithoutId, pageviewCount }from '../func';
+import { Link } from 'react-router-dom';
+import { Delete, FetchWithoutId }from '../func';
 
 function CategoryDeatil () {
     const [categoryData, setCategoryData] = useState();
-    // const currentlocation = useLocation();
-    // useEffect(() => {
-    //     pageviewCount(currentlocation.pathname, "category setting");
-    // }, [currentlocation]); 
 
     useEffect(() => {
         if(_.isEmpty(categoryData)){
@@ -24,9 +20,6 @@ function CategoryDeatil () {
                 <Link to={`/category/add`} className="none">
                     <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> 새 카테고리 </button>
                 </Link>
-                <Link to={`/board/category/${categoryData.splice(0,1)[0].id}`} className="none">
-                    <button className='w3-button w3-border w3-round-xlarge w3-small  w3-hover-deep-purple'> Default로 이동 </button>
-                </Link>
                 <hr/>
                 {categoryData?.map((category, index) => {
                     return <li className="list" key={index}><CategoryDeatilData data={category} /></li>
@@ -39,10 +32,9 @@ function CategoryDeatil () {
 function CategoryDeatilData({data}) {
     return (
         <div style={{textAlign: "left"}}>
-            {/* <b> ID : </b> <span> {data.id} </span><br/> */}
             <b> 카테고리 명 : </b><span> {data.name} </span><br/>
             <b> 게시글 개수 : {data.article_cnt} ea </b><br/>
-            <Link to={`/board/category/${data.id}`} className="none">
+            <Link to={`/board/${data.name}/${data.id}`} className="none">
                 <button className='w3-button w3-border w3-round-xlarge w3-small  w3-hover-deep-purple'> {data.name}(으)로 이동 </button>
             </Link>
             <Link to={`/category/edit/${data.id}`} className="none">

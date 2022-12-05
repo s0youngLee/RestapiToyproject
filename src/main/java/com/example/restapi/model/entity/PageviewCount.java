@@ -9,11 +9,11 @@ import java.sql.Date;
 @Entity
 @Table(name = "pageview_count")
 public class PageviewCount {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "id")
-//    private Integer id;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
+
     @Column(name = "page_url")
     private String pageUrl;
 

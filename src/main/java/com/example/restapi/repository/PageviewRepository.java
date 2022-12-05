@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface PageviewRepository extends JpaRepository<PageviewCount, String> {
-    PageviewCount findByPageUrl(String pageUrl);
+    List<PageviewCount> findByPageUrl(String pageUrl);
     List<PageviewCount> findAllByDate(Date date);
 }

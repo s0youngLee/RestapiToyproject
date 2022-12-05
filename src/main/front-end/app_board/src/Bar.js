@@ -81,11 +81,10 @@ function BarHiddenItems({categoryData}){
         <>
             <li> <button className="w3-bar-item w3-button w3-hover-deep-purple"  style={{width: "100%", textAlign: "left"}}
                     onClick={() => {window.location.href = '/board'}}>게시판</button> </li>
-            <li >
+            <li>
                 <button className="w3-bar-item w3-button w3-hover-deep-purple" style={{width: "100%", textAlign: "left"}}
-                        onClick={() => setVisible(!visible)}>카테고리</button>
+                        onClick={() => setVisible(!visible)}>카테고리</button><br/>
                 {visible && <>
-                    <br/>
                     {categoryData?.map((category, index) => (
                         <><button key={index} className="w3-bar-item w3-button w3-hover-deep-purple" style={{width: "100%", textAlign: "left", fontSize: "13px"}}
                                 onClick={() => window.location.href=`/board/${category.name}/${category.id}`}> {category.name} </button><br/></>

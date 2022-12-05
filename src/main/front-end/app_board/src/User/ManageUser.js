@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import _ from "lodash";
-import { Delete, FetchWithoutId, pageviewCount } from "../func";
+import { Delete, FetchWithoutId, PageviewCount } from "../func";
 import axios from "axios";
 import Pagination from "react-js-pagination";
 import { useLocation } from "react-router-dom";
@@ -11,7 +11,7 @@ function UserManage(){
     
     const currentlocation = useLocation();
     useEffect(() => {
-        pageviewCount(currentlocation.pathname, "manage user");
+        PageviewCount(currentlocation.pathname, "manage user");
     }, [currentlocation]);
 
     useEffect(() => {

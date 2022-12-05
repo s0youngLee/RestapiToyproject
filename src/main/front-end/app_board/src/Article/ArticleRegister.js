@@ -1,24 +1,12 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
-import { getUrlId, FetchWithoutId, USER, ifError, pageviewCount } from "../func";
+import { getUrlId, FetchWithoutId, USER, ifError } from "../func";
 import axios from "axios";
 import _ from 'lodash';
-import { useLocation } from 'react-router-dom';
 
 function ArticleRegister(){
-    const urlId = getUrlId(1);
-    const [title, setTitle] = useState("");
-    const [content, setContent] = useState("");
-    const [selected, setSelected] = useState(urlId);
-
-    
-    // const currentlocation = useLocation();
-    // useEffect(() => {
-    //     pageviewCount(currentlocation.pathname, "article register");
-    // }, [currentlocation]);
-
     const [categoryList, setCategoryList] = useState();
     const [categoryData, setCategoryData] = useState();
-    
+        
     useEffect(() => {
         if(_.isEmpty(categoryData)){
             FetchWithoutId(categoryData, setCategoryData, "category");
@@ -26,24 +14,25 @@ function ArticleRegister(){
             setCategoryList(categoryData);
         }
     }, [categoryData]);
-    
+
+    const [writeData, setWriteData] = useState({
+        title : "",
+        content : "",
+        selected : getUrlId(1)
+    });
+
+    const onChangeData = (e) => {
+        setWriteData({
+            ...writeData,
+            [e.target.name]: e.target.value
+        });
+    };
+
     const formData = new FormData();
     const inputFile = document.getElementsByName("upfile");
     
     const fileName = useMemo(() => {return new Array("파일 선택")},[]);
     const [files, setFiles] = useState({data : {}});
-
-    const addTitle = useCallback(e => {
-        setTitle(e.target.value);
-    }, [])
-    
-    const addContent = useCallback(e => {
-        setContent(e.target.value);
-    }, [])
-
-    const handleSelect = (e) => {
-        setSelected(e.target.value);
-    };
 
     const uploadFile = useCallback((e) => {        
         if(!_.isEmpty(inputFile[0].files)){
@@ -63,10 +52,10 @@ function ArticleRegister(){
     const addArticle = (e) => {
         e.preventDefault();
         let data = {
-            title : title,
-            content : content,
+            title : writeData.title,
+            content : writeData.content,
             created_id : USER.nickname,
-            category_id : selected
+            category_id : writeData.selected
         }
         formData.append("article", new Blob([JSON.stringify(data)], {type: "application/json"}));
     
@@ -86,15 +75,15 @@ function ArticleRegister(){
                 <div className="div-box" style={{height: "55vh"}}>
                     <b style={{ fontSize: "30px"}}> 새 게시물 </b> <hr/>
                     <b> 카테고리 : </b>
-                    <select onChange={handleSelect} value={selected}>
+                    <select onChange={onChangeData} name="selected" value={writeData.selected}>
                         <option value={null}>선택안함</option>
                         {Array.from(categoryList)?.map((category, index) => {
                             return <option key={index} value={category.id}>{category.name}</option>;
                         })}
                     </select><br/>
-                    <input type={"text"} placeholder='Title' onChange={addTitle} required autoFocus></input> <br/>
-                    <textarea placeholder='Content' className="content-box" style={{height: "40%"}}
-                              onChange={addContent} required></textarea> <br/>
+                    <input type={"text"} name="title" placeholder='Title' onChange={onChangeData} required autoFocus></input> <br/>
+                    <textarea placeholder='Content' name='content' className="content-box" style={{height: "40%"}}
+                              onChange={onChangeData} required></textarea> <br/>
     
                     <input className="upload-name" value={fileName} disabled/>
                     <label className="upload" htmlFor="file"> 

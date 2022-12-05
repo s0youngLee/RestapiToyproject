@@ -1,5 +1,6 @@
 package com.example.restapi.controller;
 
+import com.example.restapi.model.entity.PageviewCount;
 import com.example.restapi.model.network.request.PageviewCountRequest;
 import com.example.restapi.model.network.response.PageviewCountResponseDto;
 import com.example.restapi.service.PageviewService;
@@ -20,7 +21,7 @@ public class PageviewController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Integer> updatePageview(@RequestBody PageviewCountRequest request){
+    public ResponseEntity<PageviewCountResponseDto> updatePageview(@RequestBody PageviewCountRequest request){
         return pageviewService.updatePageview(request);
     }
 

@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { FetchWithId, Delete, canRemove, Download, isPublisher, isLogin, pageviewCount } from '../func';
+import { FetchWithId, Delete, canRemove, Download, isPublisher, isLogin, PageviewCount } from '../func';
 import _ from 'lodash';
 import * as Modal from 'react-modal';
 import Comment from "../Comment/Comment";
@@ -13,7 +13,7 @@ function ArticleDeatil(){
 
     const currentlocation = useLocation();
     useEffect(() => {
-        pageviewCount(currentlocation.pathname, "게시물 조회");
+        PageviewCount(currentlocation.pathname, "게시물 조회");
     }, [currentlocation]);
 
     useEffect(() => {

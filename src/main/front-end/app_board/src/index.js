@@ -5,12 +5,12 @@ import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import reportWebVitals from './reportWebVitals';
 import Bar from './Bar';
-import { pageviewCount } from './func';
+import { PageviewCount } from './func';
 
 function Root() {
   const location = window.location.pathname;
   useEffect(() => {
-    pageviewCount(location, "카테고리별 조회");
+    PageviewCount(location);
   }, [location]);
   
   return (

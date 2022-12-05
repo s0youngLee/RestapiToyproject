@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import _ from 'lodash';
-import { useLocation } from "react-router-dom";
 import ArticleList from '../Article/ArticleList';
-import { FetchWithId, getUrlId, pageviewCount, suggestLogin } from "../func";
+import { FetchWithId, getUrlId, suggestLogin } from "../func";
 
 
 function ArticlesByCategory(){
@@ -10,7 +9,6 @@ function ArticlesByCategory(){
     const [articleByCategory, setArticleByCategory] = useState();
     const [categoryData, setCategoryData] = useState();
     const [articleByCategoryData, setArticleByCategoryData] = useState();
-    // const currentlocation = useLocation();
 
     useEffect(() => {
         if(_.isEmpty(articleByCategoryData) && !_.isEqual(articleByCategoryData, [])){
@@ -21,7 +19,6 @@ function ArticlesByCategory(){
     }, [categoryData, articleByCategoryData]);
 
     useEffect(() => {
-        // pageviewCount(currentlocation.pathname, category);
         setCategoryData(undefined);
         setArticleByCategoryData(undefined);
     },[category]);

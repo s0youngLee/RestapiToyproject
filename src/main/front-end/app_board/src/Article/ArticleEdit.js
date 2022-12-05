@@ -6,7 +6,6 @@ import _ from "lodash";
 function ArticleEditForm({articleDetail, handleClose}){
     const [categoryList, setCategoryList] = useState();
     const [categoryData, setCategoryData] = useState();
-
     
     useEffect(() => {
         if(_.isEmpty(categoryData)){
@@ -18,11 +17,6 @@ function ArticleEditForm({articleDetail, handleClose}){
 
     const [checkedInfile, setCheckedInfile] = useState(new Set()); 
     const [checkedUpload, setCheckedUpload] = useState(new Set()); 
-
-    // article title, content, category 수정
-    const [title, setTitle] = useState(articleDetail.title);
-    const [content, setContent] = useState(articleDetail.content);
-    const [selected, setSelected] = useState(articleDetail.category_id);
 
     // 파일 업로드용 formdata
     const inputFile = document.getElementsByName("upfile"); 
@@ -103,17 +97,18 @@ function ArticleEditForm({articleDetail, handleClose}){
         }
     }, [articleDetail.files, previewDocument, previewImage])
     
+    //article 수정 데이터
+    const [editData, setEditData] = useState({
+        title : articleDetail.title,
+        content : articleDetail.content,
+        selected : articleDetail.category_id
+    });
 
-    const editTitle = useCallback(e => {
-        setTitle(e.target.value);
-    }, [])
-    
-    const editContent = useCallback(e => {
-        setContent(e.target.value);
-    }, [])
-    
-    const handleSelect = (e) => {
-        setSelected(e.target.value);
+    const onChangeData = (e) => {
+        setEditData({
+            ...editData,
+            [e.target.name]: e.target.value
+        });
     };
 
     const uploadFile = useCallback((e) => {
@@ -160,9 +155,6 @@ function ArticleEditForm({articleDetail, handleClose}){
 
     const editArticle = (e) => {
         e.preventDefault();
-        if(_.isEmpty(e.target.value)){ setTitle(articleDetail.title); }
-        if(_.isEmpty(e.target.value)){ setContent(articleDetail.content); }
-
         const formData = new FormData();
         for(let i = 0;i < files.length; i++){
             if(checkedUpload.has(i) === false){
@@ -172,9 +164,9 @@ function ArticleEditForm({articleDetail, handleClose}){
         }
 
         let data = {
-            title : title,
-            content : content,
-            category_id : selected
+            title : editData.title,
+            content : editData.content,
+            category_id : editData.selected
         }
         formData.append("article", new Blob([JSON.stringify(data)], {type: "application/json"}));
         
@@ -201,14 +193,14 @@ function ArticleEditForm({articleDetail, handleClose}){
                 <form onSubmit={editArticle}>
                     <div className="modal-box">
                         <b style={{fontSize: "small"}}> 카테고리 : </b>
-                        <select onChange={handleSelect} value={selected}>
+                        <select onChange={onChangeData} name="selected" value={editData.selected}>
                             <option value={null}>선택안함</option> 
                             {categoryList?.map((category, index) => {
                                 return <option key={index} value={category.id}>{category.name}</option>;
                             })}
                         </select><br/>
-                        <input style={{width:"100%", marginLeft: "0"}} type="text" value={title} onChange={editTitle} required autoFocus /> <br/>
-                        <textarea style={{width:"100%", height: "50%"}} value={content} onChange={editContent} required /> <br/>
+                        <input style={{width:"100%", marginLeft: "0"}} type="text" name="title" value={editData.title} onChange={onChangeData} required autoFocus /> <br/>
+                        <textarea style={{width:"100%", height: "50%"}} name="content" value={editData.content} onChange={onChangeData} required /> <br/>
 
                         <input className="upload-name" style={{width:"80%", marginTop: "5px"}} value={fileName} disabled/>
                         <label className="upload" style={{width:"20%", marginTop: "5px"}} htmlFor="file"> 

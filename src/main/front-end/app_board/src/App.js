@@ -4,7 +4,6 @@ import { useCookies } from "react-cookie";
 import _ from "lodash";
 
 import Home from "./Home";
-import Bar from "./Bar";
 
 import Board from "./Article/Board";
 import ArticleDetail from "./Article/ArticleDetail";

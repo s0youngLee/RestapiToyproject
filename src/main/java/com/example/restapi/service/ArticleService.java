@@ -52,7 +52,6 @@ public class ArticleService {
 
     @Transactional
     public ResponseEntity<ArticleResponseDto> register(List<MultipartFile> uploadFiles, ArticleRequest request) throws Exception {
-        log.info(request.getCategoryId());
         Article article = Article.builder()
             .title(request.getTitle())
             .content(request.getContent())

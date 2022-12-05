@@ -1,18 +1,11 @@
 import axios from "axios";
 import { useState, useCallback, useEffect } from "react";
-import { FetchWithId, pageviewCount } from "../func";
+import { FetchWithId } from "../func";
 import _ from 'lodash';
-import { useLocation } from "react-router-dom";
-
 
 function CategoryEdit(){
     const [category, setCategory] = useState();
     const [categoryData, setCategoryData] = useState();
-    
-    const currentlocation = useLocation();
-    useEffect(() => {
-        pageviewCount(currentlocation.pathname, "category edit");
-    }, [currentlocation]);
 
     useEffect(() => {
         if(_.isEmpty(categoryData)){
@@ -40,10 +33,11 @@ function CategoryEditForm({category}){
     }, []);
     
     const editCategory = (e) => {
+        e.preventDefault();
         axios.put(`/category/${category.id}`, {
             name: categoryName
         }).then((res) => {
-            alert("카테고리 수정이 완료되었습니다.\n카테고리 " + categoryName +" 로 이동합니다.");
+            alert("카테고리 수정이 완료되었습니다.\n" + categoryName +" 로 이동합니다.");
             window.location.href = `/board/${categoryName}/${category.id}`;
         }).catch((e) => {
             alert("카테고리 수정에 실패했습니다.\nError : " + e.response.statusText);

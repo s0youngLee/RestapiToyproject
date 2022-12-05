@@ -123,40 +123,68 @@ export function Delete(dataName, dataId){
     }
 }
 
-export function pageviewCount(currentlocation, pagename){
+export function PageviewCount(currentlocation){
+    const locations = currentlocation.split("/");
+    // page name 은 db에서 관리할 예정. 임시로 놔둠.
+    let pagename;
+    switch(locations[1]){
+        case "board":
+            if(locations.length > 2){
+                if(_.isEqual(locations[2] , "add")){
+                    pagename = "게시물 등록";
+                }else if(_.isEqual(locations.length , 4)){
+                    pagename = decodeURI(locations[2]) + " 조회";
+                }else{
+                    pagename = "게시물 조회";
+                }
+            }else{
+                pagename = "게시판 조회";
+            }
+            break;
+        case "category":
+            if(locations.length > 2){
+                if(_.isEqual(locations[2] , "add")){
+                    pagename = "카테고리 등록";
+                }else if(_.isEqual(locations[2] , "edit")){
+                    pagename = "카테고리 수정";
+                }
+            }else{
+                pagename = "카테고리 관리";
+            }
+            break;
+        case "mypage":
+            pagename = "회원 정보";
+            break;
+        case "login":
+            if(locations.length > 2){
+                pagename = "회원가입";
+            }else{
+                pagename = "로그인";
+            }
+            break;
+        case "user":
+            pagename = "회원 관리";
+            break;
+        case "search":
+            pagename = "검색";
+            break;
+        case "":
+            pagename = "홈페이지 조회";
+            break;
+        default: 
+            pagename = "404 page";
+            break;
+                    
+    }
+
     axios.post(`/pageview`, {
         page_url : currentlocation,
-        page_name : pagename
-    })
-    .catch((e) => {
+        page_name : pagename 
+    }).catch((e) => {
         ifError(e);
     });
 }
 
-// DATA URL Version
-// export function Download(resource, dataname, id, filename){
-//     axios.get(`/${dataname}/${id}`, {responseType: "blob"})
-//     .then((res)=>{
-//         console.log("USING DATAURL");
-//         resource = res.data;
-//         const reader = new FileReader();
-//         reader.readAsDataURL(resource);
-//         reader.onloadend = () => {
-//             const anchor = document.createElement('a');
-//             document.body.appendChild(anchor);
-//             anchor.download = filename;
-//             anchor.href = reader.result;
-//             anchor.click();
-
-//             document.body.removeChild(anchor);
-//         }
-//         console.log(reader);
-//     }).catch((e) => {
-//         console.log(e);
-//     })
-//     if(_.isEmpty(resource)){ return <div> Loading ... </div>}
-//     else{ return resource;} 
-// }
 
 // BLOB Version
 export function Download(resource, dataname, id, filename){
@@ -184,14 +212,12 @@ export function Download(resource, dataname, id, filename){
 
 export function ifError(e){
     if(e.response.status === 400){
-        alert("잘못된 접근입니다.\n홈으로 이동합니다.");
-        // window.location.replace("/");
+        alert("잘못된 접근입니다.");
     }else if((e.response.status === 401) || (e.response.status === 403)){
         alert("권한이 없습니다.\n로그인 페이지로 이동합니다.");
         window.location.replace("/login");
     }else{
-        alert("Error : " + e.response.status + " " + e.response.statusText + "\n홈으로 이동합니다.");
-        // window.location.href="/";
+        alert("에러 : " + e.response.status + " " + e.response.statusText);
     }
 }
 
