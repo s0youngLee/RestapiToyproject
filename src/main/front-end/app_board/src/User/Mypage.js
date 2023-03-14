@@ -63,20 +63,20 @@ function MyPage(){
     }else {
         return (
             <div className="div-box" style={{marginLeft: "10px"}}>
-                <b style={{ fontSize: "40px"}}>MY PAGE</b>
+                <b style={{ fontSize: "40px"}}>내 정보</b>
                 <div style={{textAlign: "left", padding: "20px", margin: "10px", marginBottom: 0, backgroundColor: "#f3f3f3"}}>
-                    <b> Name : </b><span> {user.name} </span><br/>
-                    <b> Email : </b><span> {user.email} </span><br/>
-                    <b> Nickname : </b><span> {user.nick_name} </span><br/>
-                    <b> PhoneNumber : </b><span> {user.phone} </span><br/><br/>
+                    <b> 이름 : </b><span> {user.name} </span><br/>
+                    <b> 아이디 : </b><span> {user.email} </span><br/>
+                    <b> 닉네임 : </b><span> {user.nick_name} </span><br/>
+                    <b> 전화번호 : </b><span> {user.phone} </span><br/><br/>
                     {isAdmin() && 
                         <div>
                             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                                onClick={() => downloadExcel("article")}> Download board </button>
+                                onClick={() => downloadExcel("article")}> 전체 게시물 다운로드 </button>
                             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                                onClick={() => downloadExcel("user")}> Download Users </button>
+                                onClick={() => downloadExcel("user")}> 전체 사용자 다운로드 </button>
                             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                                onClick={() => window.location.href="/user/manage"}> Manage Users </button>
+                                onClick={() => window.location.href="/user/manage"}> 사용자 권한 관리 </button>
                             {/* <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
                                 onClick={() => window.location.href="/article/manage"}> Manage Articles </button> */}
                         </div>
@@ -88,19 +88,19 @@ function MyPage(){
                         onClick={() => {
                             setClicked();
                             setVisibleArticle(true);
-                            }}> My Articles </div>
+                            }}> 내 게시물 </div>
                     <div className="page-bar" 
                         style={visibleComment ? {backgroundColor: "mediumslateblue", color: "aliceblue"} : {}}
                         onClick={() => {
                             setClicked();
                             setVisibleComment(true);
-                            }}> My Comments </div>
+                            }}> 내 댓글 </div>
                     <div className="page-bar" 
                         style={visible ? {backgroundColor: "mediumslateblue", color: "aliceblue"} : {}}
                         onClick={() => {
                             setClicked();
                             setVisible(true);
-                            }}> Change MyInfo </div>
+                            }}> 정보 수정 </div>
                 </div><hr/>
                 {visibleArticle && <MyArticles articles={articlesData}/>}
                 {visibleComment && <MyComments comments={commentsData}/>}

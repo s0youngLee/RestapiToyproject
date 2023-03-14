@@ -1,34 +1,28 @@
 import { useState, useEffect } from "react";
 import _ from 'lodash';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Delete, FetchWithoutId }from '../func';
 
 function CategoryDeatil () {
-    const [categoryList, setCategoryList] = useState();
     const [categoryData, setCategoryData] = useState();
 
     useEffect(() => {
         if(_.isEmpty(categoryData)){
             FetchWithoutId(categoryData, setCategoryData, "category");
-        }else{
-            setCategoryList(categoryData);
         }
     }, [categoryData]);
 
-    if(_.isEmpty(categoryList)){ return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div>}
+    if(_.isEmpty(categoryData)){ return <div style={{marginTop: "100px", textAlign: "center"}}> <b style={{fontSize: "30px"}}>Data Not Found</b> </div>}
     else {
         return (
             <div className='div-box' style={{marginLeft: "10px"}}>
-                <b style={{ fontSize: "40px"}}> Category Setting </b>
+                <b style={{ fontSize: "40px"}}> 카테고리 관리 </b>
                 <Link to={`/category/add`} className="none">
-                    <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> Add Category </button>
-                </Link>
-                <Link to={`/board/category/${categoryList.splice(0,1)[0].id}`} className="none">
-                    <button className='w3-button w3-border w3-round-xlarge w3-small  w3-hover-deep-purple'> Go to Default </button>
+                    <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> 새 카테고리 </button>
                 </Link>
                 <hr/>
-                {categoryList?.map((category, index) => {
-                    return <li key={index}><CategoryDeatilData data={category} /></li>
+                {categoryData?.map((category, index) => {
+                    return <li className="list" key={index}><CategoryDeatilData data={category} /></li>
                 })}
             </div>
         ) 
@@ -38,17 +32,16 @@ function CategoryDeatil () {
 function CategoryDeatilData({data}) {
     return (
         <div style={{textAlign: "left"}}>
-            <b> ID : </b> <span> {data.id} </span><br/>
-            <b> Name : </b><span> {data.name} </span><br/>
-            <b> Article : {data.article_cnt} ea </b><br/>
-            <Link to={`/board/category/${data.id}`} className="none">
-                <button className='w3-button w3-border w3-round-xlarge w3-small  w3-hover-deep-purple'> Go to {data.name} </button>
+            <b> 카테고리 명 : </b><span> {data.name} </span><br/>
+            <b> 게시글 개수 : {data.article_cnt} ea </b><br/>
+            <Link to={`/board/${data.name}/${data.id}`} className="none">
+                <button className='w3-button w3-border w3-round-xlarge w3-small  w3-hover-deep-purple'> {data.name}(으)로 이동 </button>
             </Link>
             <Link to={`/category/edit/${data.id}`} className="none">
-                <button className="w3-button w3-border w3-round-xlarge w3-small  w3-hover-teal"> Edit</button>
+                <button className="w3-button w3-border w3-round-xlarge w3-small  w3-hover-teal"> 수정 </button>
             </Link>
             <button className="w3-button w3-border w3-round-xlarge w3-small  w3-hover-red" 
-                    onClick={() => { Delete("category", data.id) }}> Delete </button>
+                    onClick={() => { Delete("category", data.id) }}> 삭제 </button>
         </div>
     )
 }

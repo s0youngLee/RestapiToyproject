@@ -1,6 +1,5 @@
 import axios from "axios";
-import { useState, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
 import _ from "lodash";
 import "../App.css";
 import { useCookies } from "react-cookie";
@@ -8,27 +7,28 @@ import { useCookies } from "react-cookie";
 function LoginForm(){
     const [cookies, ,] = useCookies();
     const remember = document.getElementsByName('remember-me');
-    const [id, setId] = useState();
-    const [pw, setPw] = useState();
+    const [account, setAccount] = useState({
+        username: "",
+        password: ""
+    });
 
-    const inputId = useCallback(e => {
-        setId(e.target.value);
-    }, []);
-
-    const inputPw = useCallback(e => {
-        setPw(e.target.value);
-    }, []);
+    const onChangeAccount = (e) => {
+        setAccount({
+            ...account,
+            [e.target.name]: e.target.value
+        });
+    };
     
     let form = new FormData();
-        form.append('username', id);
-        form.append('password', pw);
+        form.append('username', account.username);
+        form.append('password', account.password);
 
     const userlogin = (e) => {
         e.preventDefault();
         if(remember[0].checked){
             form.append('remember-me', remember[0].checked);
         }
-        if(_.isEmpty(id) || _.isEmpty(pw)){
+        if(_.isEmpty(account.username) || _.isEmpty(account.password)){
             alert("입력란을 채워주세요");
             return Error;
         }
@@ -67,13 +67,13 @@ function LoginForm(){
             <h2 > App_Board </h2> <hr/>
             <div className="input-group">
                 <input type="text" id="username" name="username" className={ usernameSelected ? "input-default" : "input"}
-                        onChange={inputId} required autoFocus/>
+                        onChange={onChangeAccount} required autoFocus/>
                 <label htmlFor="username" className={ usernameSelected ? "input-label-default" : "input-label"}>
                     ID(Email)</label>
             </div>
             <div className="input-group">
                 <input type="password" id="password" name="password" className={ passwordSelected ? "input-default" : "input"}
-                       onChange={inputPw} required/>
+                       onChange={onChangeAccount} required/>
                 <label htmlFor="password" className={ passwordSelected ? "input-label-default" : "input-label"}>
                     Password</label>
             </div>
@@ -82,9 +82,8 @@ function LoginForm(){
             </p>
             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" type="submit" 
                     onClick={userlogin} >로그인</button>
-            <Link className="none" to="/login/signup">
-                <button className="w3-button w3-round-xlarge w3-small w3-hover-deep-purple w3-border">회원가입</button>
-            </Link>
+            <button className="w3-button w3-round-xlarge w3-small w3-hover-deep-purple w3-border"
+                    onClick={() => window.location.href="/login/signup"}>회원 가입</button>
         </form> 
     </div>
     )

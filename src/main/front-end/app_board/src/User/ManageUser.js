@@ -1,12 +1,18 @@
 import React, { useState, useMemo, useEffect } from "react";
 import _ from "lodash";
-import { Delete, FetchWithoutId } from "../func";
+import { Delete, FetchWithoutId, PageviewCount } from "../func";
 import axios from "axios";
 import Pagination from "react-js-pagination";
+import { useLocation } from "react-router-dom";
 
 function UserManage(){
     const [manage, setManage] = useState();
     const [userData, setUserData] = useState();
+    
+    const currentlocation = useLocation();
+    useEffect(() => {
+        PageviewCount(currentlocation.pathname, "manage user");
+    }, [currentlocation]);
 
     useEffect(() => {
         if(_.isEmpty(userData)){
@@ -38,7 +44,6 @@ function UserManage(){
     };
 
     function SaveAll(){
-        // let check = true;
         try{
             usersPerPage.map((origin, index) => {
                 if(!_.isEqual(origin.auth, editList[index].auth)){
@@ -71,9 +76,9 @@ function UserManage(){
                     )
                 })}
                 <button onClick={() => window.location.href="/mypage"}
-                        className="w3-button w3-border w3-round-xlarge w3-small w3-hover-deep-purple"> Go to mypage →</button>
+                        className="w3-button w3-border w3-round-xlarge w3-small w3-hover-deep-purple">내 정보</button>
                 <button onClick={() => SaveAll()}
-                        className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal">Save All</button>
+                        className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal">모두 저장</button>
                 <br/>
                 <Pagination
                     activePage={currentPage} 
@@ -131,7 +136,7 @@ function EditUser({index, userinfo, editList}){
     }
 
     return (
-        <li style={{padding: "5px"}} onClick={() => setVisible(!visible)}>
+        <li className="list" style={{padding: "5px"}} onClick={() => setVisible(!visible)}>
             <p className="p-user"> 
                 번호 : <b className="b-user">{userinfo.code}</b> <br/>
                 아이디 : <b className="b-user"> {userinfo.email} </b> <br/>

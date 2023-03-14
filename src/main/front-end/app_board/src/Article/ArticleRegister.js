@@ -4,15 +4,9 @@ import axios from "axios";
 import _ from 'lodash';
 
 function ArticleRegister(){
-    const urlId = getUrlId(1);
-    const [title, setTitle] = useState("");
-    const [content, setContent] = useState("");
-    const [selected, setSelected] = useState(urlId);
-
-
     const [categoryList, setCategoryList] = useState();
     const [categoryData, setCategoryData] = useState();
-    
+        
     useEffect(() => {
         if(_.isEmpty(categoryData)){
             FetchWithoutId(categoryData, setCategoryData, "category");
@@ -20,24 +14,25 @@ function ArticleRegister(){
             setCategoryList(categoryData);
         }
     }, [categoryData]);
-    
+
+    const [writeData, setWriteData] = useState({
+        title : "",
+        content : "",
+        selected : getUrlId(1)
+    });
+
+    const onChangeData = (e) => {
+        setWriteData({
+            ...writeData,
+            [e.target.name]: e.target.value
+        });
+    };
+
     const formData = new FormData();
     const inputFile = document.getElementsByName("upfile");
     
     const fileName = useMemo(() => {return new Array("파일 선택")},[]);
     const [files, setFiles] = useState({data : {}});
-
-    const addTitle = useCallback(e => {
-        setTitle(e.target.value);
-    }, [])
-    
-    const addContent = useCallback(e => {
-        setContent(e.target.value);
-    }, [])
-
-    const handleSelect = (e) => {
-        setSelected(e.target.value);
-    };
 
     const uploadFile = useCallback((e) => {        
         if(!_.isEmpty(inputFile[0].files)){
@@ -50,17 +45,17 @@ function ArticleRegister(){
         
     }, [inputFile, fileName]);
     
-    for(let i = 0;i < files.length; i++){
+    for(let i = 0;i < files.length; i++){ 
         formData.append("file", files[i]);
     }
     
     const addArticle = (e) => {
         e.preventDefault();
         let data = {
-            title : title,
-            content : content,
+            title : writeData.title,
+            content : writeData.content,
             created_id : USER.nickname,
-            category_id : selected
+            category_id : writeData.selected
         }
         formData.append("article", new Blob([JSON.stringify(data)], {type: "application/json"}));
     
@@ -78,16 +73,17 @@ function ArticleRegister(){
         return(
             <form onSubmit={addArticle}>
                 <div className="div-box" style={{height: "55vh"}}>
-                    <b style={{ fontSize: "30px"}}> 게시물 작성 </b> <hr/>
+                    <b style={{ fontSize: "30px"}}> 새 게시물 </b> <hr/>
                     <b> 카테고리 : </b>
-                    <select onChange={handleSelect} value={selected}>
+                    <select onChange={onChangeData} name="selected" value={writeData.selected}>
+                        <option value={null}>선택안함</option>
                         {Array.from(categoryList)?.map((category, index) => {
                             return <option key={index} value={category.id}>{category.name}</option>;
                         })}
                     </select><br/>
-                    <input type={"text"} placeholder='Title' onChange={addTitle} required autoFocus></input> <br/>
-                    <textarea placeholder='Content' className="content-box" style={{height: "40%"}}
-                              onChange={addContent} required></textarea> <br/>
+                    <input type={"text"} name="title" placeholder='Title' onChange={onChangeData} required autoFocus></input> <br/>
+                    <textarea placeholder='Content' name='content' className="content-box" style={{height: "40%"}}
+                              onChange={onChangeData} required></textarea> <br/>
     
                     <input className="upload-name" value={fileName} disabled/>
                     <label className="upload" htmlFor="file"> 
@@ -95,7 +91,7 @@ function ArticleRegister(){
                     </label> 
                     <input type="file" name={"upfile"} id="file" style={{display:"none"}} onChange={uploadFile} multiple/><br/>
                     
-                    <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > 글쓰기 </button>
+                    <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > 등록 </button>
                     <button type="reset" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
                             onClick={() => {window.location.href = "/board"}}> 돌아가기 </button><br/>
                 </div>

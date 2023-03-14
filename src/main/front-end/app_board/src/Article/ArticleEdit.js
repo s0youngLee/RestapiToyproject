@@ -15,19 +15,14 @@ function ArticleEditForm({articleDetail, handleClose}){
         }
     }, [categoryData]);
 
-    const [checkedInfile, setCheckedInfile] = useState(new Set()); // db에 올라가 있는 파일 (이미 첨부된 파일 중 체크 - 삭제해야함)
-    const [checkedUpload, setCheckedUpload] = useState(new Set()); // input file로 선택한 파일 (첨부되어 있지 않은 파일 - 전송할 formdata에 올리지 않아야함)
-
-    // article title, content, category 수정
-    const [title, setTitle] = useState(articleDetail.title);
-    const [content, setContent] = useState(articleDetail.content);
-    const [selected, setSelected] = useState(articleDetail.category_id);
+    const [checkedInfile, setCheckedInfile] = useState(new Set()); 
+    const [checkedUpload, setCheckedUpload] = useState(new Set()); 
 
     // 파일 업로드용 formdata
-    const inputFile = document.getElementsByName("upfile"); // file input
-    const fileName = useMemo(() => {return new Array("파일 선택")},[]); // 파일 입력란에 띄울 선택된 파일 이름 리스트
-    const [files, setFiles] = useState({data : {}}); // 파일 목록
-    const [visible, setVisible] = useState(false); // 선택된 파일 또는 첨부된 파일이 없을 경우 visible false
+    const inputFile = document.getElementsByName("upfile"); 
+    const fileName = useMemo(() => {return new Array("파일 선택")},[]); 
+    const [files, setFiles] = useState({data : {}}); 
+    const [visible, setVisible] = useState(false); 
 
     const checkedItemHandler = useCallback((id, type, isChecked) => {
         if(isChecked) {
@@ -102,17 +97,18 @@ function ArticleEditForm({articleDetail, handleClose}){
         }
     }, [articleDetail.files, previewDocument, previewImage])
     
+    //article 수정 데이터
+    const [editData, setEditData] = useState({
+        title : articleDetail.title,
+        content : articleDetail.content,
+        selected : articleDetail.category_id
+    });
 
-    const editTitle = useCallback(e => {
-        setTitle(e.target.value);
-    }, [])
-    
-    const editContent = useCallback(e => {
-        setContent(e.target.value);
-    }, [])
-    
-    const handleSelect = (e) => {
-        setSelected(e.target.value);
+    const onChangeData = (e) => {
+        setEditData({
+            ...editData,
+            [e.target.name]: e.target.value
+        });
     };
 
     const uploadFile = useCallback((e) => {
@@ -159,9 +155,6 @@ function ArticleEditForm({articleDetail, handleClose}){
 
     const editArticle = (e) => {
         e.preventDefault();
-        if(_.isEmpty(e.target.value)){ setTitle(articleDetail.title); }
-        if(_.isEmpty(e.target.value)){ setContent(articleDetail.content); }
-
         const formData = new FormData();
         for(let i = 0;i < files.length; i++){
             if(checkedUpload.has(i) === false){
@@ -171,9 +164,9 @@ function ArticleEditForm({articleDetail, handleClose}){
         }
 
         let data = {
-            title : title,
-            content : content,
-            category_id : selected
+            title : editData.title,
+            content : editData.content,
+            category_id : editData.selected
         }
         formData.append("article", new Blob([JSON.stringify(data)], {type: "application/json"}));
         
@@ -200,13 +193,14 @@ function ArticleEditForm({articleDetail, handleClose}){
                 <form onSubmit={editArticle}>
                     <div className="modal-box">
                         <b style={{fontSize: "small"}}> 카테고리 : </b>
-                        <select onChange={handleSelect} value={selected}>
+                        <select onChange={onChangeData} name="selected" value={editData.selected}>
+                            <option value={null}>선택안함</option> 
                             {categoryList?.map((category, index) => {
                                 return <option key={index} value={category.id}>{category.name}</option>;
                             })}
                         </select><br/>
-                        <input style={{width:"100%", marginLeft: "0"}} type="text" value={title} onChange={editTitle} required autoFocus /> <br/>
-                        <textarea style={{width:"100%", height: "50%"}} value={content} onChange={editContent} required /> <br/>
+                        <input style={{width:"100%", marginLeft: "0"}} type="text" name="title" value={editData.title} onChange={onChangeData} required autoFocus /> <br/>
+                        <textarea style={{width:"100%", height: "50%"}} name="content" value={editData.content} onChange={onChangeData} required /> <br/>
 
                         <input className="upload-name" style={{width:"80%", marginTop: "5px"}} value={fileName} disabled/>
                         <label className="upload" style={{width:"20%", marginTop: "5px"}} htmlFor="file"> 
@@ -215,19 +209,19 @@ function ArticleEditForm({articleDetail, handleClose}){
                         <input type="file" name={"upfile"} id="file" style={{display:"none"}} onChange={uploadFile} multiple/>
 
                         <div style={{textAlign: "center", marginTop: "5px"}}>
-                            <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > Save </button>
+                            <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal" > 저장 </button>
                             <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red"
-                                    onClick={handleClose}> Back </button>
+                                    onClick={handleClose}> 뒤로가기 </button>
                         </div>
                     </div>
                 </form>
                 <div id='preview-zone'>
-                    <b style={{fontSize: "medium"}}> File Preview </b><br/>
+                    <b style={{fontSize: "medium"}}> 파일 미리보기 </b><br/>
                     <div id='preview-img' style={visible ? {} : {display: "none"}}>
-                        <b style={{fontSize: "small"}}> [ Image ] </b><br/>
+                        <b style={{fontSize: "small"}}> [ 이미지 ] </b><br/>
                     </div>
                     <div id='preview-file' style={visible ? {} : {display: "none"}}>
-                        <b style={{fontSize: "small"}}> [ File ] </b><br/>
+                        <b style={{fontSize: "small"}}> [ 파일 ] </b><br/>
                     </div>
                 </div>
             </div>

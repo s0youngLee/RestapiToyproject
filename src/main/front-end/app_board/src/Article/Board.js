@@ -20,7 +20,7 @@ function Board(){
     else {
         return (
             <div className='div-box'> 
-                <b style={{ fontSize: "30px", margin : "10px"}}> Article List </b><br/>
+                <b style={{ fontSize: "30px", margin : "10px"}}> 게시판 </b><br/>
                 <ArticleList articleList={Array.from(article).reverse()}/>
             </div>
         )

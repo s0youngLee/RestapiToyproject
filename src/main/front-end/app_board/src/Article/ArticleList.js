@@ -5,12 +5,13 @@ import axios from "axios";
 import "../App.css";
 import SearchForm from "./SearchForm";
 import _ from "lodash";
-import { Link } from "react-router-dom";
+import Article from "./Article";
 
 
 function ArticleList({articleList}){
     const [allChecked, setAllChecked] = useState(false);
     const [checkedItems, setCheckedItems] = useState(new Set());
+
     
     const pageLimit = 5; // page display cnt limit
     const articleCntPerPage = 10; // article cnt per pages
@@ -74,7 +75,7 @@ function ArticleList({articleList}){
             <div style={{marginTop: "100px", textAlign: "center"}}> 
                 <b style={{fontSize: "30px"}}>Data Not Found</b> <br/>
                 <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                        onClick={() => { suggestLogin() }}> 글 작성 </button>
+                        onClick={() => { suggestLogin() }}> 새 게시물 </button>
             </div>
         )
     }
@@ -82,7 +83,7 @@ function ArticleList({articleList}){
         return(
             <div className="totalPage">
                 <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"
-                        onClick={() => { suggestLogin() }}> 글 작성 </button>
+                        onClick={() => { suggestLogin() }}> 새 게시물 </button>
                 {isAdmin() && 
                     <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
                     onClick={() => DeleteArticles()}>  선택 삭제 </button>}
@@ -106,23 +107,7 @@ function ArticleList({articleList}){
                     </thead>
                     <tbody>
                         {articlesPerPage.map((article, index) => {
-                        return (
-                        <tr className="clickable" key={index}>
-                                {isAdmin() && 
-                                    <td>
-                                    <input  type={'checkbox'} onChange={(e) => {checkHandler(e, article.id);}}
-                                    name="check" value={article.id}/>
-                                    </td>
-                                }
-                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.id} </Link></td>
-                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.title} </Link></td>
-                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.category_name} </Link></td>
-                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.user_nickname} </Link></td>
-                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.created_at} </Link></td>
-                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.visit_cnt} </Link></td>
-                                <td><Link to={`/board/${article.id}`} className={"none"}> {article.comment_cnt} </Link></td>
-                            </tr>
-                        )
+                            return <Article key={index} index={index} data={article} checkHandler={checkHandler}/>
                         })}
                     </tbody>
                 </table> <hr/>

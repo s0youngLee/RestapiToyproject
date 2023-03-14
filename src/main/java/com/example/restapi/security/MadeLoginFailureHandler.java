@@ -28,6 +28,5 @@ public class MadeLoginFailureHandler implements AuthenticationFailureHandler {
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		}
 		log.error("Exception - " + exceptionName);
-		response.sendRedirect("http://192.168.1.158:3000/login");
 	}
 }

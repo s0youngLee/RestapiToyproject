@@ -3,7 +3,6 @@ import { useState, useCallback, useEffect } from "react";
 import { FetchWithId } from "../func";
 import _ from 'lodash';
 
-
 function CategoryEdit(){
     const [category, setCategory] = useState();
     const [categoryData, setCategoryData] = useState();
@@ -34,10 +33,11 @@ function CategoryEditForm({category}){
     }, []);
     
     const editCategory = (e) => {
+        e.preventDefault();
         axios.put(`/category/${category.id}`, {
             name: categoryName
         }).then((res) => {
-            alert("카테고리 수정이 완료되었습니다.\n카테고리 " + categoryName +" 로 이동합니다.");
+            alert("카테고리 수정이 완료되었습니다.\n" + categoryName +" 로 이동합니다.");
             window.location.href = `/board/${categoryName}/${category.id}`;
         }).catch((e) => {
             alert("카테고리 수정에 실패했습니다.\nError : " + e.response.statusText);
@@ -49,12 +49,12 @@ function CategoryEditForm({category}){
     return (
         <>
             <form onSubmit={editCategory} style={{marginTop: "100px"}}>
-                <b style={{textAlign: "center", fontSize: "25px"}}> Edit Category </b> <br/>
-                <b> Category ID : {category.id}</b><br/>
+                <b style={{textAlign: "center", fontSize: "25px"}}> 카테고리 수정 </b> <br/>
+                <b> 변경 전 : {category.name}</b><br/>
                 <input type={"text"} value={categoryName} onChange={editName} required></input> <br/>
-                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> Save </button>
+                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> 저장 </button>
                 <button type={"reset"} className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red" 
-                        onClick={() => {window.location.href=`/category`}}> Back </button>
+                        onClick={() => {window.location.href=`/category`}}> 뒤로가기 </button>
             </form>
         </>
     )

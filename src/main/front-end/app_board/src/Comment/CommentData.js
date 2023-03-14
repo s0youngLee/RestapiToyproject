@@ -51,12 +51,12 @@ function CommentEditForm({data, visible, setVisible}){
 
     return (
         <form onSubmit={editComment} className="form-box">
-            <b> Edit comment </b> <br/>
+            <b> 댓글 수정 </b> <br/>
             <textarea style={{width:"100%", height: "50%", borderRadius: "5px"}} value={content} onChange={editcontent} /> <br/>
             <div style={{textAlign: "right", marginTop: "2px"}}>
                 <button className="w3-button w3-border w3-round-xlarge w3-small w3-hover-red"
-                        onClick={() => {setVisible(!visible)}}> Cancel </button>
-                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> Save </button>
+                        onClick={() => {setVisible(!visible)}}> 취소 </button>
+                <button type="submit" className="w3-button w3-border w3-round-xlarge w3-small w3-hover-teal"> 저장 </button>
             </div>
         </form>
     )

@@ -3,10 +3,20 @@ ul {
   padding-left: 0;
 }
 
+#bar-ul{
+  margin: 0;
+}
+#bar-ul li{
+  display: inline-block;
+}
+
 li {
+  list-style: none;
+}
+
+.list {
   border: 1px solid gainsboro;
   padding: 20px;
-  list-style: none;
   margin: 10px;
 }
 
@@ -98,6 +108,10 @@ button{
 }
 
 .mypage-none {
+  border: 1px solid gainsboro;
+  padding: 20px;
+  list-style: none;
+  margin: 10px;
   text-align: left;
 }.mypage-none:hover {
   background-color: gainsboro;
@@ -161,6 +175,7 @@ button{
 }
 
 .filelist{
+  list-style: none;
   border: none;
   padding: 0;
   margin: 0;
@@ -264,7 +279,7 @@ button{
 @media only screen and (max-device-width: 400px) {
   .div-box{
     width: 370px;
-    margin-top: 100px;
+    /* margin-top: 100px; */
   }
 
   .modal-box{
@@ -367,6 +382,7 @@ button{
   transition: transform .3s;
   pointer-events: none;
   background-color: inherit;
+  
 }
 
 .input-default:focus+.input-label-default{

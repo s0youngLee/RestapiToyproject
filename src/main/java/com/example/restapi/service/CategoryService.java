@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ import com.example.restapi.model.network.request.CategoryRequest;
 import com.example.restapi.model.network.response.CategoryResponseDto;
 import com.example.restapi.repository.ArticleRepository;
 import com.example.restapi.repository.CategoryRepository;
-
+@Log4j2
 @Service
 public class CategoryService{
     private final CategoryRepository categoryRepository;
@@ -28,12 +29,17 @@ public class CategoryService{
     }
 
     public ResponseEntity<CategoryResponseDto> create(CategoryRequest request) {
-        Category category = Category.builder()
-                .id(request.getId())
-                .name(request.getName())
-                .build();
+        try{
+            Category category = Category.builder()
+                    .id(request.getId())
+                    .name(request.getName())
+                    .build();
 
-        return ResponseEntity.ok(buildCategory(categoryRepository.save(category)));
+            return ResponseEntity.ok(buildCategory(categoryRepository.save(category)));
+        }catch (Exception e){
+            log.error("Exception : " + e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     public ResponseEntity<CategoryResponseDto> read(int id) {
@@ -64,9 +70,10 @@ public class CategoryService{
         List<Article> articleList = articleRepository.findAll();
 
         for(Article article : articleList){
-            if((article.getCategory().getId() == categoryId)){
-                article.setCategory(Category.builder()
-                                .id(0).build());
+            if(article.getCategory()!=null){
+                if((article.getCategory().getId() == categoryId)){
+                    article.setCategory(null);
+                }
             }
         }
 

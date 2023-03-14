@@ -6,9 +6,7 @@ import ArticleList from "./ArticleList";
 
 function ArticleSearchList() {
     const searchParam = useMemo(() => getUrlId(1).split("-"), []);
-    
     const decodeParam = decodeURI(searchParam[2]);
-
     const [searchResults, setSearchResults] = useState({ data : {} });
     
     useEffect(() => {
@@ -35,7 +33,7 @@ function ArticleSearchList() {
     else {
         return (
             <div className='div-box'>
-                <b style={{ fontSize: "30px"}}> "{decodeParam}" 에 대한 검색 결과</b>
+                <b style={{ fontSize: "30px"}}> "{decodeParam}" 에 대한 검색 결과</b> 
                 <ArticleList articleList={Array.from(searchResults)} />
             </div>
         )

@@ -4,7 +4,6 @@ import { useCookies } from "react-cookie";
 import _ from "lodash";
 
 import Home from "./Home";
-import Bar from "./Bar";
 
 import Board from "./Article/Board";
 import ArticleDetail from "./Article/ArticleDetail";
@@ -26,16 +25,18 @@ import UserManage from "./User/ManageUser";
 import { isLogin, USER, Cookie } from "./func";
 import './App.css';
 import 'w3-css';
+import axios from "axios";
 
 
 function App() {
     const [cookies, ,removeCookies] = useCookies();
+    
     useEffect(() => {
         Cookie(cookies, removeCookies);
-    }, [cookies, removeCookies])
+    }, [cookies, removeCookies]);
 
     useEffect(() => {
-        if(_.isEqual(USER.lastAccess, "true")){
+        if(_.isEqual(USER.lastAccess, "true") && _.isEqual(localStorage.getItem("dateAlert"), "false")){
             if(window.confirm("비밀번호 변경을 추천합니다.\n확인을 누르면 마이페이지로 이동합니다.")){
                 localStorage.setItem("dateAlert", true);
                 window.location.replace("/mypage");
@@ -48,55 +49,41 @@ function App() {
                 window.location.href = "/login";
             }
         }
-    }, [isLogin]);
+    }, []);
+
+    useEffect(() => {
+        axios.get(`/pageview`).then((res) => {
+            console.log(res.data);
+        }).catch((e) => {
+            console.log(e);
+        })
+    })
     
-    if(_.isEmpty(USER)){
-        return (
-            <Router>
-                <Bar/>
-                <Routes>
-                    <Route exact path="/" element={<Home />} />
-    
-                    <Route exact path="/board" element={<Board  />} />
-                    <Route path="/board/:articleId" element={<ArticleDetail  />} /> 
-                    <Route path="/board/:categoryname/:categoryId" element={<ArticlesByCategory />} />
-                    <Route path="/search/:keyword" element={<ArticleSearchList  />} />
-    
-                    <Route exact path="/login" element={<LoginForm/>} />
-                    <Route path="/login/signup" element={<SignupForm />} />
-    
-                    <Route exact path="*" element={<PageNotFound />} /> {/* No route match location Handle */}
-                </Routes>
-            </Router>
-        )
-    }else{
-        return(
-            <Router>
-                <Bar/>
-                <Routes>
-                    <Route exact path="/" element={<Home />} />
-    
-                    <Route exact path="/board" element={<Board  />} />
-                    <Route path="/board/:articleId" element={<ArticleDetail  />} /> 
-                    <Route path="/board/:categoryname/:categoryId" element={<ArticlesByCategory />} />
-                    <Route path="/board/add/:categoryId" element={<ArticleRegister />} />
-                    <Route path="/search/:keyword" element={<ArticleSearchList  />} />
-    
-                    <Route exact path="/category" element={<CategoryDeatil />} />
-                    <Route path="/category/add/" element={<CategoryRegister />} />
-                    <Route path="/category/edit/:categoryId" element={<CategoryEdit />} />
-    
-                    <Route exact path="/login" element={<LoginForm/>} />
-                    <Route path="/login/signup" element={<SignupForm />} />
-                    
-                    <Route path="/mypage" element={<MyPage />} />
-                    <Route path="/user/manage" element={<UserManage />} />
-    
-                    <Route exact path="*" element={<PageNotFound />} /> {/* No route match location Handle */}
-                </Routes>
-            </Router>
-        )
-    }
+    return(
+        <Router>
+            <Routes>
+                <Route exact path="/" element={<Home />} />
+
+                <Route exact path="/board" element={<Board  />} />
+                <Route path="/board/:articleId" element={<ArticleDetail  />} /> 
+                <Route path="/board/:categoryname/:categoryId" element={<ArticlesByCategory />} />
+                <Route path="/board/add/:categoryId" element={<ArticleRegister />} />
+                <Route path="/search/:keyword" element={<ArticleSearchList  />} />
+
+                <Route exact path="/category" element={<CategoryDeatil />} />
+                <Route path="/category/add/" element={<CategoryRegister />} />
+                <Route path="/category/edit/:categoryId" element={<CategoryEdit />} />
+
+                <Route exact path="/login" element={<LoginForm/>} />
+                <Route path="/login/signup" element={<SignupForm />} />
+                
+                <Route path="/mypage" element={<MyPage />} />
+                <Route path="/user/manage" element={<UserManage />} />
+
+                <Route exact path="*" element={<PageNotFound />} /> {/* No route match location Handle */} 
+            </Routes>
+        </Router>
+    )
 }
 
 export default App;
